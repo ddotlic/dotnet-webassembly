@@ -793,6 +793,15 @@ public class SpecTests
     }
 
     /// <summary>
+    /// Runs the simd_const tests.
+    /// </summary>
+    [TestMethod]
+    public void SpecTest_simd_const()
+    {
+        SpecTestRunner.Run(Path.Combine("Runtime", "SpecTestData", "simd_const"), "simd_const.json");
+    }
+    
+    /// <summary>
     /// Runs the skip-stack-guard-page tests.
     /// </summary>
     [TestMethod]

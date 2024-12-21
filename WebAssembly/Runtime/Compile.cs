@@ -1105,6 +1105,10 @@ public static class Compile
 
         for (var i = 0; i < count; i++)
         {
+            var preKindOffset = reader.Offset;
+            var kind = reader.ReadVarUInt32();
+            if (kind is not 0 and not 2)
+                throw new ModuleLoadException($"Element segment kind of {kind} is not supported yet, {kind} found.", preKindOffset);
             var preIndexOffset = reader.Offset;
             var index = reader.ReadVarUInt32();
             if (index != 0)
@@ -1118,6 +1122,14 @@ public static class Compile
                     throw new ModuleLoadException("Initializer expression support for the Element section is limited to a single Int32 constant followed by end.", preInitializerOffset);
 
                 offset = (uint)c.Value;
+            }
+
+            if (kind == 2)
+            {
+                var preElemKindOffset = reader.Offset;
+                var elemKind = reader.ReadVarUInt32();
+                if (elemKind != 0)
+                    throw new ModuleLoadException("Spec only recognizes an element kind of 0.", preElemKindOffset);
             }
 
             var preElementOffset = reader.Offset;

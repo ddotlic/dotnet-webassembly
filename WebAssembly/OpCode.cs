@@ -1077,6 +1077,12 @@ public enum OpCode : byte
     /// </summary>
     [OpCodeCharacteristics("misc")]
     MiscellaneousOperationPrefix = 0xfc,
+
+    /// <summary>
+    /// Prefix byte for SIMD operations.
+    /// </summary>
+    [OpCodeCharacteristics("simd")]
+    SimdOperationPrefix = 0xfd,
 }
 
 static class OpCodeExtensions

@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-
+using System.Runtime.Intrinsics;
 namespace WebAssembly;
 
 /// <summary>
@@ -23,6 +23,10 @@ public enum WebAssemblyValueType : sbyte
     /// 64-bit floating point value-type, equivalent to .NET's <see cref="double"/>.
     /// </summary>
     Float64 = -0x04,
+    /// <summary>
+    /// 128-bit SIMD vector value-type, equivalent to .NET's <see cref="Vector128{T}"/>.
+    /// </summary>
+    Vector128 = -0x05,
 }
 
 static class ValueTypeExtensions
@@ -33,6 +37,7 @@ static class ValueTypeExtensions
         WebAssemblyValueType.Int64 => typeof(long),
         WebAssemblyValueType.Float32 => typeof(float),
         WebAssemblyValueType.Float64 => typeof(double),
+        WebAssemblyValueType.Vector128 => typeof(Vector128<uint>),
         _ => throw new System.ArgumentOutOfRangeException(nameof(valueType), $"{nameof(WebAssemblyValueType)} {valueType} not recognized."),
     };
 
@@ -43,6 +48,7 @@ static class ValueTypeExtensions
                 { typeof(long), WebAssemblyValueType.Int64 },
                 { typeof(float), WebAssemblyValueType.Float32 },
                 { typeof(double), WebAssemblyValueType.Float64 },
+                { typeof(Vector128<uint>), WebAssemblyValueType.Vector128 },
         });
 
     public static bool TryConvertToValueType(this System.Type type, out WebAssemblyValueType value) => systemTypeToValueType.Reference.TryGetValue(type, out value);

@@ -259,3 +259,7 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+
+# Files that can be regenerated using wabt or wasm-tools (recommended)
+**/SpecTestData/simd_*/*
+!**/SpecTestData/simd_*/*.wast

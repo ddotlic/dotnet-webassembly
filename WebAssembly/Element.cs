@@ -68,16 +68,43 @@ public class Element
     {
         this.initializerExpression =
         [
-                new Int32Constant(offset),
-                new End(),
+            new Int32Constant(offset),
+            new End(),
         ];
         this.elements = elements;
     }
 
+    private void ReadInitializerExpression(Reader reader)
+    {
+        this.initializerExpression = Instruction.ParseInitializerExpression(reader).ToList();
+    }
+
     internal Element(Reader reader)
     {
-        this.Index = reader.ReadVarUInt32();
-        this.initializerExpression = Instruction.ParseInitializerExpression(reader).ToList();
+        var preKindOffset = reader.Offset;
+        var kind = reader.ReadVarUInt32();
+        switch (kind)
+        {
+            case 0: // active, implicit table index = 0
+                this.Index = 0;
+                this.ReadInitializerExpression(reader);
+                break;
+            case 2: // active, explicit table index
+                var preIndexOffset = reader.Offset;
+                this.Index = reader.ReadVarUInt32();
+                if (this.Index != 0)
+                    throw new ModuleLoadException("Table index must be 0 for now.", preIndexOffset);
+                this.ReadInitializerExpression(reader);
+                var preElemKindOffset = reader.Offset;
+                var elemKind = reader.ReadVarUInt32();
+                if (elemKind != 0)
+                    throw new ModuleLoadException("Spec only recognizes an element kind of 0.", preElemKindOffset);
+                break;
+            default:
+                throw new ModuleLoadException("Element segment kind must be 0 or 2 for now.", preKindOffset);
+        }
+        // this.Index = reader.ReadVarUInt32();
+        // this.initializerExpression = Instruction.ParseInitializerExpression(reader).ToList();
 
         var count = checked((int)reader.ReadVarUInt32());
         var elements = this.elements = [];

@@ -81,6 +81,15 @@ public abstract class Instruction : IEquatable<Instruction>
                 case OpCode.Int64Constant: yield return new Int64Constant(reader); break;
                 case OpCode.Float32Constant: yield return new Float32Constant(reader); break;
                 case OpCode.Float64Constant: yield return new Float64Constant(reader); break;
+                case OpCode.SimdOperationPrefix:
+                    var simdOpCodeOffset = reader.Offset;
+                    var simdOpCode = (SimdOpCode)reader.ReadByte();
+                    switch (simdOpCode)
+                    {
+                        default: throw new ModuleLoadException($"Unexpected in initializer expression: SIMD opcode \"{simdOpCode}\".", simdOpCodeOffset);
+                        case SimdOpCode.V128Const: yield return new Vector128Constant(reader); break;
+                    }
+                    break;
                 case OpCode.End: yield return new End(); yield break;
             }
         }
@@ -321,6 +330,17 @@ public abstract class Instruction : IEquatable<Instruction>
                         case MiscellaneousOpCode.Int64TruncateSaturateFloat32Unsigned: yield return new Int64TruncateSaturateFloat32Unsigned(); break;
                         case MiscellaneousOpCode.Int64TruncateSaturateFloat64Signed: yield return new Int64TruncateSaturateFloat64Signed(); break;
                         case MiscellaneousOpCode.Int64TruncateSaturateFloat64Unsigned: yield return new Int64TruncateSaturateFloat64Unsigned(); break;
+                    }
+                    break;
+                case OpCode.SimdOperationPrefix:
+                    var simdOpCodeOffset = reader.Offset;
+                    var simdOpCode = (SimdOpCode)reader.ReadByte();
+                    switch (simdOpCode)
+                    {
+                        default: throw new ModuleLoadException($"Don't know how to parse SIMD opcode \"{simdOpCode}\".", simdOpCodeOffset);
+                        case SimdOpCode.V128Const: yield return new Vector128Constant(reader); break;
+                        case SimdOpCode.Int32X4Add: yield return new Int32X4Add(); break;
+                        case SimdOpCode.Int64X2Add: yield return new Int64X2Add(); break;
                     }
                     break;
             }

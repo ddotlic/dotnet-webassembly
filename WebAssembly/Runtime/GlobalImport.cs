@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.Intrinsics;
 
 namespace WebAssembly.Runtime;
 
@@ -87,6 +88,17 @@ public class GlobalImport : RuntimeImport
     /// <exception cref="ArgumentNullException"><paramref name="getter"/> cannot be null.</exception>
     public GlobalImport(Func<double> getter, Action<double>? setter = null)
         : this(getter, setter, WebAssemblyValueType.Float64)
+    {
+    }
+
+    /// <summary>
+    /// Creates a new <see cref="GlobalImport"/> instance with the provided delegates.
+    /// </summary>
+    /// <param name="getter">The method to use for read requests.</param>
+    /// <param name="setter">The method to use for write requests, or null (the default).</param>
+    /// <exception cref="ArgumentNullException"><paramref name="getter"/> cannot be null.</exception>
+    public GlobalImport(Func<Vector128<uint>> getter, Action<Vector128<uint>>? setter = null)
+        : this(getter, setter, WebAssemblyValueType.Vector128)
     {
     }
 

@@ -1,4 +1,6 @@
-﻿namespace WebAssembly;
+﻿using System.Runtime.Intrinsics;
+
+namespace WebAssembly;
 
 /// <summary>
 /// Types for use as block signatures.
@@ -21,6 +23,10 @@ public enum BlockType : sbyte
     /// 64-bit floating point value-type, equivalent to .NET's <see cref="double"/>.
     /// </summary>
     Float64 = -0x04,
+    /// <summary>
+    /// 128-bit SIMD vector value-type, equivalent to .NET's <see cref="Vector128{T}"/>.
+    /// </summary>
+    Vector128 = -0x05,
     /// <summary>
     /// Pseudo type for representing an empty block type.
     /// </summary>
@@ -48,6 +54,9 @@ static class BlockTypeExtensions
                 break;
             case BlockType.Float64:
                 valueType = WebAssemblyValueType.Float64;
+                break;
+            case BlockType.Vector128:
+                valueType = WebAssemblyValueType.Vector128;
                 break;
         }
 

@@ -1,10 +1,14 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
+using System.Runtime.Intrinsics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -55,6 +59,7 @@ static class SpecTestRunner
             { "spectest", "global_i64", new GlobalImport(() => 666L) },
             { "spectest", "global_f32", new GlobalImport(() => 666.0F) },
             { "spectest", "global_f64", new GlobalImport(() => 666.0) },
+            { "spectest", "global_v128", new GlobalImport(() => Vector128.Create(666u, 666u, 666u, 666u)) },
             { "spectest", "table", new FunctionTable(10, 20) }, // Table.alloc (TableType ({min = 10l; max = Some 20l}, FuncRefType))
             { "spectest", "memory", new MemoryImport(() => new UnmanagedMemory(1, 2)) }, // Memory.alloc (MemoryType {min = 1l; max = Some 2l})
         };
@@ -545,10 +550,13 @@ static class SpecTestRunner
     [JsonConverter(typeof(JsonStringEnumConverter<RawValueType>))]
     enum RawValueType
     {
+        i8 = WebAssemblyValueType.Vector128 - 1,
+        i16 = WebAssemblyValueType.Vector128 - 2,
         i32 = WebAssemblyValueType.Int32,
         i64 = WebAssemblyValueType.Int64,
         f32 = WebAssemblyValueType.Float32,
         f64 = WebAssemblyValueType.Float64,
+        v128 = WebAssemblyValueType.Vector128,
     }
 
     class TypeOnly
@@ -558,11 +566,13 @@ static class SpecTestRunner
         public override string ToString() => type.ToString();
     }
 
+    
     [JsonPolymorphic(TypeDiscriminatorPropertyName = nameof(type))]
     [JsonDerivedType(typeof(Int32Value), typeDiscriminator: nameof(RawValueType.i32))]
     [JsonDerivedType(typeof(Int64Value), typeDiscriminator: nameof(RawValueType.i64))]
     [JsonDerivedType(typeof(Float32Value), typeDiscriminator: nameof(RawValueType.f32))]
     [JsonDerivedType(typeof(Float64Value), typeDiscriminator: nameof(RawValueType.f64))]
+    [JsonDerivedType(typeof(Vector128Value), typeDiscriminator: nameof(RawValueType.v128))]
     abstract class TypedValue : TypeOnly
     {
         public abstract object BoxedValue { get; }
@@ -606,6 +616,68 @@ static class SpecTestRunner
         public override string ToString() => $"{type}: {BoxedValue}";
     }
 
+    [DebuggerDisplay("{CanonicalText}")]
+    class Vector128Value : TypedValue 
+    {
+        public RawValueType lane_type;
+        
+        public string[] value;
+
+        private static TUnsigned ParseToUnsigned<TUnsigned, TSigned>(string input)
+        where TUnsigned : IBinaryInteger<TUnsigned>
+        where TSigned : IBinaryInteger<TSigned>
+        {
+            try
+            {
+                var signedValue = TSigned.Parse(input, null); // Try parsing as signed
+                return TUnsigned.CreateTruncating(signedValue);
+            }
+            catch
+            {
+                return TUnsigned.Parse(input, null); // If signed parsing fails, try parsing as unsigned
+            }
+        }
+        
+        public virtual Vector128<uint> ActualValue
+        {
+            get
+            {
+                switch (lane_type)
+                {
+                    case RawValueType.i8:
+                        return Vector128.Create(value.Select(v => ParseToUnsigned<byte, sbyte>(v)).ToArray()).AsUInt32();
+                    case RawValueType.i16:
+                        return Vector128.Create(value.Select(v => ParseToUnsigned<ushort, short>(v)).ToArray()).AsUInt32();
+                    case RawValueType.i32:
+                        return Vector128.Create(value.Select(v => ParseToUnsigned<uint, int>(v)).ToArray());
+                    case RawValueType.i64:
+                        return Vector128.Create(value.Select(v => ParseToUnsigned<ulong, long>(v)).ToArray()).AsUInt32();
+                    case RawValueType.f32:
+                        return Vector128.Create(value.Select(v => BitConverter.Int32BitsToSingle(unchecked((int)ParseToUnsigned<uint, int>(v)))).ToArray()).AsUInt32();
+                    case RawValueType.f64:
+                        return Vector128.Create(value.Select(v => BitConverter.Int64BitsToDouble(unchecked((long)ParseToUnsigned<ulong, long>(v)))).ToArray()).AsUInt32();
+                    default:
+                        throw new InvalidOperationException();
+                }
+            }
+        }
+
+        public override object BoxedValue => ActualValue;
+
+        private string CanonicalText
+        {
+            get
+            {
+                var items = new uint[Vector128<uint>.Count];
+                Unsafe.WriteUnaligned(ref Unsafe.As<uint, byte>(ref items[0]), ActualValue);
+                return $"i32x4 {string.Join(' ', items.Select(i => $"0x{i.ToString("X8")}"))}";
+            }
+        }
+        
+        public override string ToString() => $"{type}: {ActualValue.ToString()}"; 
+    }
+
+    
     [JsonConverter(typeof(JsonStringEnumConverter<TestActionType>))]
     enum TestActionType
     {
