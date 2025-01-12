@@ -1,5 +1,3 @@
-using System.Reflection;
-
 namespace WebAssembly.Instructions;
 
 /// <summary>
@@ -7,14 +5,10 @@ namespace WebAssembly.Instructions;
 /// </summary>
 public class Int32X4Add : SimdValueTwoToOneCallInstruction
 {
-    private static readonly MethodInfo addMethod = FindVector128Method("Add", typeof(uint));
-
     /// <summary>
     /// Always <see cref="SimdOpCode.Int32X4Add"/>.
     /// </summary>
     public sealed override SimdOpCode SimdOpCode => SimdOpCode.Int32X4Add;
-
-    private protected override MethodInfo Vector128Method => addMethod;
 
     /// <summary>
     /// Creates a new  <see cref="Int32X4Add"/> instance.

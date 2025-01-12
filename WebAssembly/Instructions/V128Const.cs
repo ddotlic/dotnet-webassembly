@@ -1,5 +1,4 @@
 using System;
-using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 using System.Runtime.Intrinsics;
@@ -16,8 +15,6 @@ public class V128Const : SimdInstruction, IEquatable<V128Const>
     /// Gets or sets the value of the constant.
     /// </summary>
     public Vector128<uint> Value { get; set; }
-
-    private static readonly MethodInfo createMethod = FindVector128Method("Create", typeof(uint), 4, false);
 
     /// <summary>
     /// Creates a new <see cref="V128Const"/> instance.
@@ -72,7 +69,7 @@ public class V128Const : SimdInstruction, IEquatable<V128Const>
         context.Emit(OpCodes.Ldc_I4, unchecked((int)uints[1]));
         context.Emit(OpCodes.Ldc_I4, unchecked((int)uints[2]));
         context.Emit(OpCodes.Ldc_I4, unchecked((int)uints[3]));
-        context.Emit(OpCodes.Call, createMethod);
+        context.Emit(OpCodes.Call, this.SimdOpCode.ToMethodInfo());
     }
 
 }

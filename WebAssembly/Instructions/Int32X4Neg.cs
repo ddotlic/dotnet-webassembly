@@ -1,5 +1,3 @@
-using System.Reflection;
-
 namespace WebAssembly.Instructions;
 
 /// <summary>
@@ -7,14 +5,10 @@ namespace WebAssembly.Instructions;
 /// </summary>
 public class Int32X4Neg : SimdValueOneToOneCallInstruction
 {
-    private static readonly MethodInfo negMethod = FindVector128Method("Negate", typeof(uint), 1);
-
     /// <summary>
     /// Always <see cref="SimdOpCode.Int32X4Neg"/>.
     /// </summary>
     public sealed override SimdOpCode SimdOpCode => SimdOpCode.Int32X4Neg;
-
-    private protected override MethodInfo Vector128Method => negMethod;
 
     /// <summary>
     /// Creates a new  <see cref="Int32X4Neg"/> instance.

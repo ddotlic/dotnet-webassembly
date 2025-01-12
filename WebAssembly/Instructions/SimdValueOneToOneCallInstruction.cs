@@ -1,4 +1,3 @@
-using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.Intrinsics;
 using WebAssembly.Runtime.Compilation;
@@ -14,8 +13,6 @@ public abstract class SimdValueOneToOneCallInstruction : SimdInstruction
     {
     }
 
-    private protected abstract MethodInfo Vector128Method { get; }
-
     internal sealed override void Compile(CompilationContext context)
     {
         var stack = context.Stack;
@@ -24,6 +21,6 @@ public abstract class SimdValueOneToOneCallInstruction : SimdInstruction
         context.PopStackNoReturn(this.OpCode, WebAssemblyValueType.Vector128);
         stack.Push(WebAssemblyValueType.Vector128);
 
-        context.Emit(OpCodes.Call, Vector128Method);
+        context.Emit(OpCodes.Call, this.SimdOpCode.ToMethodInfo());
     }
 }
