@@ -5,7 +5,7 @@ namespace WebAssembly.Instructions;
 /// <summary>
 /// SIMD add 4 32-bit integers.
 /// </summary>
-public class Int32X4Add : SimdValueTwoToOneInstruction
+public class Int32X4Add : SimdValueTwoToOneCallInstruction
 {
     private static readonly MethodInfo addMethod = FindVector128Method("Add", typeof(uint));
 

@@ -5,7 +5,7 @@ namespace WebAssembly.Instructions;
 /// <summary>
 /// SIMD multiply 4 32-bit integers.
 /// </summary>
-public class Int32X4Mul : SimdValueTwoToOneInstruction
+public class Int32X4Mul : SimdValueTwoToOneCallInstruction
 {
     private static readonly MethodInfo mulMethod = FindVector128Method("Multiply", typeof(uint));
 

@@ -16,6 +16,30 @@ public enum SimdOpCode : byte
     V128Const = 0x0c,
 
     /// <summary>
+    /// SIMD negate 8 16-bit integers. 
+    /// </summary>
+    [OpCodeCharacteristics("i16x8.neg")]
+    Int16X8Neg = 0x81,
+
+    /// <summary>
+    /// SIMD add 8 16-bit integers. 
+    /// </summary>
+    [OpCodeCharacteristics("i16x8.add")]
+    Int16X8Add = 0x8e,
+
+    /// <summary>
+    /// SIMD subtract 8 16-bit integers. 
+    /// </summary>
+    [OpCodeCharacteristics("i16x8.sub")]
+    Int16X8Sub = 0x91,
+
+    /// <summary>
+    /// SIMD multiply 8 16-bit integers. 
+    /// </summary>
+    [OpCodeCharacteristics("i16x8.mul")]
+    Int16X8Mul = 0x95,
+
+    /// <summary>
     /// SIMD negate 4 32-bit integers. 
     /// </summary>
     [OpCodeCharacteristics("i32x4.neg")]

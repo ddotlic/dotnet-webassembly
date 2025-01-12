@@ -1,13 +1,11 @@
 using System.Reflection;
-using System.Reflection.Emit;
-using WebAssembly.Runtime.Compilation;
 
 namespace WebAssembly.Instructions;
 
 /// <summary>
 /// SIMD negate 4 32-bit integers.
 /// </summary>
-public class Int32X4Neg : SimdInstruction
+public class Int32X4Neg : SimdValueOneToOneCallInstruction
 {
     private static readonly MethodInfo negMethod = FindVector128Method("Negate", typeof(uint), 1);
 
@@ -16,16 +14,7 @@ public class Int32X4Neg : SimdInstruction
     /// </summary>
     public sealed override SimdOpCode SimdOpCode => SimdOpCode.Int32X4Neg;
 
-    internal sealed override void Compile(CompilationContext context)
-    {
-        var stack = context.Stack;
-
-        // TODO: Maybe add an override which accepts SimdOpCode too
-        context.PopStackNoReturn(this.OpCode, WebAssemblyValueType.Vector128);
-        stack.Push(WebAssemblyValueType.Vector128);
-
-        context.Emit(OpCodes.Call, negMethod);
-    }
+    private protected override MethodInfo Vector128Method => negMethod;
 
     /// <summary>
     /// Creates a new  <see cref="Int32X4Neg"/> instance.

@@ -5,7 +5,7 @@ namespace WebAssembly.Instructions;
 /// <summary>
 /// SIMD subtract 2 64-bit integers.
 /// </summary>
-public class Int64X2Sub : SimdValueTwoToOneInstruction
+public class Int64X2Sub : SimdValueTwoToOneCallInstruction
 {
     private static readonly MethodInfo subMethod = FindVector128Method("Subtract", typeof(ulong));
 
