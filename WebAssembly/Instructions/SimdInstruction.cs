@@ -16,12 +16,12 @@ public abstract class SimdInstruction : Instruction
     }
 
     /// <summary>
-    /// Always <see cref="OpCode.MiscellaneousOperationPrefix"/>.
+    /// Always <see cref="OpCode.SimdOperationPrefix"/>.
     /// </summary>
     public sealed override OpCode OpCode => OpCode.SimdOperationPrefix;
 
     /// <summary>
-    /// Gets the <see cref="MiscellaneousOpCode"/> associated with this instruction.
+    /// Gets the <see cref="SimdOpCode"/> associated with this instruction.
     /// </summary>
     public abstract SimdOpCode SimdOpCode { get; }
 
@@ -54,15 +54,16 @@ public abstract class SimdInstruction : Instruction
     /// <returns>A string representation of this instance.</returns>
     public sealed override string ToString() => this.SimdOpCode.ToNativeName();
 
-    private static protected MethodInfo FindVector128Method(string name, Type parType, int parsCount = 2)
+    private static protected MethodInfo FindVector128Method(string name, Type parType, int parsCount = 2, bool isGeneric = true)
     {
         var methods = typeof(Vector128).GetMethods(BindingFlags.Public | BindingFlags.Static);
         var genericMethodInfo = methods.Where(m => m.Name == name).First(m =>
         {
             var pars = m.GetParameters();
-            return pars.Length == parsCount && pars.All(p => p.ParameterType.IsGenericType &&
-                p.ParameterType.GetGenericTypeDefinition() == typeof(Vector128<>));
+            return pars.Length == parsCount && pars.All(p =>
+                isGeneric ? p.ParameterType.IsGenericType && p.ParameterType.GetGenericTypeDefinition() == typeof(Vector128<>)
+                    : p.ParameterType == parType);
         });
-        return genericMethodInfo.MakeGenericMethod(parType);
+        return isGeneric ? genericMethodInfo.MakeGenericMethod(parType) : genericMethodInfo;
     }
 }

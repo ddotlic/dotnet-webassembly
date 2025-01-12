@@ -14,7 +14,7 @@ public class Int32X4Neg : SimdInstruction
     /// <summary>
     /// Always <see cref="SimdOpCode.Int32X4Neg"/>.
     /// </summary>
-    public override SimdOpCode SimdOpCode => SimdOpCode.Int32X4Neg;
+    public sealed override SimdOpCode SimdOpCode => SimdOpCode.Int32X4Neg;
 
     internal sealed override void Compile(CompilationContext context)
     {

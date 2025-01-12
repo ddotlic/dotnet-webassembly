@@ -1109,8 +1109,9 @@ public static class Compile
             var kind = reader.ReadVarUInt32();
             if (kind is not 0 and not 2)
                 throw new ModuleLoadException($"Element segment kind of {kind} is not supported yet, {kind} found.", preKindOffset);
+
             var preIndexOffset = reader.Offset;
-            var index = reader.ReadVarUInt32();
+            var index = kind == 0 ? 0 : reader.ReadVarUInt32(); // NOTE: index implicitly 0 for kind 0.
             if (index != 0)
                 throw new ModuleLoadException($"Index value of anything other than 0 is not supported, {index} found.", preIndexOffset);
 

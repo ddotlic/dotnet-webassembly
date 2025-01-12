@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
@@ -11,36 +10,24 @@ namespace WebAssembly.Instructions;
 /// <summary>
 /// Produce the value of a v128.const.
 /// </summary>
-public class Vector128Constant : SimdInstruction, IEquatable<Vector128Constant>
+public class V128Const : SimdInstruction, IEquatable<V128Const>
 {
     /// <summary>
     /// Gets or sets the value of the constant.
     /// </summary>
     public Vector128<uint> Value { get; set; }
 
-    private static readonly MethodInfo createVector128Method;
-
-    static Vector128Constant()
-    {
-        var methods = typeof(Vector128).GetMethods(BindingFlags.Public | BindingFlags.Static);
-        createVector128Method = methods.Where(m => m.Name == "Create").First(m =>
-        {
-            var pars = m.GetParameters();
-            return pars.Length == 4 && pars.All(p => p.ParameterType == typeof(uint));
-        });
-    }
+    private static readonly MethodInfo createMethod = FindVector128Method("Create", typeof(uint), 4, false);
 
     /// <summary>
-    /// Creates a new <see cref="Vector128Constant"/> instance.
+    /// Creates a new <see cref="V128Const"/> instance.
     /// </summary>
-    public Vector128Constant()
+    public V128Const()
     {
     }
 
-    // TODO: add more constructors if needed
-
     /// <inheritdoc/>
-    public override bool Equals(object? obj) => this.Equals(obj as Vector128Constant);
+    public override bool Equals(object? obj) => this.Equals(obj as V128Const);
 
     /// <summary>
     /// Returns a simple hash code based on <see cref="Value"/> and the <see cref="OpCode"/> of the instruction.
@@ -54,18 +41,18 @@ public class Vector128Constant : SimdInstruction, IEquatable<Vector128Constant>
     /// </summary>
     /// <param name="other">The instruction to compare against.</param>
     /// <returns>True if they have the same type and value, otherwise false.</returns>
-    public bool Equals(Vector128Constant? other) => base.Equals(other) && this.Value.Equals(other.Value);
+    public bool Equals(V128Const? other) => base.Equals(other) && this.Value.Equals(other.Value);
 
     /// <summary>
-    /// Creates a new <see cref="Vector128Constant"/> instance from binary data.
+    /// Creates a new <see cref="V128Const"/> instance from binary data.
     /// </summary>
     /// <param name="reader">The source of binary data.</param>
-    internal Vector128Constant(Reader reader) => Value = Vector128.Create(reader.ReadBytes(16)).AsUInt32();
+    internal V128Const(Reader reader) => Value = Vector128.Create(reader.ReadBytes(16)).AsUInt32();
 
     /// <summary>
     /// Always <see cref="SimdOpCode.V128Const"/>.
     /// </summary>
-    public override SimdOpCode SimdOpCode => SimdOpCode.V128Const;
+    public sealed override SimdOpCode SimdOpCode => SimdOpCode.V128Const;
 
     internal sealed override void WriteTo(Writer writer)
     {
@@ -85,7 +72,7 @@ public class Vector128Constant : SimdInstruction, IEquatable<Vector128Constant>
         context.Emit(OpCodes.Ldc_I4, unchecked((int)uints[1]));
         context.Emit(OpCodes.Ldc_I4, unchecked((int)uints[2]));
         context.Emit(OpCodes.Ldc_I4, unchecked((int)uints[3]));
-        context.Emit(OpCodes.Call, createVector128Method);
+        context.Emit(OpCodes.Call, createMethod);
     }
 
 }

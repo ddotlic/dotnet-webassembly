@@ -87,7 +87,7 @@ public abstract class Instruction : IEquatable<Instruction>
                     switch (simdOpCode)
                     {
                         default: throw new ModuleLoadException($"Unexpected in initializer expression: SIMD opcode \"{simdOpCode}\".", simdOpCodeOffset);
-                        case SimdOpCode.V128Const: yield return new Vector128Constant(reader); break;
+                        case SimdOpCode.V128Const: yield return new V128Const(reader); break;
                     }
                     break;
                 case OpCode.End: yield return new End(); yield break;
@@ -338,7 +338,7 @@ public abstract class Instruction : IEquatable<Instruction>
                     switch (simdOpCode)
                     {
                         default: throw new ModuleLoadException($"Don't know how to parse SIMD opcode \"{simdOpCode}\".", simdOpCodeOffset);
-                        case SimdOpCode.V128Const: yield return new Vector128Constant(reader); break;
+                        case SimdOpCode.V128Const: yield return new V128Const(reader); break;
                         case SimdOpCode.Int32X4Add: yield return new Int32X4Add(); break;
                         case SimdOpCode.Int32X4Sub: yield return new Int32X4Sub(); break;
                         case SimdOpCode.Int32X4Mul: yield return new Int32X4Mul(); break;

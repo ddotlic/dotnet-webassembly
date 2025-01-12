@@ -12,7 +12,7 @@ public class Int32X4Mul : SimdValueTwoToOneInstruction
     /// <summary>
     /// Always <see cref="SimdOpCode.Int32X4Mul"/>.
     /// </summary>
-    public override SimdOpCode SimdOpCode => SimdOpCode.Int32X4Mul;
+    public sealed override SimdOpCode SimdOpCode => SimdOpCode.Int32X4Mul;
 
     private protected override MethodInfo Vector128Method => mulMethod;
 

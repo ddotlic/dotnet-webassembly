@@ -12,7 +12,7 @@ public class Int64X2Add : SimdValueTwoToOneInstruction
     /// <summary>
     /// Always <see cref="SimdOpCode.Int64X2Add"/>.
     /// </summary>
-    public override SimdOpCode SimdOpCode => SimdOpCode.Int64X2Add;
+    public sealed override SimdOpCode SimdOpCode => SimdOpCode.Int64X2Add;
 
     private protected override MethodInfo Vector128Method => addMethod;
 

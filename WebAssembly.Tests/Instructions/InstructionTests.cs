@@ -39,7 +39,7 @@ public class InstructionTests
     {
         var mismatch = string.Join(", ",
             InstructionTypes
-            .Where(x => !x.IsSubclassOf(typeof(MiscellaneousInstruction)))
+            .Where(x => !x.IsSubclassOf(typeof(MiscellaneousInstruction)) && !x.IsSubclassOf(typeof(SimdInstruction)))
             .Select(type => (
             OpCode: ((Instruction)type.GetConstructor(System.Type.EmptyTypes)!.Invoke(null)).OpCode.ToString(),
             TypeName: type.Name
@@ -49,6 +49,26 @@ public class InstructionTests
             );
 
         Assert.AreEqual("", mismatch, "Instructions whose name do not match their opcode found.");
+    }
+    
+    /// <summary>
+    /// Ensures that SIMD instruction names match their SIMD opcode name.
+    /// </summary>
+    [TestMethod]
+    public void Instruction_NameMatchesSimdOpcode()
+    {
+        var mismatch = string.Join(", ",
+            InstructionTypes
+                .Where(x => x.IsSubclassOf(typeof(SimdInstruction)))
+                .Select(type => (
+                SimdOpCode: ((SimdInstruction)type.GetConstructor(System.Type.EmptyTypes)!.Invoke(null)).SimdOpCode.ToString(),
+                TypeName: type.Name
+                ))
+                .Where(result => result.SimdOpCode != result.TypeName)
+                .Select(result => result.TypeName)
+            );
+
+        Assert.AreEqual("", mismatch, "Instructions whose name do not match their SIMD opcode found.");
     }
 
     /// <summary>
@@ -83,7 +103,11 @@ public class InstructionTests
             .Where(type => type.GetCustomAttribute<TestClassAttribute>() != null)
             .Select(type => type.Name.Substring(0, type.Name.Length - "Tests".Length));
 
-        var missing = string.Join(", ", InstructionTypes.Select(type => type.Name).Except(testClasses));
+        // NOTE: no need to test manually, we have the spec tests for that
+        var excludingSimdInstructions = InstructionTypes
+            .Where(type => !type.IsSubclassOf(typeof(SimdInstruction)));
+        
+        var missing = string.Join(", ", excludingSimdInstructions.Select(type => type.Name).Except(testClasses));
 
         Assert.AreEqual("", missing, "Instructions with no matching test class found.");
     }
