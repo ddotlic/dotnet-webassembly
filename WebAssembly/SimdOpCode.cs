@@ -40,10 +40,29 @@ public enum SimdOpCode : byte
     Int32X4Mul = 0xb5,
 
     /// <summary>
+    /// SIMD negate 2 64-bit integers.
+    /// </summary>
+    [OpCodeCharacteristics("i64x2.neg")]
+    Int64X2Neg = 0xc1,
+
+    /// <summary>
     /// SIMD add 2 64-bit integers.
     /// </summary>
     [OpCodeCharacteristics("i64x2.add")]
     Int64X2Add = 0xce,
+
+    /// <summary>
+    /// SIMD subtract 2 64-bit integers.
+    /// </summary>
+    [OpCodeCharacteristics("i64x2.sub")]
+    Int64X2Sub = 0xd1,
+
+    /// <summary>
+    /// SIMD multiply 2 64-bit integers.
+    /// </summary>
+    [OpCodeCharacteristics("i64x2.mul")]
+    Int64X2Mul = 0xd5,
+
 }
 
 static class SimdOpCodeExtensions

@@ -811,6 +811,15 @@ public class SpecTests
     }
     
     /// <summary>
+    /// Runs the simd_i64x2_arith tests.
+    /// </summary>
+    [TestMethod]
+    public void SpecTest_simd_i64x2_arith()
+    {
+        SpecTestRunner.Run(Path.Combine("Runtime", "SpecTestData", "simd_i64x2_arith"), "simd_i64x2_arith.json");
+    }
+    
+    /// <summary>
     /// Runs the skip-stack-guard-page tests.
     /// </summary>
     [TestMethod]

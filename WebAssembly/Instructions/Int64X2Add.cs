@@ -7,7 +7,7 @@ namespace WebAssembly.Instructions;
 /// </summary>
 public class Int64X2Add : SimdValueTwoToOneInstruction
 {
-    private static readonly MethodInfo addMethod = FindVector128Method("Add", typeof(uint));
+    private static readonly MethodInfo addMethod = FindVector128Method("Add", typeof(ulong));
 
     /// <summary>
     /// Always <see cref="SimdOpCode.Int64X2Add"/>.
