@@ -340,6 +340,9 @@ public abstract class Instruction : IEquatable<Instruction>
                         default: throw new ModuleLoadException($"Don't know how to parse SIMD opcode \"{simdOpCode}\".", simdOpCodeOffset);
                         case SimdOpCode.V128Const: yield return new Vector128Constant(reader); break;
                         case SimdOpCode.Int32X4Add: yield return new Int32X4Add(); break;
+                        case SimdOpCode.Int32X4Sub: yield return new Int32X4Sub(); break;
+                        case SimdOpCode.Int32X4Mul: yield return new Int32X4Mul(); break;
+                        case SimdOpCode.Int32X4Neg: yield return new Int32X4Neg(); break;
                         case SimdOpCode.Int64X2Add: yield return new Int64X2Add(); break;
                     }
                     break;

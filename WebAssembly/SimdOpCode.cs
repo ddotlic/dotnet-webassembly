@@ -16,10 +16,28 @@ public enum SimdOpCode : byte
     V128Const = 0x0c,
 
     /// <summary>
+    /// SIMD negate 4 32-bit integers. 
+    /// </summary>
+    [OpCodeCharacteristics("i32x4.neg")]
+    Int32X4Neg = 0xa1,
+
+    /// <summary>
     /// SIMD add 4 32-bit integers. 
     /// </summary>
     [OpCodeCharacteristics("i32x4.add")]
     Int32X4Add = 0xae,
+
+    /// <summary>
+    /// SIMD subtract 4 32-bit integers. 
+    /// </summary>
+    [OpCodeCharacteristics("i32x4.sub")]
+    Int32X4Sub = 0xb1,
+
+    /// <summary>
+    /// SIMD multiply 4 32-bit integers. 
+    /// </summary>
+    [OpCodeCharacteristics("i32x4.mul")]
+    Int32X4Mul = 0xb5,
 
     /// <summary>
     /// SIMD add 2 64-bit integers.

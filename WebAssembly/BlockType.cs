@@ -69,6 +69,7 @@ static class BlockTypeExtensions
         BlockType.Int64 => "i64",
         BlockType.Float32 => "f32",
         BlockType.Float64 => "f64",
+        BlockType.Vector128 => "v128",
         BlockType.Empty => "",
         _ => "?",
     };

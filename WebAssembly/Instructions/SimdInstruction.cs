@@ -1,3 +1,8 @@
+using System;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.Intrinsics;
+
 namespace WebAssembly.Instructions;
 
 
@@ -48,4 +53,16 @@ public abstract class SimdInstruction : Instruction
     /// </summary>
     /// <returns>A string representation of this instance.</returns>
     public sealed override string ToString() => this.SimdOpCode.ToNativeName();
+
+    private static protected MethodInfo FindVector128Method(string name, Type parType, int parsCount = 2)
+    {
+        var methods = typeof(Vector128).GetMethods(BindingFlags.Public | BindingFlags.Static);
+        var genericMethodInfo = methods.Where(m => m.Name == name).First(m =>
+        {
+            var pars = m.GetParameters();
+            return pars.Length == parsCount && pars.All(p => p.ParameterType.IsGenericType &&
+                p.ParameterType.GetGenericTypeDefinition() == typeof(Vector128<>));
+        });
+        return genericMethodInfo.MakeGenericMethod(parType);
+    }
 }

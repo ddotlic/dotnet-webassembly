@@ -14,18 +14,15 @@ public abstract class SimdValueTwoToOneInstruction : SimdInstruction
     {
     }
 
-    private protected abstract WebAssemblyValueType ValueType { get; }
-
     private protected abstract MethodInfo Vector128Method { get; }
 
     internal sealed override void Compile(CompilationContext context)
     {
         var stack = context.Stack;
 
-        // TODO: is OpCode correct? SIMD instructions consist of a prefix (OpCode)
-        //  and the actual operation (SimdOpCode)
-        context.PopStackNoReturn(this.OpCode, this.ValueType, this.ValueType);
-        stack.Push(this.ValueType);
+        // TODO: Maybe add an override which accepts SimdOpCode too
+        context.PopStackNoReturn(this.OpCode, WebAssemblyValueType.Vector128, WebAssemblyValueType.Vector128);
+        stack.Push(WebAssemblyValueType.Vector128);
 
         context.Emit(OpCodes.Call, Vector128Method);
     }
