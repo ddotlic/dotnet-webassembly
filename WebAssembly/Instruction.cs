@@ -339,18 +339,21 @@ public abstract class Instruction : IEquatable<Instruction>
                     {
                         default: throw new ModuleLoadException($"Don't know how to parse SIMD opcode \"{simdOpCode}\".", simdOpCodeOffset);
                         case SimdOpCode.V128Const: yield return new V128Const(reader); break;
+                        case SimdOpCode.Int8X16Neg: yield return new Int8X16Neg(); break;
+                        case SimdOpCode.Int8X16Add: yield return new Int8X16Add(); break;
+                        case SimdOpCode.Int8X16Sub: yield return new Int8X16Sub(); break;
+                        case SimdOpCode.Int16X8Neg: yield return new Int16X8Neg(); break;
                         case SimdOpCode.Int16X8Add: yield return new Int16X8Add(); break;
                         case SimdOpCode.Int16X8Sub: yield return new Int16X8Sub(); break;
                         case SimdOpCode.Int16X8Mul: yield return new Int16X8Mul(); break;
-                        case SimdOpCode.Int16X8Neg: yield return new Int16X8Neg(); break;
+                        case SimdOpCode.Int32X4Neg: yield return new Int32X4Neg(); break;
                         case SimdOpCode.Int32X4Add: yield return new Int32X4Add(); break;
                         case SimdOpCode.Int32X4Sub: yield return new Int32X4Sub(); break;
                         case SimdOpCode.Int32X4Mul: yield return new Int32X4Mul(); break;
-                        case SimdOpCode.Int32X4Neg: yield return new Int32X4Neg(); break;
+                        case SimdOpCode.Int64X2Neg: yield return new Int64X2Neg(); break;
                         case SimdOpCode.Int64X2Add: yield return new Int64X2Add(); break;
                         case SimdOpCode.Int64X2Sub: yield return new Int64X2Sub(); break;
                         case SimdOpCode.Int64X2Mul: yield return new Int64X2Mul(); break;
-                        case SimdOpCode.Int64X2Neg: yield return new Int64X2Neg(); break;
                     }
                     break;
             }

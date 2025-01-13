@@ -19,6 +19,27 @@ public enum SimdOpCode : byte
     V128Const = 0x0c,
 
     /// <summary>
+    /// SIMD negate 16 8-bit integers.
+    /// </summary>
+    [OpCodeCharacteristics("i8x16.neg")]
+    [SimdInstructionGenerate<SimdValueOneToOneCallInstruction>()]
+    Int8X16Neg = 0x61,
+
+    /// <summary>
+    /// SIMD add 16 8-bit integers.
+    /// </summary>
+    [OpCodeCharacteristics("i8x16.add")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    Int8X16Add = 0x6e,
+
+    /// <summary>
+    /// SIMD subtract 16 8-bit integers.
+    /// </summary>
+    [OpCodeCharacteristics("i8x16.sub")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    Int8X16Sub = 0x71,
+
+    /// <summary>
     /// SIMD negate 8 16-bit integers. 
     /// </summary>
     [OpCodeCharacteristics("i16x8.neg")]
@@ -150,6 +171,7 @@ static class SimdOpCodeExtensions
 
     private static readonly Dictionary<string, Type> laneTypeToType = new() {
         { "v128", typeof(uint) },
+        { "i8x16", typeof(byte) },
         { "i16x8", typeof(ushort) },
         { "i32x4", typeof(uint) },
         { "i64x2", typeof(ulong) },

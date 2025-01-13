@@ -802,6 +802,15 @@ public class SpecTests
     }
     
     /// <summary>
+    /// Runs the simd_i8x16_arith tests.
+    /// </summary>
+    [TestMethod]
+    public void SpecTest_simd_i8x16_arith()
+    {
+        SpecTestRunner.Run(Path.Combine("Runtime", "SpecTestData", "simd_i8x16_arith"), "simd_i8x16_arith.json");
+    }
+    
+    /// <summary>
     /// Runs the simd_i16x8_arith tests.
     /// </summary>
     [TestMethod]
