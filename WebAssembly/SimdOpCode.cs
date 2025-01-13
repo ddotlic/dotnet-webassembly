@@ -123,6 +123,47 @@ public enum SimdOpCode : byte
     [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
     Int64X2Mul = 0xd5,
 
+    /// <summary>
+    /// SIMD negate 4 32-bit floats.
+    /// </summary>
+    [OpCodeCharacteristics("f32x4.neg")]
+    [SimdInstructionGenerate<SimdValueOneToOneCallInstruction>()]
+    Float32X4Neg = 0xe1,
+
+    /// <summary>
+    /// SIMD square root 4 32-bit floats.
+    /// </summary>
+    [OpCodeCharacteristics("f32x4.sqrt")]
+    [SimdInstructionGenerate<SimdValueOneToOneCallInstruction>()]
+    Float32X4Sqrt = 0xe3,
+
+    /// <summary>
+    /// SIMD add 4 32-bit floats.
+    /// </summary>
+    [OpCodeCharacteristics("f32x4.add")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    Float32X4Add = 0xe4,
+
+    /// <summary>
+    /// SIMD subtract 4 32-bit floats.
+    /// </summary>
+    [OpCodeCharacteristics("f32x4.sub")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    Float32X4Sub = 0xe5,
+
+    /// <summary>
+    /// SIMD multiply 4 32-bit floats.
+    /// </summary>
+    [OpCodeCharacteristics("f32x4.mul")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    Float32X4Mul = 0xe6,
+
+    /// <summary>
+    /// SIMD divide 4 32-bit floats.
+    /// </summary>
+    [OpCodeCharacteristics("f32x4.div")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    Float32X4Div = 0xe7,
 }
 
 static class SimdOpCodeExtensions
@@ -167,6 +208,8 @@ static class SimdOpCodeExtensions
         { "add", ("Add", 2, true) },
         { "sub", ("Subtract", 2, true) },
         { "mul", ("Multiply", 2, true) },
+        { "sqrt", ("Sqrt", 1, true) },
+        { "div", ("Divide", 2, true) },
     };
 
     private static readonly Dictionary<string, Type> laneTypeToType = new() {
@@ -175,6 +218,7 @@ static class SimdOpCodeExtensions
         { "i16x8", typeof(ushort) },
         { "i32x4", typeof(uint) },
         { "i64x2", typeof(ulong) },
+        { "f32x4", typeof(float) },
     };
 
     private static readonly RegeneratingWeakReference<Dictionary<SimdOpCode, MethodInfo>> opCodeMethodInfoByOpCode =

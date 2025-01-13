@@ -838,6 +838,15 @@ public class SpecTests
     }
     
     /// <summary>
+    /// Runs the simd_f32x4_arith tests.
+    /// </summary>
+    [TestMethod]
+    public void SpecTest_simd_f32x4_arith()
+    {
+        SpecTestRunner.Run(Path.Combine("Runtime", "SpecTestData", "simd_f32x4_arith"), "simd_f32x4_arith.json");
+    }
+    
+    /// <summary>
     /// Runs the skip-stack-guard-page tests.
     /// </summary>
     [TestMethod]

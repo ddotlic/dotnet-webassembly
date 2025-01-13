@@ -623,10 +623,15 @@ static class SpecTestRunner
         
         public string[] value;
 
-        private static TUnsigned ParseToUnsigned<TUnsigned, TSigned>(string input)
+        private static TUnsigned ParseToUnsigned<TUnsigned, TSigned>(string input, bool acceptNaN = false, TUnsigned canonicalNaN = default!, TUnsigned arithmeticNaN = default!)
         where TUnsigned : IBinaryInteger<TUnsigned>
         where TSigned : IBinaryInteger<TSigned>
         {
+            if (input == "nan:canonical")
+                return acceptNaN ? canonicalNaN : throw new OverflowException("Canonical NaN not expected here.");
+            else if (input == "nan:arithmetic")
+                return acceptNaN ? arithmeticNaN : throw new OverflowException("Arithmetic NaN not expected here.");
+
             try
             {
                 var signedValue = TSigned.Parse(input, null); // Try parsing as signed
@@ -653,9 +658,9 @@ static class SpecTestRunner
                     case RawValueType.i64:
                         return Vector128.Create(value.Select(v => ParseToUnsigned<ulong, long>(v)).ToArray()).AsUInt32();
                     case RawValueType.f32:
-                        return Vector128.Create(value.Select(v => BitConverter.Int32BitsToSingle(unchecked((int)ParseToUnsigned<uint, int>(v)))).ToArray()).AsUInt32();
+                        return Vector128.Create(value.Select(v => BitConverter.Int32BitsToSingle(unchecked((int)ParseToUnsigned<uint, int>(v, true, 0x7fc00000, 0x7fc00001)))).ToArray()).AsUInt32();
                     case RawValueType.f64:
-                        return Vector128.Create(value.Select(v => BitConverter.Int64BitsToDouble(unchecked((long)ParseToUnsigned<ulong, long>(v)))).ToArray()).AsUInt32();
+                        return Vector128.Create(value.Select(v => BitConverter.Int64BitsToDouble(unchecked((long)ParseToUnsigned<ulong, long>(v, true, 0x7ff8000000000000, 0x7ff8000000000001)))).ToArray()).AsUInt32();
                     default:
                         throw new InvalidOperationException();
                 }
