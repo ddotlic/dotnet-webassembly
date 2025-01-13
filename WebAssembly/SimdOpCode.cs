@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Intrinsics;
+using WebAssembly.Instructions;
 
 namespace WebAssembly;
 
@@ -21,72 +22,84 @@ public enum SimdOpCode : byte
     /// SIMD negate 8 16-bit integers. 
     /// </summary>
     [OpCodeCharacteristics("i16x8.neg")]
+    [SimdInstructionGenerate<SimdValueOneToOneCallInstruction>()]
     Int16X8Neg = 0x81,
 
     /// <summary>
     /// SIMD add 8 16-bit integers. 
     /// </summary>
     [OpCodeCharacteristics("i16x8.add")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
     Int16X8Add = 0x8e,
 
     /// <summary>
     /// SIMD subtract 8 16-bit integers. 
     /// </summary>
     [OpCodeCharacteristics("i16x8.sub")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
     Int16X8Sub = 0x91,
 
     /// <summary>
     /// SIMD multiply 8 16-bit integers. 
     /// </summary>
     [OpCodeCharacteristics("i16x8.mul")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
     Int16X8Mul = 0x95,
 
     /// <summary>
     /// SIMD negate 4 32-bit integers. 
     /// </summary>
     [OpCodeCharacteristics("i32x4.neg")]
+    [SimdInstructionGenerate<SimdValueOneToOneCallInstruction>()]
     Int32X4Neg = 0xa1,
 
     /// <summary>
     /// SIMD add 4 32-bit integers. 
     /// </summary>
     [OpCodeCharacteristics("i32x4.add")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
     Int32X4Add = 0xae,
 
     /// <summary>
     /// SIMD subtract 4 32-bit integers. 
     /// </summary>
     [OpCodeCharacteristics("i32x4.sub")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
     Int32X4Sub = 0xb1,
 
     /// <summary>
     /// SIMD multiply 4 32-bit integers. 
     /// </summary>
     [OpCodeCharacteristics("i32x4.mul")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
     Int32X4Mul = 0xb5,
 
     /// <summary>
     /// SIMD negate 2 64-bit integers.
     /// </summary>
     [OpCodeCharacteristics("i64x2.neg")]
+    [SimdInstructionGenerate<SimdValueOneToOneCallInstruction>()]
     Int64X2Neg = 0xc1,
 
     /// <summary>
     /// SIMD add 2 64-bit integers.
     /// </summary>
     [OpCodeCharacteristics("i64x2.add")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
     Int64X2Add = 0xce,
 
     /// <summary>
     /// SIMD subtract 2 64-bit integers.
     /// </summary>
     [OpCodeCharacteristics("i64x2.sub")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
     Int64X2Sub = 0xd1,
 
     /// <summary>
     /// SIMD multiply 2 64-bit integers.
     /// </summary>
     [OpCodeCharacteristics("i64x2.mul")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
     Int64X2Mul = 0xd5,
 
 }

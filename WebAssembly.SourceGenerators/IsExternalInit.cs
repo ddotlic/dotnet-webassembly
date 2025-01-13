@@ -1,0 +1,13 @@
+// NOTE: only here because source generators must be .NET Standard 2.0 compliant
+// but this type was added in .NET 5; it's needed so we can use init properties
+
+namespace System.Runtime.CompilerServices;
+
+using System.ComponentModel;
+/// <summary>
+/// Reserved to be used by the compiler for tracking metadata.
+/// This class should not be used by developers in source code.
+/// </summary>
+[EditorBrowsable(EditorBrowsableState.Never)]
+internal static class IsExternalInit {
+}

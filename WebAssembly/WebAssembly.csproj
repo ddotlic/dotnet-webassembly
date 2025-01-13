@@ -32,6 +32,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\WebAssembly.SourceGenerators\WebAssembly.SourceGenerators.csproj" 
+                      OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+  </ItemGroup>
+  
+  <ItemGroup>
     <None Include="../LICENSE" Pack="true" PackagePath="LICENSE" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
   </ItemGroup>
