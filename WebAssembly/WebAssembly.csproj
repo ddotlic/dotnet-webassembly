@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <!-- .NET Standard 2.0 is very old but (so far) can still be built by the newest .NET SDK, so it makes a great baseline. -->
-    <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
+    <!-- Due to the SIMD support, .NET 9.0 is required; even 8.0 has bugs in the implementation -->
+    <TargetFramework>net9.0</TargetFramework>
     <Title>WebAssembly for .NET</Title>
     <AssemblyTitle>WebAssembly for .NET</AssemblyTitle>
     <Authors>Ryan Lamansky</Authors>
@@ -13,7 +13,7 @@
     <PackageProjectUrl>https://github.com/RyanLamansky/dotnet-webassembly</PackageProjectUrl>
     <Copyright>Copyright © Ryan Lamansky. All rights reserved.</Copyright>
     <PackageTags>WebAssembly WASM JIT</PackageTags>
-    <LangVersion>13.0</LangVersion>
+    <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <RepositoryUrl>https://github.com/RyanLamansky/dotnet-webassembly</RepositoryUrl>
     <RepositoryType>git</RepositoryType>

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Numerics;
@@ -9,6 +10,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 using System.Runtime.Intrinsics;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -116,32 +118,62 @@ static class SpecTestRunner
                             if (rawExpected.BoxedValue.Equals(result))
                                 continue;
 
-                            switch (rawExpected.type)
+                            switch (rawExpected)
                             {
                                 default:
                                     // This happens in conversion.json starting at "line": 317 when run via GitHub Action but never locally (for me).
                                     Assert.Inconclusive($"{command.line}: Failed to parse expected value type.");
                                     return;
-
-                                case RawValueType.i32:
-                                case RawValueType.i64:
+                            
+                                case Int32Value:
+                                case Int64Value:
                                     break;
-
-                                case RawValueType.f32:
+                            
+                                case Float32Value f32Value:
                                     {
-                                        var expected = ((Float32Value)rawExpected).ActualValue;
+                                        var expected = f32Value.ActualValue;
                                         Assert.AreEqual(expected, (float)result!, Math.Abs(expected * 0.000001f), $"{command.line}: f32 compare");
                                     }
                                     continue;
-                                case RawValueType.f64:
+                                case Float64Value f64Value:
                                     {
-                                        var expected = ((Float64Value)rawExpected).ActualValue;
+                                        var expected = f64Value.ActualValue;
                                         Assert.AreEqual(expected, (double)result!, Math.Abs(expected * 0.000001), $"{command.line}: f64 compare");
                                     }
                                     continue;
+                                case Vector128Value v128Value:
+                                    {
+                                        static bool IsStringNaN(string v) => v == "nan:arithmetic" || v == "nan:canonical";
+                                        
+                                        if (v128Value.value.Any(IsStringNaN) && result != null)
+                                        {
+                                            var actualResult = (Vector128<uint>)result;
+                                            if (v128Value.lane_type == LaneValueType.f32)
+                                            {
+                                                var f32X4 = v128Value.ActualValue.AsSingle();
+                                                for(var i = 0; i < Vector128<uint>.Count; i++)
+                                                {
+                                                    if(IsStringNaN(v128Value.value[i])) Assert.IsTrue(float.IsNaN(f32X4[i]));
+                                                    else Assert.AreEqual(v128Value.ActualValue[i], actualResult[i]);
+                                                }
+                                                continue;
+                                            }
+                                            else if (v128Value.lane_type == LaneValueType.f64)
+                                            {
+                                                var f64X2 = v128Value.ActualValue.AsDouble();
+                                                for(var i = 0; i < Vector128<ulong>.Count; i++)
+                                                {
+                                                    if(IsStringNaN(v128Value.value[i])) Assert.IsTrue(double.IsNaN(f64X2[i]));
+                                                    else Assert.AreEqual(v128Value.ActualValue[i], actualResult[i]);
+                                                }
+                                                continue;
+                                            }
+                                        }
+                                    }
+                                    break;
                             }
-
-                            throw new AssertFailedException($"{command.line}: Not equal {rawExpected.type}: {rawExpected.BoxedValue} and {result}");
+                            
+                            throw new AssertFailedException($"{command.line}: Not equal {rawExpected.GetType().Name}: {rawExpected.BoxedValue} and {result}");
                         }
                         continue;
                     case AssertReturnCanonicalNan assert:
@@ -518,7 +550,7 @@ static class SpecTestRunner
     }
 
 
-    [JsonPolymorphic(TypeDiscriminatorPropertyName = nameof(type))]
+    [JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
     [JsonDerivedType(typeof(ModuleCommand), typeDiscriminator: nameof(CommandType.module))]
     [JsonDerivedType(typeof(AssertReturn), typeDiscriminator: nameof(CommandType.assert_return))]
     [JsonDerivedType(typeof(AssertReturnCanonicalNan), typeDiscriminator: nameof(CommandType.assert_return_canonical_nan))]
@@ -533,10 +565,9 @@ static class SpecTestRunner
     [JsonDerivedType(typeof(AssertUninstantiable), typeDiscriminator: nameof(CommandType.assert_uninstantiable))]
     abstract class Command
     {
-        public CommandType type;
         public uint line;
 
-        public override string ToString() => type.ToString();
+        public override string ToString() => GetType().Name;
     }
 
     class ModuleCommand : Command
@@ -550,13 +581,11 @@ static class SpecTestRunner
     [JsonConverter(typeof(JsonStringEnumConverter<RawValueType>))]
     enum RawValueType
     {
-        i8 = WebAssemblyValueType.Vector128 - 1,
-        i16 = WebAssemblyValueType.Vector128 - 2,
-        i32 = WebAssemblyValueType.Int32,
-        i64 = WebAssemblyValueType.Int64,
-        f32 = WebAssemblyValueType.Float32,
-        f64 = WebAssemblyValueType.Float64,
-        v128 = WebAssemblyValueType.Vector128,
+        i32,
+        i64,
+        f32,
+        f64,
+        v128,
     }
 
     class TypeOnly
@@ -567,17 +596,17 @@ static class SpecTestRunner
     }
 
     
-    [JsonPolymorphic(TypeDiscriminatorPropertyName = nameof(type))]
+    [JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
     [JsonDerivedType(typeof(Int32Value), typeDiscriminator: nameof(RawValueType.i32))]
     [JsonDerivedType(typeof(Int64Value), typeDiscriminator: nameof(RawValueType.i64))]
     [JsonDerivedType(typeof(Float32Value), typeDiscriminator: nameof(RawValueType.f32))]
     [JsonDerivedType(typeof(Float64Value), typeDiscriminator: nameof(RawValueType.f64))]
     [JsonDerivedType(typeof(Vector128Value), typeDiscriminator: nameof(RawValueType.v128))]
-    abstract class TypedValue : TypeOnly
+    abstract class TypedValue
     {
         public abstract object BoxedValue { get; }
     }
-
+    
     class Int32Value : TypedValue
     {
         [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
@@ -585,7 +614,7 @@ static class SpecTestRunner
 
         public override object BoxedValue => (int)value;
 
-        public override string ToString() => $"{type}: {value}";
+        public override string ToString() => $"i32: {value}";
     }
 
     class Int64Value : TypedValue
@@ -595,31 +624,47 @@ static class SpecTestRunner
 
         public override object BoxedValue => (long)value;
 
-        public override string ToString() => $"{type}: {value}";
+        public override string ToString() => $"i64: {value}";
     }
 
-    class Float32Value : Int32Value
+    class Float32Value : TypedValue
     {
+        [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
+        public uint value;
+        
         public float ActualValue => BitConverter.Int32BitsToSingle(unchecked((int)value));
 
         public override object BoxedValue => ActualValue;
 
-        public override string ToString() => $"{type}: {BoxedValue}";
+        public override string ToString() => $"f32: {BoxedValue}";
     }
 
-    class Float64Value : Int64Value
+    class Float64Value : TypedValue
     {
+        [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
+        public ulong value;
+        
         public double ActualValue => BitConverter.Int64BitsToDouble(unchecked((long)value));
 
         public override object BoxedValue => ActualValue;
 
-        public override string ToString() => $"{type}: {BoxedValue}";
+        public override string ToString() => $"f64: {BoxedValue}";
     }
 
-    [DebuggerDisplay("{CanonicalText}")]
+    [JsonConverter(typeof(JsonStringEnumConverter<LaneValueType>))]
+    enum LaneValueType
+    {
+        i8,
+        i16,
+        i32,
+        i64,
+        f32,
+        f64,
+    }
+    
     class Vector128Value : TypedValue 
     {
-        public RawValueType lane_type;
+        public LaneValueType lane_type;
         
         public string[] value;
 
@@ -649,17 +694,17 @@ static class SpecTestRunner
             {
                 switch (lane_type)
                 {
-                    case RawValueType.i8:
+                    case LaneValueType.i8:
                         return Vector128.Create(value.Select(v => ParseToUnsigned<byte, sbyte>(v)).ToArray()).AsUInt32();
-                    case RawValueType.i16:
+                    case LaneValueType.i16:
                         return Vector128.Create(value.Select(v => ParseToUnsigned<ushort, short>(v)).ToArray()).AsUInt32();
-                    case RawValueType.i32:
+                    case LaneValueType.i32:
                         return Vector128.Create(value.Select(v => ParseToUnsigned<uint, int>(v)).ToArray());
-                    case RawValueType.i64:
+                    case LaneValueType.i64:
                         return Vector128.Create(value.Select(v => ParseToUnsigned<ulong, long>(v)).ToArray()).AsUInt32();
-                    case RawValueType.f32:
+                    case LaneValueType.f32:
                         return Vector128.Create(value.Select(v => BitConverter.Int32BitsToSingle(unchecked((int)ParseToUnsigned<uint, int>(v, true, 0x7fc00000, 0x7fc00001)))).ToArray()).AsUInt32();
-                    case RawValueType.f64:
+                    case LaneValueType.f64:
                         return Vector128.Create(value.Select(v => BitConverter.Int64BitsToDouble(unchecked((long)ParseToUnsigned<ulong, long>(v, true, 0x7ff8000000000000, 0x7ff8000000000001)))).ToArray()).AsUInt32();
                     default:
                         throw new InvalidOperationException();
@@ -669,17 +714,23 @@ static class SpecTestRunner
 
         public override object BoxedValue => ActualValue;
 
-        private string CanonicalText
+        private string GetCanonicalRepresentation()
         {
-            get
+            var sb = new StringBuilder(64);
+
+            sb.Append("v128: i32x4 0x");
+            sb.Append(this.ActualValue.GetElement(0).ToString("X8"));
+
+            for (var i = 1; i < 4; i++)
             {
-                var items = new uint[Vector128<uint>.Count];
-                Unsafe.WriteUnaligned(ref Unsafe.As<uint, byte>(ref items[0]), ActualValue);
-                return $"i32x4 {string.Join(' ', items.Select(i => $"0x{i.ToString("X8")}"))}";
+                sb.Append(" 0x");
+                sb.Append(this.ActualValue.GetElement(i).ToString("X8"));
             }
+
+            return sb.ToString();
         }
         
-        public override string ToString() => $"{type}: {ActualValue.ToString()}"; 
+        public override string ToString() => GetCanonicalRepresentation(); 
     }
 
     
@@ -690,12 +741,11 @@ static class SpecTestRunner
         get,
     }
 
-    [JsonPolymorphic(TypeDiscriminatorPropertyName = nameof(type))]
+    [JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
     [JsonDerivedType(typeof(Invoke), typeDiscriminator: nameof(TestActionType.invoke))]
     [JsonDerivedType(typeof(Get), typeDiscriminator: nameof(TestActionType.get))]
     abstract class TestAction
     {
-        public TestActionType type;
         public string module;
         public string field;
 

@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>    
-    <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
-    <LangVersion>13.0</LangVersion>
+    <TargetFramework>net9.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
     <RootNamespace>WebAssembly</RootNamespace>
     <Nullable>enable</Nullable>
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
@@ -28,6 +28,35 @@
     <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
   </ItemGroup>
 
+  <PropertyGroup>
+    <!-- Define the command to generate JSON files from WAST -->
+<!--    <WastToJsonCommand>path\to\your\command &#45;&#45;input %(FullPath)</WastToJsonCommand>-->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Collect all WAST files -->
+    <WastFiles Include="Runtime\SpecTestData\**\*.wast" />
+  </ItemGroup>
+
+  <Target Name="GenerateJsonFiles" BeforeTargets="PrepareForBuild">
+    
+    <ItemGroup>
+      <!-- Create a new group mapping each WAST file to its expected JSON file -->
+      <WastWithExpectedJson Include="@(WastFiles)">
+        <OutputDirectory>/%(Directory)</OutputDirectory>
+        <JsonPath>/%(Directory)%(Filename).json</JsonPath>
+      </WastWithExpectedJson>
+    </ItemGroup>
+    
+    <ItemGroup>
+      <!-- Detect missing JSON files -->
+      <MissingJsonFiles Include="@(WastWithExpectedJson)" Condition="!Exists('%(JsonPath)')" />
+    </ItemGroup>
+
+    <Exec Command="wasm-tools json-from-wast --output %(MissingJsonFiles.JsonPath) --wasm-dir %(MissingJsonFiles.OutputDirectory) --pretty %(MissingJsonFiles.FullPath)"
+          Condition="'@(MissingJsonFiles)' != ''" />
+  </Target>
+  
   <ItemGroup>
     <None Update="Runtime\SpecTestData\**\*.wasm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
