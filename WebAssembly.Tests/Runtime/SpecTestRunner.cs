@@ -147,24 +147,27 @@ static class SpecTestRunner
                                         
                                         if (v128Value.value.Any(IsStringNaN) && result != null)
                                         {
-                                            var actualResult = (Vector128<uint>)result;
                                             if (v128Value.lane_type == LaneValueType.f32)
                                             {
-                                                var f32X4 = v128Value.ActualValue.AsSingle();
+                                                var actualI32X4 = (Vector128<uint>)result;
+                                                var expectedF32X4 = v128Value.ActualValue.AsSingle();
+                                                var expectedI32X4 = v128Value.ActualValue;
                                                 for(var i = 0; i < Vector128<uint>.Count; i++)
                                                 {
-                                                    if(IsStringNaN(v128Value.value[i])) Assert.IsTrue(float.IsNaN(f32X4[i]));
-                                                    else Assert.AreEqual(v128Value.ActualValue[i], actualResult[i]);
+                                                    if(IsStringNaN(v128Value.value[i])) Assert.IsTrue(float.IsNaN(expectedF32X4[i]));
+                                                    else Assert.AreEqual(expectedI32X4[i], actualI32X4[i]);
                                                 }
                                                 continue;
                                             }
                                             else if (v128Value.lane_type == LaneValueType.f64)
                                             {
-                                                var f64X2 = v128Value.ActualValue.AsDouble();
+                                                var actualI64X2 = ((Vector128<uint>)result).AsUInt64();
+                                                var expectedF64X2 = v128Value.ActualValue.AsDouble();
+                                                var expectedI64X2 = v128Value.ActualValue.AsUInt64();
                                                 for(var i = 0; i < Vector128<ulong>.Count; i++)
                                                 {
-                                                    if(IsStringNaN(v128Value.value[i])) Assert.IsTrue(double.IsNaN(f64X2[i]));
-                                                    else Assert.AreEqual(v128Value.ActualValue[i], actualResult[i]);
+                                                    if(IsStringNaN(v128Value.value[i])) Assert.IsTrue(double.IsNaN(expectedF64X2[i]));
+                                                    else Assert.AreEqual(expectedI64X2[i], actualI64X2[i]);
                                                 }
                                                 continue;
                                             }

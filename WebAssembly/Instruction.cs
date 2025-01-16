@@ -360,6 +360,12 @@ public abstract class Instruction : IEquatable<Instruction>
                         case SimdOpCode.Float32X4Sub: yield return new Float32X4Sub(); break;
                         case SimdOpCode.Float32X4Mul: yield return new Float32X4Mul(); break;
                         case SimdOpCode.Float32X4Div: yield return new Float32X4Div(); break;
+                        case SimdOpCode.Float64X2Neg: yield return new Float64X2Neg(); break;
+                        case SimdOpCode.Float64X2Sqrt: yield return new Float64X2Sqrt(); break;
+                        case SimdOpCode.Float64X2Add: yield return new Float64X2Add(); break;
+                        case SimdOpCode.Float64X2Sub: yield return new Float64X2Sub(); break;
+                        case SimdOpCode.Float64X2Mul: yield return new Float64X2Mul(); break;
+                        case SimdOpCode.Float64X2Div: yield return new Float64X2Div(); break;
                     }
                     break;
             }

@@ -25,36 +25,45 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\WebAssembly.SourceGenerators\WebAssembly.SourceGenerators.csproj"
+                      OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+  </ItemGroup>
+  
+  <ItemGroup>
     <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
   </ItemGroup>
-
-  <PropertyGroup>
-    <!-- Define the command to generate JSON files from WAST -->
-<!--    <WastToJsonCommand>path\to\your\command &#45;&#45;input %(FullPath)</WastToJsonCommand>-->
-  </PropertyGroup>
 
   <ItemGroup>
     <!-- Collect all WAST files -->
     <WastFiles Include="Runtime\SpecTestData\**\*.wast" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- Used by the source generator to automatically create unit test methods for each WAST file -->
+    <AdditionalFiles Include="@(WastFiles)" />
+  </ItemGroup>
+  
+  <Target Name="CheckWasmToolsAvailability" BeforeTargets="GenerateJsonFiles">
+    
+    <Exec Command="wasm-tools --version" IgnoreExitCode="true" EchoOff="true"
+          StandardOutputImportance="Low" StandardErrorImportance="Low">
+      <Output TaskParameter="ExitCode" PropertyName="ToolExitCode" />
+    </Exec>
+
+    <Error Text="The required tool 'wasm-tools' is not installed or is not in the path.
+     For instructions on how to install it, please see https://github.com/bytecodealliance/wasm-tools"
+           Condition="'$(ToolExitCode)' != '0'" />
+  </Target>
+  
   <Target Name="GenerateJsonFiles" BeforeTargets="PrepareForBuild">
     
     <ItemGroup>
-      <!-- Create a new group mapping each WAST file to its expected JSON file -->
-      <WastWithExpectedJson Include="@(WastFiles)">
-        <OutputDirectory>/%(Directory)</OutputDirectory>
-        <JsonPath>/%(Directory)%(Filename).json</JsonPath>
-      </WastWithExpectedJson>
-    </ItemGroup>
-    
-    <ItemGroup>
       <!-- Detect missing JSON files -->
-      <MissingJsonFiles Include="@(WastWithExpectedJson)" Condition="!Exists('%(JsonPath)')" />
+      <MissingJsonFiles Include="@(WastFiles)" Condition="!Exists('%(RootDir)%(Directory)%(Filename).json')" />
     </ItemGroup>
 
-    <Exec Command="wasm-tools json-from-wast --output %(MissingJsonFiles.JsonPath) --wasm-dir %(MissingJsonFiles.OutputDirectory) --pretty %(MissingJsonFiles.FullPath)"
-          Condition="'@(MissingJsonFiles)' != ''" />
+    <Exec Command="wasm-tools json-from-wast --output %(RootDir)%(Directory)%(Filename).json --wasm-dir %(RootDir)%(Directory) --pretty %(FullPath)"
+          Condition="'@(MissingJsonFiles)' != ''" EchoOff="true" />
   </Target>
   
   <ItemGroup>

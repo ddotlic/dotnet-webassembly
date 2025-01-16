@@ -10,7 +10,7 @@ namespace WebAssembly.Runtime;
 /// Runs the official specification's tests.
 /// </summary>
 [TestClass]
-public class SpecTests
+public partial class SpecTests
 {
     /// <summary>
     /// .NET 5 changed something about floating point processing that causes some spec tests to fail.
@@ -795,60 +795,6 @@ public class SpecTests
     public void SpecTest_select()
     {
         SpecTestRunner.Run(Path.Combine("Runtime", "SpecTestData", "select"), "select.json");
-    }
-
-    /// <summary>
-    /// Runs the simd_const tests.
-    /// </summary>
-    [TestMethod]
-    public void SpecTest_simd_const()
-    {
-        SpecTestRunner.Run(Path.Combine("Runtime", "SpecTestData", "simd_const"), "simd_const.json");
-    }
-    
-    /// <summary>
-    /// Runs the simd_i8x16_arith tests.
-    /// </summary>
-    [TestMethod]
-    public void SpecTest_simd_i8x16_arith()
-    {
-        SpecTestRunner.Run(Path.Combine("Runtime", "SpecTestData", "simd_i8x16_arith"), "simd_i8x16_arith.json");
-    }
-    
-    /// <summary>
-    /// Runs the simd_i16x8_arith tests.
-    /// </summary>
-    [TestMethod]
-    public void SpecTest_simd_i16x8_arith()
-    {
-        SpecTestRunner.Run(Path.Combine("Runtime", "SpecTestData", "simd_i16x8_arith"), "simd_i16x8_arith.json");
-    }
-    
-    /// <summary>
-    /// Runs the simd_i32x4_arith tests.
-    /// </summary>
-    [TestMethod]
-    public void SpecTest_simd_i32x4_arith()
-    {
-        SpecTestRunner.Run(Path.Combine("Runtime", "SpecTestData", "simd_i32x4_arith"), "simd_i32x4_arith.json");
-    }
-    
-    /// <summary>
-    /// Runs the simd_i64x2_arith tests.
-    /// </summary>
-    [TestMethod]
-    public void SpecTest_simd_i64x2_arith()
-    {
-        SpecTestRunner.Run(Path.Combine("Runtime", "SpecTestData", "simd_i64x2_arith"), "simd_i64x2_arith.json");
-    }
-    
-    /// <summary>
-    /// Runs the simd_f32x4_arith tests.
-    /// </summary>
-    [TestMethod]
-    public void SpecTest_simd_f32x4_arith()
-    {
-        SpecTestRunner.Run(Path.Combine("Runtime", "SpecTestData", "simd_f32x4_arith"), "simd_f32x4_arith.json");
     }
     
     /// <summary>

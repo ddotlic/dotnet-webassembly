@@ -164,6 +164,48 @@ public enum SimdOpCode : byte
     [OpCodeCharacteristics("f32x4.div")]
     [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
     Float32X4Div = 0xe7,
+
+    /// <summary>
+    /// SIMD negate 2 64-bit floats.
+    /// </summary>
+    [OpCodeCharacteristics("f64x2.neg")]
+    [SimdInstructionGenerate<SimdValueOneToOneCallInstruction>()]
+    Float64X2Neg = 0xed,
+
+    /// <summary>
+    /// SIMD square root 2 64-bit floats.
+    /// </summary>
+    [OpCodeCharacteristics("f64x2.sqrt")]
+    [SimdInstructionGenerate<SimdValueOneToOneCallInstruction>()]
+    Float64X2Sqrt = 0xef,
+
+    /// <summary>
+    /// SIMD add 2 64-bit floats.
+    /// </summary>
+    [OpCodeCharacteristics("f64x2.add")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    Float64X2Add = 0xf0,
+
+    /// <summary>
+    /// SIMD subtract 2 64-bit floats.
+    /// </summary>
+    [OpCodeCharacteristics("f64x2.sub")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    Float64X2Sub = 0xf1,
+
+    /// <summary>
+    /// SIMD multiply 2 64-bit floats.
+    /// </summary>
+    [OpCodeCharacteristics("f64x2.mul")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    Float64X2Mul = 0xf2,
+
+    /// <summary>
+    /// SIMD divide 2 64-bit floats.
+    /// </summary>
+    [OpCodeCharacteristics("f64x2.div")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    Float64X2Div = 0xf3,
 }
 
 static class SimdOpCodeExtensions
@@ -219,6 +261,7 @@ static class SimdOpCodeExtensions
         { "i32x4", typeof(uint) },
         { "i64x2", typeof(ulong) },
         { "f32x4", typeof(float) },
+        { "f64x2", typeof(double) },
     };
 
     private static readonly RegeneratingWeakReference<Dictionary<SimdOpCode, MethodInfo>> opCodeMethodInfoByOpCode =
