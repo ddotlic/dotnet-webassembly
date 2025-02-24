@@ -43,7 +43,7 @@ public abstract class MemoryImmediateInstruction : Instruction, IEquatable<Memor
         /// </summary>
         Align16 = 0b100,
     }
-
+    
     /// <summary>
     /// A bitfield which currently contains the alignment in the least significant bits, encoded as log2(alignment).
     /// </summary>
@@ -115,12 +115,48 @@ public abstract class MemoryImmediateInstruction : Instruction, IEquatable<Memor
         _ => throw new InvalidOperationException(),// Shouldn't be possible.
     };
 
-    private protected void EmitRangeCheck(CompilationContext context)
+    internal static void EmitRangeCheck(CompilationContext context, byte size)
     {
         context.EmitLoadThis();
-        context.Emit(OpCodes.Call, context[RangeCheckHelper(this.Size), CreateRangeCheck]);
+        context.Emit(OpCodes.Call, context[RangeCheckHelper(size), CreateRangeCheck]);
     }
 
+    internal static void EmitMemoryAccessProlog(CompilationContext context, OpCode opCode, uint offset, Options flags, byte size)
+    {
+        context.PopStackNoReturn(opCode, WebAssemblyValueType.Int32);
+
+        if (offset != 0)
+        {
+            Int32Constant.Emit(context, (int)offset);
+            context.Emit(OpCodes.Add_Ovf_Un);
+        }
+
+        EmitRangeCheck(context, size);
+
+        context.EmitLoadThis();
+        context.Emit(OpCodes.Ldfld, context.CheckedMemory);
+        context.Emit(OpCodes.Call, UnmanagedMemory.StartGetter);
+        context.Emit(OpCodes.Add);
+
+        byte alignment;
+        switch (flags) // TODO: why was it `flags & Options.Align8` (why bitmasking)?
+        {
+            default: //Impossible to hit, but needed to avoid compiler error the about alignment variable.
+            case Options.Align1: alignment = 1; break;
+            case Options.Align2: alignment = 2; break;
+            case Options.Align4: alignment = 4; break;
+            case Options.Align8: alignment = 8; break;
+            case Options.Align16: alignment = 16; break;
+        }
+
+        //8-byte alignment is not available in IL.
+        //See: https://docs.microsoft.com/en-us/dotnet/api/system.reflection.emit.opcodes.unaligned?view=net-5.0
+        //However, because 8-byte alignment is subset of 4-byte alignment,
+        //We don't have to consider it.
+        if (alignment != 4 && alignment != 8 && alignment != 16)
+            context.Emit(OpCodes.Unaligned, alignment);
+    }
+    
     internal static MethodBuilder CreateRangeCheck(HelperMethod helper, CompilationContext context)
     {
         if (context.Memory == null)

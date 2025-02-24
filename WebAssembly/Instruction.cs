@@ -338,6 +338,7 @@ public abstract class Instruction : IEquatable<Instruction>
                     switch (simdOpCode)
                     {
                         default: throw new ModuleLoadException($"Don't know how to parse SIMD opcode \"{simdOpCode}\".", simdOpCodeOffset);
+                        case SimdOpCode.V128Load: yield return new V128Load(reader); break;
                         case SimdOpCode.V128Const: yield return new V128Const(reader); break;
                         case SimdOpCode.Int8X16Neg: yield return new Int8X16Neg(); break;
                         case SimdOpCode.Int8X16Add: yield return new Int8X16Add(); break;

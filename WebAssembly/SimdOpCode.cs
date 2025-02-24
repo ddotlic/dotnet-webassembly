@@ -256,16 +256,20 @@ public enum SimdOpCode : byte
     V128BitSelect = 0x52,
 }
 
+internal sealed record OpCodeInfo(SimdOpCode OpCode, string NativeName, bool HasMethodInfo);
+
 static class SimdOpCodeExtensions
 {
-    private static readonly List<KeyValuePair<SimdOpCode, string>> opCodeNativeNames = typeof(SimdOpCode)
+    private static readonly List<OpCodeInfo> opCodeNativeNames = typeof(SimdOpCode)
         .GetFields()
-        .Where(field => field.IsStatic && field.GetCustomAttribute<SimdSkipMethodMappingAttribute>() is null)
-        .Select(field => new KeyValuePair<SimdOpCode, string>((SimdOpCode)field.GetValue(null)!, field.GetCustomAttribute<OpCodeCharacteristicsAttribute>()!.Name))
+        .Where(field => field.IsStatic)
+        .Select(field => new OpCodeInfo((SimdOpCode)field.GetValue(null)!, 
+            field.GetCustomAttribute<OpCodeCharacteristicsAttribute>()!.Name,
+            field.GetCustomAttribute<SimdSkipMethodMappingAttribute>() is null))
         .ToList();
 
     private static readonly RegeneratingWeakReference<Dictionary<SimdOpCode, string>> opCodeNativeNamesByOpCode =
-        new(() => opCodeNativeNames.ToDictionary(kv => kv.Key, kv => kv.Value));
+        new(() => opCodeNativeNames.ToDictionary(oci => oci.OpCode, oci => oci.NativeName));
 
     public static string ToNativeName(this SimdOpCode opCode)
     {
@@ -319,9 +323,9 @@ static class SimdOpCodeExtensions
     };
 
     private static readonly RegeneratingWeakReference<Dictionary<SimdOpCode, MethodInfo>> opCodeMethodInfoByOpCode =
-        new(() => opCodeNativeNames.ToDictionary(kv => kv.Key, kv =>
+        new(() => opCodeNativeNames.Where(oci => oci.HasMethodInfo).ToDictionary(oci => oci.OpCode, oci =>
         {
-            var (laneType, opName) = kv.Value.Split('.');
+            var (laneType, opName) = oci.NativeName.Split('.');
             var (methodName, parCount, isGeneric) = opNameToMethodTuple[opName];
             return FindVector128Method(methodName, laneTypeToType[laneType], parCount, isGeneric);
         }));
