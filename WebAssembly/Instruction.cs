@@ -366,6 +366,12 @@ public abstract class Instruction : IEquatable<Instruction>
                         case SimdOpCode.Float64X2Sub: yield return new Float64X2Sub(); break;
                         case SimdOpCode.Float64X2Mul: yield return new Float64X2Mul(); break;
                         case SimdOpCode.Float64X2Div: yield return new Float64X2Div(); break;
+                        case SimdOpCode.V128Not: yield return new V128Not(); break;
+                        case SimdOpCode.V128And: yield return new V128And(); break;
+                        case SimdOpCode.V128AndNot: yield return new V128AndNot(); break;
+                        case SimdOpCode.V128Or: yield return new V128Or(); break;
+                        case SimdOpCode.V128Xor: yield return new V128Xor(); break;
+                        case SimdOpCode.V128BitSelect: yield return new V128BitSelect(); break;
                     }
                     break;
             }

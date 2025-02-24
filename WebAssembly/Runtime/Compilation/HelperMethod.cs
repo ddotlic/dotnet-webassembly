@@ -6,6 +6,7 @@ enum HelperMethod
     RangeCheck16,
     RangeCheck32,
     RangeCheck64,
+    RangeCheck128,
     SelectFloat32,
     SelectFloat64,
     SelectInt32,
@@ -46,4 +47,5 @@ enum HelperMethod
     Int64TruncateSaturateFloat32Unsigned,
     Int64TruncateSaturateFloat64Signed,
     Int64TruncateSaturateFloat64Unsigned,
+    V128BitSelect,
 }

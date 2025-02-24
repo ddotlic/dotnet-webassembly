@@ -37,6 +37,11 @@ public abstract class MemoryImmediateInstruction : Instruction, IEquatable<Memor
         /// The access uses 64-bit alignment.
         /// </summary>
         Align8 = 0b11,
+        
+        /// <summary>
+        /// The access uses 128-bit alignment.
+        /// </summary>
+        Align16 = 0b100,
     }
 
     /// <summary>
@@ -100,19 +105,20 @@ public abstract class MemoryImmediateInstruction : Instruction, IEquatable<Memor
 
     private protected abstract System.Reflection.Emit.OpCode EmittedOpCode { get; }
 
-    private protected HelperMethod RangeCheckHelper => this.Size switch
+    internal static HelperMethod RangeCheckHelper(byte size) => size switch
     {
         1 => HelperMethod.RangeCheck8,
         2 => HelperMethod.RangeCheck16,
         4 => HelperMethod.RangeCheck32,
         8 => HelperMethod.RangeCheck64,
+        16 => HelperMethod.RangeCheck128,
         _ => throw new InvalidOperationException(),// Shouldn't be possible.
     };
 
     private protected void EmitRangeCheck(CompilationContext context)
     {
         context.EmitLoadThis();
-        context.Emit(OpCodes.Call, context[this.RangeCheckHelper, CreateRangeCheck]);
+        context.Emit(OpCodes.Call, context[RangeCheckHelper(this.Size), CreateRangeCheck]);
     }
 
     internal static MethodBuilder CreateRangeCheck(HelperMethod helper, CompilationContext context)
@@ -121,25 +127,23 @@ public abstract class MemoryImmediateInstruction : Instruction, IEquatable<Memor
             throw new CompilerException("Cannot use instructions that depend on linear memory when linear memory is not defined.");
 
         byte size;
-        System.Reflection.Emit.OpCode opCode;
         switch (helper)
         {
             default: throw new InvalidOperationException(); // Shouldn't be possible.
             case HelperMethod.RangeCheck8:
                 size = 1;
-                opCode = OpCodes.Ldc_I4_1;
                 break;
             case HelperMethod.RangeCheck16:
                 size = 2;
-                opCode = OpCodes.Ldc_I4_2;
                 break;
             case HelperMethod.RangeCheck32:
                 size = 4;
-                opCode = OpCodes.Ldc_I4_4;
                 break;
             case HelperMethod.RangeCheck64:
                 size = 8;
-                opCode = OpCodes.Ldc_I4_8;
+                break;
+            case HelperMethod.RangeCheck128:
+                size = 16;
                 break;
         }
 
@@ -154,7 +158,7 @@ public abstract class MemoryImmediateInstruction : Instruction, IEquatable<Memor
         il.Emit(OpCodes.Ldfld, context.Memory);
         il.Emit(OpCodes.Call, UnmanagedMemory.SizeGetter);
         il.Emit(OpCodes.Ldarg_0);
-        il.Emit(opCode);
+        il.Emit(OpCodes.Ldc_I4_S, size);
         il.Emit(OpCodes.Add_Ovf_Un);
         var outOfRange = il.DefineLabel();
         il.Emit(OpCodes.Blt_Un_S, outOfRange);
@@ -162,7 +166,7 @@ public abstract class MemoryImmediateInstruction : Instruction, IEquatable<Memor
         il.Emit(OpCodes.Ret);
         il.MarkLabel(outOfRange);
         il.Emit(OpCodes.Ldarg_0);
-        il.Emit(opCode);
+        il.Emit(OpCodes.Ldc_I4_S, size);
         il.Emit(OpCodes.Newobj, typeof(MemoryAccessOutOfRangeException)
             .GetTypeInfo()
             .DeclaredConstructors

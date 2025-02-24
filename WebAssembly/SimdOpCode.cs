@@ -13,6 +13,13 @@ namespace WebAssembly;
 public enum SimdOpCode : byte
 {
     /// <summary>
+    /// Load a SIMD vector from memory.
+    /// </summary>
+    [OpCodeCharacteristics("v128.load")]
+    [SimdSkipMethodMapping]
+    V128Load = 0x00,
+    
+    /// <summary>
     /// Instantiate a new SIMD vector with 16 8-bit elements.
     /// </summary>
     [OpCodeCharacteristics("v128.const")]
@@ -206,13 +213,54 @@ public enum SimdOpCode : byte
     [OpCodeCharacteristics("f64x2.div")]
     [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
     Float64X2Div = 0xf3,
+    
+    /// <summary>
+    /// SIMD bitwise not one 128-bit vector.
+    /// </summary>
+    [OpCodeCharacteristics("v128.not")]
+    [SimdInstructionGenerate<SimdValueOneToOneCallInstruction>()]
+    V128Not = 0x4d,
+    
+    /// <summary>
+    /// SIMD bitwise and two 128-bit vectorc.
+    /// </summary>
+    [OpCodeCharacteristics("v128.and")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    V128And = 0x4e,
+    
+    /// <summary>
+    /// SIMD bitwise and-not two 128-bit vectorc.
+    /// </summary>
+    [OpCodeCharacteristics("v128.andnot")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    V128AndNot = 0x4f,
+    
+    /// <summary>
+    /// SIMD bitwise or two 128-bit vectorc.
+    /// </summary>
+    [OpCodeCharacteristics("v128.or")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    V128Or = 0x50,
+    
+    /// <summary>
+    /// SIMD bitwise xor two 128-bit vectorc.
+    /// </summary>
+    [OpCodeCharacteristics("v128.xor")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    V128Xor = 0x51,
+    
+    /// <summary>
+    /// SIMD bitselect from two 128-bit vectors, using a 128-bit mask.
+    /// </summary>
+    [OpCodeCharacteristics("v128.bitselect")]
+    V128BitSelect = 0x52,
 }
 
 static class SimdOpCodeExtensions
 {
     private static readonly List<KeyValuePair<SimdOpCode, string>> opCodeNativeNames = typeof(SimdOpCode)
         .GetFields()
-        .Where(field => field.IsStatic)
+        .Where(field => field.IsStatic && field.GetCustomAttribute<SimdSkipMethodMappingAttribute>() is null)
         .Select(field => new KeyValuePair<SimdOpCode, string>((SimdOpCode)field.GetValue(null)!, field.GetCustomAttribute<OpCodeCharacteristicsAttribute>()!.Name))
         .ToList();
 
@@ -252,6 +300,12 @@ static class SimdOpCodeExtensions
         { "mul", ("Multiply", 2, true) },
         { "sqrt", ("Sqrt", 1, true) },
         { "div", ("Divide", 2, true) },
+        { "not", ("OnesComplement", 1, true) },
+        { "and", ("BitwiseAnd", 2, true) },
+        { "andnot", ("AndNot", 2, true) },
+        { "or", ("BitwiseOr", 2, true) },
+        { "xor", ("Xor", 2, true) },
+        { "bitselect", ("ConditionalSelect", 3, true) },
     };
 
     private static readonly Dictionary<string, Type> laneTypeToType = new() {

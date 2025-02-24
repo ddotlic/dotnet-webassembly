@@ -16,10 +16,7 @@ public class UnitTestMethodGenerator : IIncrementalGenerator
         
         context.RegisterSourceOutput(additionalFilePaths, (ctx, filePaths) =>
         {
-            if (filePaths.IsEmpty)
-            {
-                return;
-            }
+            if (filePaths.IsEmpty) return;
             
             var methods = string.Join("\n", 
                 filePaths.Select(path =>
@@ -39,6 +36,7 @@ public class UnitTestMethodGenerator : IIncrementalGenerator
                                  """;
                     return method;
                 }));
+            
             var sourceText = SourceText.From(
                 $$"""
                 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -54,6 +52,7 @@ public class UnitTestMethodGenerator : IIncrementalGenerator
                 {{methods}}
                 }    
                 """, Encoding.UTF8);
+            
             ctx.AddSource("SpecTests.g.cs", sourceText);
         });
     }
