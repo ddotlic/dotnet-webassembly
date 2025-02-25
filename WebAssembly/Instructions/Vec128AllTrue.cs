@@ -51,7 +51,7 @@ public abstract class Vec128AllTrue : SimdInstruction
                     typeof(Vector128<uint>),
                 ]
                 );
-
+            // TODO: all of the vector calls must be typed to the correct lane type
             var il = builder.GetILGenerator();
             il.Emit(OpCodes.Ldarg_0);
             il.Emit(OpCodes.Call, Vec128Zero);

@@ -438,7 +438,7 @@ internal static class SimdOpCodeExtensions
 internal static class Vector128WellKnownMethods
 {
     public static MethodInfo Vec128Zero => SimdOpCodeExtensions.FindVector128Getter("Zero", typeof(uint));
-    public static MethodInfo Vec128Equals => SimdOpCodeExtensions.FindVector128Method("Equals", typeof(Vector128<uint>), 2, true);
-    public static MethodInfo Vec128OnesComplement => SimdOpCodeExtensions.FindVector128Method("OnesComplement", typeof(Vector128<uint>), 1, true);
-    public static MethodInfo Vec128ExtractMsb => SimdOpCodeExtensions.FindVector128Method("ExtractMostSignificantBits", typeof(Vector128<uint>), 1, true);
+    public static MethodInfo Vec128Equals => SimdOpCodeExtensions.FindVector128Method("Equals", typeof(uint), 2, true);
+    public static MethodInfo Vec128OnesComplement => SimdOpCodeExtensions.FindVector128Method("OnesComplement", typeof(uint), 1, true);
+    public static MethodInfo Vec128ExtractMsb => SimdOpCodeExtensions.FindVector128Method("ExtractMostSignificantBits", typeof(uint), 1, true);
 }
