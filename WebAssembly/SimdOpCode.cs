@@ -36,7 +36,7 @@ public enum SimdOpCode : byte
     /// </summary>
     [OpCodeCharacteristics("i8x16.all_true")]
     [SimdInstructionGenerate<Vec128AllTrue>()]
-    [SimdOpTraits(hasMethodInfo: false, requiresLaneConversion: true)]
+    [SimdOpTraits(hasMethodInfo: false)]
     Int8X16AllTrue = 0x63,
 
     /// <summary>
@@ -44,7 +44,7 @@ public enum SimdOpCode : byte
     /// </summary>
     [OpCodeCharacteristics("i8x16.bitmask")]
     [SimdInstructionGenerate<Vec128BitMask>()]
-    [SimdOpTraits(hasMethodInfo: true, requiresLaneConversion: true)]
+    [SimdOpTraits(hasMethodInfo: true)]
     Int8X16BitMask = 0x64,
 
     /// <summary>
@@ -73,7 +73,7 @@ public enum SimdOpCode : byte
     /// </summary>
     [OpCodeCharacteristics("i16x8.all_true")]
     [SimdInstructionGenerate<Vec128AllTrue>()]
-    [SimdOpTraits(hasMethodInfo: false, requiresLaneConversion: true)]
+    [SimdOpTraits(hasMethodInfo: false)]
     Int16X8AllTrue = 0x83,
 
     /// <summary>
@@ -81,7 +81,7 @@ public enum SimdOpCode : byte
     /// </summary>
     [OpCodeCharacteristics("i16x8.bitmask")]
     [SimdInstructionGenerate<Vec128BitMask>()]
-    [SimdOpTraits(hasMethodInfo: true, requiresLaneConversion: true)]
+    [SimdOpTraits(hasMethodInfo: true)]
     Int16X8BitMask = 0x84,
 
     /// <summary>
@@ -117,7 +117,7 @@ public enum SimdOpCode : byte
     /// </summary>
     [OpCodeCharacteristics("i32x4.all_true")]
     [SimdInstructionGenerate<Vec128AllTrue>()]
-    [SimdOpTraits(hasMethodInfo: false, requiresLaneConversion: true)]
+    [SimdOpTraits(hasMethodInfo: false)]
     Int32X4AllTrue = 0xa3,
 
     /// <summary>
@@ -125,7 +125,7 @@ public enum SimdOpCode : byte
     /// </summary>
     [OpCodeCharacteristics("i32x4.bitmask")]
     [SimdInstructionGenerate<Vec128BitMask>()]
-    [SimdOpTraits(hasMethodInfo: true, requiresLaneConversion: true)]
+    [SimdOpTraits(hasMethodInfo: true)]
     Int32X4BitMask = 0xa4,
 
     /// <summary>
@@ -161,7 +161,7 @@ public enum SimdOpCode : byte
     /// </summary>
     [OpCodeCharacteristics("i64x2.all_true")]
     [SimdInstructionGenerate<Vec128AllTrue>()]
-    [SimdOpTraits(hasMethodInfo: false, requiresLaneConversion: true)]
+    [SimdOpTraits(hasMethodInfo: false)]
     Int64X2AllTrue = 0xc3,
 
     /// <summary>
@@ -169,7 +169,7 @@ public enum SimdOpCode : byte
     /// </summary>
     [OpCodeCharacteristics("i64x2.bitmask")]
     [SimdInstructionGenerate<Vec128BitMask>()]
-    [SimdOpTraits(hasMethodInfo: true, requiresLaneConversion: true)]
+    [SimdOpTraits(hasMethodInfo: true)]
     Int64X2BitMask = 0xc4,
 
     /// <summary>
@@ -322,11 +322,11 @@ public enum SimdOpCode : byte
     /// Return 1 if any bit is non-zero, 0 otherwise.
     /// </summary>
     [OpCodeCharacteristics("v128.any_true")]
-    [SimdOpTraits(hasMethodInfo: false, requiresLaneConversion: false)]
+    [SimdOpTraits(hasMethodInfo: false)]
     Vec128AnyTrue = 0x53,
 }
 
-internal sealed record OpCodeInfo(SimdOpCode OpCode, string NativeName, bool HasMethodInfo, bool RequiresLaneConversion);
+internal sealed record OpCodeInfo(SimdOpCode OpCode, string NativeName, bool HasMethodInfo);
 
 internal static class SimdOpCodeExtensions
 {
@@ -338,7 +338,7 @@ internal static class SimdOpCodeExtensions
             var opCode = (SimdOpCode)field.GetValue(null)!;
             var name = field.GetCustomAttribute<OpCodeCharacteristicsAttribute>()!.Name;
             var traits = field.GetCustomAttribute<SimdOpTraitsAttribute>() ?? new SimdOpTraitsAttribute();
-            return new OpCodeInfo(opCode, name, traits.HasMethodInfo, traits.RequiresLaneConversion);
+            return new OpCodeInfo(opCode, name, traits.HasMethodInfo);
         })
         .ToList();
 
@@ -422,22 +422,15 @@ internal static class SimdOpCodeExtensions
         return result!;
     }
 
-    public static Type ToLaneType(this SimdOpCode opCode)
-    {
-        var (laneType, _) = opCode.ToNativeName().Split('.');
-        return laneTypeToType[laneType];
-    }
-
-    public static bool RequiresLaneConversion(this SimdOpCode opCode)
-    {
-        opCodeInfoByOpCode.Reference.TryGetValue(opCode, out var result);
-        return result!.RequiresLaneConversion;
-    }
+    public static string ToLaneKind(this SimdOpCode opCode) => opCode.ToNativeName().Split('.')[0];
     
-    public enum KnownMethodName { Zero, VecEquals, OnesComplement, ExtractMostSignificantBits, ConvertToLaneType }
+    public static Type ToLaneType(this SimdOpCode opCode) => laneTypeToType[opCode.ToLaneKind()];
+    
+
+    public enum KnownMethodName { Zero, VecEquals, OnesComplement, ExtractMostSignificantBits }
+    
     private sealed record KnownMethods(MethodInfo Zero, MethodInfo VecEquals, 
-        MethodInfo OnesComplement, MethodInfo ExtractMostSignificantBits,
-        MethodInfo ConvertToLaneType);
+        MethodInfo OnesComplement, MethodInfo ExtractMostSignificantBits);
     
     private static readonly RegeneratingWeakReference<Dictionary<string, KnownMethods>> wellKnownMethodsByLane =
         new(() => laneTypeToType.Where(kv => kv.Key.StartsWith('i')).ToDictionary(kv => kv.Key, kv =>
@@ -447,9 +440,7 @@ internal static class SimdOpCodeExtensions
             var equals = FindVector128Method("Equals", laneType, 2, true);
             var onesComplement = FindVector128Method("OnesComplement", laneType, 1, true);
             var extractMsb = FindVector128Method("ExtractMostSignificantBits", laneType, 1, true);
-            var convert = typeof(Vector128).GetMethods(BindingFlags.Public | BindingFlags.Static)
-                .First(m => m.Name == "As").MakeGenericMethod(typeof(uint), laneType);
-            return new KnownMethods(zero, equals, onesComplement, extractMsb, convert);
+            return new KnownMethods(zero, equals, onesComplement, extractMsb);
         }));
         
     public static MethodInfo GetWellKnownMethod(string laneKind, KnownMethodName method)
@@ -461,7 +452,6 @@ internal static class SimdOpCodeExtensions
             KnownMethodName.VecEquals => result!.VecEquals,
             KnownMethodName.OnesComplement => result!.OnesComplement,
             KnownMethodName.ExtractMostSignificantBits => result!.ExtractMostSignificantBits,
-            KnownMethodName.ConvertToLaneType => result!.ConvertToLaneType,
             _ => throw new InvalidOperationException($"Unexpected known method name: {method}."),
         };
     }

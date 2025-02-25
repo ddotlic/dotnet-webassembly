@@ -23,12 +23,10 @@ public class Vec128BitSelect : SimdInstruction
     
     internal sealed override void Compile(CompilationContext context)
     {
-        var stack = context.Stack;
-
         // TODO: Maybe add an override which accepts SimdOpCode too
         context.PopStackNoReturn(this.OpCode, WebAssemblyValueType.Vector128, WebAssemblyValueType.Vector128);
         context.PopStackNoReturn(this.OpCode, WebAssemblyValueType.Vector128);
-        stack.Push(WebAssemblyValueType.Vector128);
+        context.Stack.Push(WebAssemblyValueType.Vector128);
 
         context.Emit(OpCodes.Call, context[HelperMethod.Vec128BitSelect, (_, c) =>
         {

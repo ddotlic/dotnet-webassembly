@@ -39,12 +39,14 @@ public class Vec128AnyTrue : SimdInstruction
                 ]
                 );
             
+            const string uintLane = "i32x4";
+            
             var il = builder.GetILGenerator();
             il.Emit(OpCodes.Ldarg_0);
-            il.Emit(OpCodes.Call, GetWellKnownMethod("i32x4", Zero));
-            il.Emit(OpCodes.Call, GetWellKnownMethod("i32x4", VecEquals));
-            il.Emit(OpCodes.Call, GetWellKnownMethod("i32x4", OnesComplement));
-            il.Emit(OpCodes.Call, GetWellKnownMethod("i32x4", ExtractMostSignificantBits));
+            il.Emit(OpCodes.Call, GetWellKnownMethod(uintLane, Zero));
+            il.Emit(OpCodes.Call, GetWellKnownMethod(uintLane, VecEquals));
+            il.Emit(OpCodes.Call, GetWellKnownMethod(uintLane, OnesComplement));
+            il.Emit(OpCodes.Call, GetWellKnownMethod(uintLane, ExtractMostSignificantBits));
             il.Emit(OpCodes.Ldc_I4_0);
             il.Emit(OpCodes.Cgt_Un);
             il.Emit(OpCodes.Ret);

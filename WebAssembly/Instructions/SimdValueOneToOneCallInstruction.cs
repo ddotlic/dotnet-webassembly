@@ -3,8 +3,6 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.Intrinsics;
 using WebAssembly.Runtime.Compilation;
-using static WebAssembly.SimdOpCodeExtensions;
-using static WebAssembly.SimdOpCodeExtensions.KnownMethodName;
 
 namespace WebAssembly.Instructions;
 
@@ -24,18 +22,9 @@ public abstract class SimdValueOneToOneCallInstruction : SimdInstruction
     
     internal sealed override void Compile(CompilationContext context)
     {
-        var stack = context.Stack;
-
         // TODO: Maybe add an override which accepts SimdOpCode too
         context.PopStackNoReturn(this.OpCode, WebAssemblyValueType.Vector128);
-        stack.Push(OutputType);
-
-        if (this.SimdOpCode.RequiresLaneConversion())
-        {
-            var laneKind = this.SimdOpCode.ToNativeName().Split('.')[0];
-            var conv = GetWellKnownMethod(laneKind, ConvertToLaneType);
-            context.Emit(OpCodes.Call, conv);
-        }
+        context.Stack.Push(OutputType);
         
         context.Emit(OpCodes.Call, this.SimdOpCode.ToMethodInfo());
     }
