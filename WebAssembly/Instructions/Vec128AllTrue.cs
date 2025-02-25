@@ -2,7 +2,8 @@ using System;
 using System.Reflection.Emit;
 using System.Runtime.Intrinsics;
 using WebAssembly.Runtime.Compilation;
-using static WebAssembly.Vector128WellKnownMethods;
+using static WebAssembly.SimdOpCodeExtensions;
+using static WebAssembly.SimdOpCodeExtensions.KnownMethodName;
 
 namespace WebAssembly.Instructions;
 
@@ -30,7 +31,7 @@ public abstract class Vec128AllTrue : SimdInstruction
         LaneKind switch {
             "i8x16" => 0b1111_1111_1111_1111u,
             "i16x8" => 0b1111_1111u,
-            "i32x4" => 0b111u,
+            "i32x4" => 0b1111u,
             "i64x2" => 0b11u,
             _ => throw new InvalidOperationException($"Unexpected lane type: {LaneKind}.")
         };
@@ -52,12 +53,15 @@ public abstract class Vec128AllTrue : SimdInstruction
                 ]
                 );
             // TODO: all of the vector calls must be typed to the correct lane type
+            // AND the vector must first be reinterpreted to the correct lane type
             var il = builder.GetILGenerator();
             il.Emit(OpCodes.Ldarg_0);
-            il.Emit(OpCodes.Call, Vec128Zero);
-            il.Emit(OpCodes.Call, Vec128Equals);
-            il.Emit(OpCodes.Call, Vec128OnesComplement);
-            il.Emit(OpCodes.Call, Vec128ExtractMsb);
+            var laneKind = LaneKind;
+            il.Emit(OpCodes.Call, GetWellKnownMethod(laneKind, ConvertToLaneType));
+            il.Emit(OpCodes.Call, GetWellKnownMethod(laneKind, Zero));
+            il.Emit(OpCodes.Call, GetWellKnownMethod(laneKind, VecEquals));
+            il.Emit(OpCodes.Call, GetWellKnownMethod(laneKind, OnesComplement));
+            il.Emit(OpCodes.Call, GetWellKnownMethod(laneKind, ExtractMostSignificantBits));
             il.Emit(OpCodes.Ldc_I4, Mask);
             il.Emit(OpCodes.Ceq);
             il.Emit(OpCodes.Ret);

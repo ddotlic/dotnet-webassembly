@@ -1,8 +1,8 @@
 using System.Reflection.Emit;
 using System.Runtime.Intrinsics;
 using WebAssembly.Runtime.Compilation;
-using static WebAssembly.Vector128WellKnownMethods;
-
+using static WebAssembly.SimdOpCodeExtensions;
+using static WebAssembly.SimdOpCodeExtensions.KnownMethodName;
 namespace WebAssembly.Instructions;
 
 /// <summary>
@@ -38,13 +38,13 @@ public class Vec128AnyTrue : SimdInstruction
                     typeof(Vector128<uint>),
                 ]
                 );
-
+            
             var il = builder.GetILGenerator();
             il.Emit(OpCodes.Ldarg_0);
-            il.Emit(OpCodes.Call, Vec128Zero);
-            il.Emit(OpCodes.Call, Vec128Equals);
-            il.Emit(OpCodes.Call, Vec128OnesComplement);
-            il.Emit(OpCodes.Call, Vec128ExtractMsb);
+            il.Emit(OpCodes.Call, GetWellKnownMethod("i32x4", Zero));
+            il.Emit(OpCodes.Call, GetWellKnownMethod("i32x4", VecEquals));
+            il.Emit(OpCodes.Call, GetWellKnownMethod("i32x4", OnesComplement));
+            il.Emit(OpCodes.Call, GetWellKnownMethod("i32x4", ExtractMostSignificantBits));
             il.Emit(OpCodes.Ldc_I4_0);
             il.Emit(OpCodes.Cgt_Un);
             il.Emit(OpCodes.Ret);

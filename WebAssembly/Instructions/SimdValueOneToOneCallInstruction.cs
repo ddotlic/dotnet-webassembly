@@ -3,6 +3,8 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.Intrinsics;
 using WebAssembly.Runtime.Compilation;
+using static WebAssembly.SimdOpCodeExtensions;
+using static WebAssembly.SimdOpCodeExtensions.KnownMethodName;
 
 namespace WebAssembly.Instructions;
 
@@ -30,7 +32,8 @@ public abstract class SimdValueOneToOneCallInstruction : SimdInstruction
 
         if (this.SimdOpCode.RequiresLaneConversion())
         {
-            var conv = Converter.MakeGenericMethod(typeof(uint), this.SimdOpCode.ToLaneType());
+            var laneKind = this.SimdOpCode.ToNativeName().Split('.')[0];
+            var conv = GetWellKnownMethod(laneKind, ConvertToLaneType);
             context.Emit(OpCodes.Call, conv);
         }
         

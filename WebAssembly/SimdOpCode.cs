@@ -433,12 +433,36 @@ internal static class SimdOpCodeExtensions
         opCodeInfoByOpCode.Reference.TryGetValue(opCode, out var result);
         return result!.RequiresLaneConversion;
     }
-}
-
-internal static class Vector128WellKnownMethods
-{
-    public static MethodInfo Vec128Zero => SimdOpCodeExtensions.FindVector128Getter("Zero", typeof(uint));
-    public static MethodInfo Vec128Equals => SimdOpCodeExtensions.FindVector128Method("Equals", typeof(uint), 2, true);
-    public static MethodInfo Vec128OnesComplement => SimdOpCodeExtensions.FindVector128Method("OnesComplement", typeof(uint), 1, true);
-    public static MethodInfo Vec128ExtractMsb => SimdOpCodeExtensions.FindVector128Method("ExtractMostSignificantBits", typeof(uint), 1, true);
+    
+    public enum KnownMethodName { Zero, VecEquals, OnesComplement, ExtractMostSignificantBits, ConvertToLaneType }
+    private sealed record KnownMethods(MethodInfo Zero, MethodInfo VecEquals, 
+        MethodInfo OnesComplement, MethodInfo ExtractMostSignificantBits,
+        MethodInfo ConvertToLaneType);
+    
+    private static readonly RegeneratingWeakReference<Dictionary<string, KnownMethods>> wellKnownMethodsByLane =
+        new(() => laneTypeToType.Where(kv => kv.Key.StartsWith('i')).ToDictionary(kv => kv.Key, kv =>
+        {
+            var laneType = kv.Value;
+            var zero = FindVector128Getter("Zero", laneType);
+            var equals = FindVector128Method("Equals", laneType, 2, true);
+            var onesComplement = FindVector128Method("OnesComplement", laneType, 1, true);
+            var extractMsb = FindVector128Method("ExtractMostSignificantBits", laneType, 1, true);
+            var convert = typeof(Vector128).GetMethods(BindingFlags.Public | BindingFlags.Static)
+                .First(m => m.Name == "As").MakeGenericMethod(typeof(uint), laneType);
+            return new KnownMethods(zero, equals, onesComplement, extractMsb, convert);
+        }));
+        
+    public static MethodInfo GetWellKnownMethod(string laneKind, KnownMethodName method)
+    {
+        wellKnownMethodsByLane.Reference.TryGetValue(laneKind, out var result);
+        return method switch
+        {
+            KnownMethodName.Zero => result!.Zero,
+            KnownMethodName.VecEquals => result!.VecEquals,
+            KnownMethodName.OnesComplement => result!.OnesComplement,
+            KnownMethodName.ExtractMostSignificantBits => result!.ExtractMostSignificantBits,
+            KnownMethodName.ConvertToLaneType => result!.ConvertToLaneType,
+            _ => throw new InvalidOperationException($"Unexpected known method name: {method}."),
+        };
+    }
 }
