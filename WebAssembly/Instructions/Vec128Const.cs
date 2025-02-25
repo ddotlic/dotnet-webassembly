@@ -9,7 +9,7 @@ namespace WebAssembly.Instructions;
 /// <summary>
 /// Produce the value of a v128.const.
 /// </summary>
-public class V128Const : SimdInstruction, IEquatable<V128Const>
+public class Vec128Const : SimdInstruction, IEquatable<Vec128Const>
 {
     /// <summary>
     /// Gets or sets the value of the constant.
@@ -17,14 +17,14 @@ public class V128Const : SimdInstruction, IEquatable<V128Const>
     public Vector128<uint> Value { get; set; }
 
     /// <summary>
-    /// Creates a new <see cref="V128Const"/> instance.
+    /// Creates a new <see cref="Vec128Const"/> instance.
     /// </summary>
-    public V128Const()
+    public Vec128Const()
     {
     }
 
     /// <inheritdoc/>
-    public override bool Equals(object? obj) => this.Equals(obj as V128Const);
+    public override bool Equals(object? obj) => this.Equals(obj as Vec128Const);
 
     /// <summary>
     /// Returns a simple hash code based on <see cref="Value"/> and the <see cref="OpCode"/> of the instruction.
@@ -38,18 +38,18 @@ public class V128Const : SimdInstruction, IEquatable<V128Const>
     /// </summary>
     /// <param name="other">The instruction to compare against.</param>
     /// <returns>True if they have the same type and value, otherwise false.</returns>
-    public bool Equals(V128Const? other) => base.Equals(other) && this.Value.Equals(other.Value);
+    public bool Equals(Vec128Const? other) => base.Equals(other) && this.Value.Equals(other.Value);
 
     /// <summary>
-    /// Creates a new <see cref="V128Const"/> instance from binary data.
+    /// Creates a new <see cref="Vec128Const"/> instance from binary data.
     /// </summary>
     /// <param name="reader">The source of binary data.</param>
-    internal V128Const(Reader reader) => Value = Vector128.Create(reader.ReadBytes(16)).AsUInt32();
+    internal Vec128Const(Reader reader) => Value = Vector128.Create(reader.ReadBytes(16)).AsUInt32();
 
     /// <summary>
-    /// Always <see cref="SimdOpCode.V128Const"/>.
+    /// Always <see cref="WebAssembly.SimdOpCode.Vec128Const"/>.
     /// </summary>
-    public sealed override SimdOpCode SimdOpCode => SimdOpCode.V128Const;
+    public sealed override SimdOpCode SimdOpCode => SimdOpCode.Vec128Const;
 
     internal sealed override void WriteTo(Writer writer)
     {

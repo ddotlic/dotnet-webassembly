@@ -16,14 +16,13 @@ public enum SimdOpCode : byte
     /// Load a SIMD vector from memory.
     /// </summary>
     [OpCodeCharacteristics("v128.load")]
-    [SimdSkipMethodMapping]
-    V128Load = 0x00,
-    
+    Vec128Load = 0x00,
+
     /// <summary>
     /// Instantiate a new SIMD vector with 16 8-bit elements.
     /// </summary>
     [OpCodeCharacteristics("v128.const")]
-    V128Const = 0x0c,
+    Vec128Const = 0x0c,
 
     /// <summary>
     /// SIMD negate 16 8-bit integers.
@@ -31,6 +30,22 @@ public enum SimdOpCode : byte
     [OpCodeCharacteristics("i8x16.neg")]
     [SimdInstructionGenerate<SimdValueOneToOneCallInstruction>()]
     Int8X16Neg = 0x61,
+
+    /// <summary>
+    /// Return 1 if all 16 8-bit lanes are non-zero, 0 otherwise.
+    /// </summary>
+    [OpCodeCharacteristics("i8x16.all_true")]
+    [SimdInstructionGenerate<Vec128AllTrue>()]
+    [SimdOpTraits(hasMethodInfo: false, requiresLaneConversion: true)]
+    Int8X16AllTrue = 0x63,
+
+    /// <summary>
+    /// Extract the high bit for each of the 16 8-bit lanes and produce a scalar mask with all bits concatenated.
+    /// </summary>
+    [OpCodeCharacteristics("i8x16.bitmask")]
+    [SimdInstructionGenerate<Vec128BitMask>()]
+    [SimdOpTraits(hasMethodInfo: true, requiresLaneConversion: true)]
+    Int8X16BitMask = 0x64,
 
     /// <summary>
     /// SIMD add 16 8-bit integers.
@@ -52,6 +67,22 @@ public enum SimdOpCode : byte
     [OpCodeCharacteristics("i16x8.neg")]
     [SimdInstructionGenerate<SimdValueOneToOneCallInstruction>()]
     Int16X8Neg = 0x81,
+
+    /// <summary>
+    /// Return 1 if all 8 16-bit lanes are non-zero, 0 otherwise.
+    /// </summary>
+    [OpCodeCharacteristics("i16x8.all_true")]
+    [SimdInstructionGenerate<Vec128AllTrue>()]
+    [SimdOpTraits(hasMethodInfo: false, requiresLaneConversion: true)]
+    Int16X8AllTrue = 0x83,
+
+    /// <summary>
+    /// Extract the high bit for each of the 8 16-bit lanes and produce a scalar mask with all bits concatenated.
+    /// </summary>
+    [OpCodeCharacteristics("i16x8.bitmask")]
+    [SimdInstructionGenerate<Vec128BitMask>()]
+    [SimdOpTraits(hasMethodInfo: true, requiresLaneConversion: true)]
+    Int16X8BitMask = 0x84,
 
     /// <summary>
     /// SIMD add 8 16-bit integers. 
@@ -82,6 +113,22 @@ public enum SimdOpCode : byte
     Int32X4Neg = 0xa1,
 
     /// <summary>
+    /// Return 1 if all 4 32-bit lanes are non-zero, 0 otherwise.
+    /// </summary>
+    [OpCodeCharacteristics("i32x4.all_true")]
+    [SimdInstructionGenerate<Vec128AllTrue>()]
+    [SimdOpTraits(hasMethodInfo: false, requiresLaneConversion: true)]
+    Int32X4AllTrue = 0xa3,
+
+    /// <summary>
+    /// Extract the high bit for each of the 4 32-bit lanes and produce a scalar mask with all bits concatenated.
+    /// </summary>
+    [OpCodeCharacteristics("i32x4.bitmask")]
+    [SimdInstructionGenerate<Vec128BitMask>()]
+    [SimdOpTraits(hasMethodInfo: true, requiresLaneConversion: true)]
+    Int32X4BitMask = 0xa4,
+
+    /// <summary>
     /// SIMD add 4 32-bit integers. 
     /// </summary>
     [OpCodeCharacteristics("i32x4.add")]
@@ -108,6 +155,22 @@ public enum SimdOpCode : byte
     [OpCodeCharacteristics("i64x2.neg")]
     [SimdInstructionGenerate<SimdValueOneToOneCallInstruction>()]
     Int64X2Neg = 0xc1,
+
+    /// <summary>
+    /// Return 1 if all 2 64-bit lanes are non-zero, 0 otherwise.
+    /// </summary>
+    [OpCodeCharacteristics("i64x2.all_true")]
+    [SimdInstructionGenerate<Vec128AllTrue>()]
+    [SimdOpTraits(hasMethodInfo: false, requiresLaneConversion: true)]
+    Int64X2AllTrue = 0xc3,
+
+    /// <summary>
+    /// Extract the high bit for each of the 2 64-bit lanes and produce a scalar mask with all bits concatenated.
+    /// </summary>
+    [OpCodeCharacteristics("i64x2.bitmask")]
+    [SimdInstructionGenerate<Vec128BitMask>()]
+    [SimdOpTraits(hasMethodInfo: true, requiresLaneConversion: true)]
+    Int64X2BitMask = 0xc4,
 
     /// <summary>
     /// SIMD add 2 64-bit integers.
@@ -213,79 +276,98 @@ public enum SimdOpCode : byte
     [OpCodeCharacteristics("f64x2.div")]
     [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
     Float64X2Div = 0xf3,
-    
+
     /// <summary>
     /// SIMD bitwise not one 128-bit vector.
     /// </summary>
     [OpCodeCharacteristics("v128.not")]
     [SimdInstructionGenerate<SimdValueOneToOneCallInstruction>()]
-    V128Not = 0x4d,
-    
+    Vec128Not = 0x4d,
+
     /// <summary>
     /// SIMD bitwise and two 128-bit vectorc.
     /// </summary>
     [OpCodeCharacteristics("v128.and")]
     [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
-    V128And = 0x4e,
-    
+    Vec128And = 0x4e,
+
     /// <summary>
     /// SIMD bitwise and-not two 128-bit vectorc.
     /// </summary>
     [OpCodeCharacteristics("v128.andnot")]
     [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
-    V128AndNot = 0x4f,
-    
+    Vec128AndNot = 0x4f,
+
     /// <summary>
     /// SIMD bitwise or two 128-bit vectorc.
     /// </summary>
     [OpCodeCharacteristics("v128.or")]
     [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
-    V128Or = 0x50,
-    
+    Vec128Or = 0x50,
+
     /// <summary>
     /// SIMD bitwise xor two 128-bit vectorc.
     /// </summary>
     [OpCodeCharacteristics("v128.xor")]
     [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
-    V128Xor = 0x51,
-    
+    Vec128Xor = 0x51,
+
     /// <summary>
     /// SIMD bitselect from two 128-bit vectors, using a 128-bit mask.
     /// </summary>
     [OpCodeCharacteristics("v128.bitselect")]
-    V128BitSelect = 0x52,
+    Vec128BitSelect = 0x52,
+
+    /// <summary>
+    /// Return 1 if any bit is non-zero, 0 otherwise.
+    /// </summary>
+    [OpCodeCharacteristics("v128.any_true")]
+    [SimdOpTraits(hasMethodInfo: false, requiresLaneConversion: false)]
+    Vec128AnyTrue = 0x53,
 }
 
-internal sealed record OpCodeInfo(SimdOpCode OpCode, string NativeName, bool HasMethodInfo);
+internal sealed record OpCodeInfo(SimdOpCode OpCode, string NativeName, bool HasMethodInfo, bool RequiresLaneConversion);
 
-static class SimdOpCodeExtensions
+internal static class SimdOpCodeExtensions
 {
-    private static readonly List<OpCodeInfo> opCodeNativeNames = typeof(SimdOpCode)
+    private static readonly List<OpCodeInfo> opCodeInfos = typeof(SimdOpCode)
         .GetFields()
         .Where(field => field.IsStatic)
-        .Select(field => new OpCodeInfo((SimdOpCode)field.GetValue(null)!, 
-            field.GetCustomAttribute<OpCodeCharacteristicsAttribute>()!.Name,
-            field.GetCustomAttribute<SimdSkipMethodMappingAttribute>() is null))
+        .Select(field =>
+        {
+            var opCode = (SimdOpCode)field.GetValue(null)!;
+            var name = field.GetCustomAttribute<OpCodeCharacteristicsAttribute>()!.Name;
+            var traits = field.GetCustomAttribute<SimdOpTraitsAttribute>() ?? new SimdOpTraitsAttribute();
+            return new OpCodeInfo(opCode, name, traits.HasMethodInfo, traits.RequiresLaneConversion);
+        })
         .ToList();
 
-    private static readonly RegeneratingWeakReference<Dictionary<SimdOpCode, string>> opCodeNativeNamesByOpCode =
-        new(() => opCodeNativeNames.ToDictionary(oci => oci.OpCode, oci => oci.NativeName));
+    private static readonly RegeneratingWeakReference<Dictionary<SimdOpCode, OpCodeInfo>> opCodeInfoByOpCode =
+        new(() => opCodeInfos.ToDictionary(oci => oci.OpCode, oci => oci));
 
     public static string ToNativeName(this SimdOpCode opCode)
     {
-        opCodeNativeNamesByOpCode.Reference.TryGetValue(opCode, out var result);
-        return result!;
+        opCodeInfoByOpCode.Reference.TryGetValue(opCode, out var result);
+        return result!.NativeName;
     }
 
-    private static MethodInfo FindVector128Method(string name, Type parType, int parsCount, bool isGeneric)
+    internal static MethodInfo FindVector128Getter(string name, Type laneType)
+    {
+        return typeof(Vector128<>).MakeGenericType(laneType)
+            .GetProperty(name, BindingFlags.Public | BindingFlags.Static)!.GetGetMethod()!;
+    }
+
+    internal static MethodInfo FindVector128Method(string name, Type parType, int parsCount, bool isGeneric)
     {
         var methods = typeof(Vector128).GetMethods(BindingFlags.Public | BindingFlags.Static);
         var genericMethodInfo = methods.Where(m => m.Name == name).First(m =>
         {
             var pars = m.GetParameters();
-            return pars.Length == parsCount && pars.All(p =>
-                isGeneric ? p.ParameterType.IsGenericType && p.ParameterType.GetGenericTypeDefinition() == typeof(Vector128<>)
-                    : p.ParameterType == parType);
+            return pars.Length == parsCount && pars.Select(p => p.ParameterType).All(pt =>
+                isGeneric
+                    ? pt.IsPointer || pt.IsByRef
+                    || (pt.IsGenericType && pt.GetGenericTypeDefinition() == typeof(Vector128<>))
+                    : pt == parType);
         });
         return isGeneric ? genericMethodInfo.MakeGenericMethod(parType) : genericMethodInfo;
     }
@@ -296,7 +378,9 @@ static class SimdOpCodeExtensions
         second = list[1];
     }
 
-    private static readonly Dictionary<string, (string, int, bool)> opNameToMethodTuple = new() {
+    private static readonly Dictionary<string, (string, int, bool)> opNameToMethodTuple = new()
+    {
+        { "load", ("Load", 1, true) },
         { "const", ("Create", 4, false) },
         { "neg", ("Negate", 1, true) },
         { "add", ("Add", 2, true) },
@@ -310,9 +394,11 @@ static class SimdOpCodeExtensions
         { "or", ("BitwiseOr", 2, true) },
         { "xor", ("Xor", 2, true) },
         { "bitselect", ("ConditionalSelect", 3, true) },
+        { "bitmask", ("ExtractMostSignificantBits", 1, true) },
     };
 
-    private static readonly Dictionary<string, Type> laneTypeToType = new() {
+    private static readonly Dictionary<string, Type> laneTypeToType = new()
+    {
         { "v128", typeof(uint) },
         { "i8x16", typeof(byte) },
         { "i16x8", typeof(ushort) },
@@ -323,7 +409,7 @@ static class SimdOpCodeExtensions
     };
 
     private static readonly RegeneratingWeakReference<Dictionary<SimdOpCode, MethodInfo>> opCodeMethodInfoByOpCode =
-        new(() => opCodeNativeNames.Where(oci => oci.HasMethodInfo).ToDictionary(oci => oci.OpCode, oci =>
+        new(() => opCodeInfos.Where(oci => oci.HasMethodInfo).ToDictionary(oci => oci.OpCode, oci =>
         {
             var (laneType, opName) = oci.NativeName.Split('.');
             var (methodName, parCount, isGeneric) = opNameToMethodTuple[opName];
@@ -336,4 +422,23 @@ static class SimdOpCodeExtensions
         return result!;
     }
 
+    public static Type ToLaneType(this SimdOpCode opCode)
+    {
+        var (laneType, _) = opCode.ToNativeName().Split('.');
+        return laneTypeToType[laneType];
+    }
+
+    public static bool RequiresLaneConversion(this SimdOpCode opCode)
+    {
+        opCodeInfoByOpCode.Reference.TryGetValue(opCode, out var result);
+        return result!.RequiresLaneConversion;
+    }
+}
+
+internal static class Vector128WellKnownMethods
+{
+    public static MethodInfo Vec128Zero => SimdOpCodeExtensions.FindVector128Getter("Zero", typeof(uint));
+    public static MethodInfo Vec128Equals => SimdOpCodeExtensions.FindVector128Method("Equals", typeof(Vector128<uint>), 2, true);
+    public static MethodInfo Vec128OnesComplement => SimdOpCodeExtensions.FindVector128Method("OnesComplement", typeof(Vector128<uint>), 1, true);
+    public static MethodInfo Vec128ExtractMsb => SimdOpCodeExtensions.FindVector128Method("ExtractMostSignificantBits", typeof(Vector128<uint>), 1, true);
 }

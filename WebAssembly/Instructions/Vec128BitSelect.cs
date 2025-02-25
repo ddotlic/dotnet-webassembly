@@ -7,19 +7,19 @@ namespace WebAssembly.Instructions;
 /// <summary>
 /// SIMD bitselect from two 128-bit vectors with a 128-bit mask.
 /// </summary>
-public class V128BitSelect : SimdInstruction
+public class Vec128BitSelect : SimdInstruction
 {
     /// <summary>
-    /// Creates a new  <see cref="V128BitSelect"/> instance.
+    /// Creates a new  <see cref="Vec128BitSelect"/> instance.
     /// </summary>
-    public V128BitSelect()
+    public Vec128BitSelect()
     {
     }
 
     /// <summary>
-    /// Always <see cref="SimdOpCode.V128BitSelect"/>.
+    /// Always <see cref="WebAssembly.SimdOpCode.Vec128BitSelect"/>.
     /// </summary>
-    public sealed override SimdOpCode SimdOpCode => SimdOpCode.V128BitSelect;
+    public sealed override SimdOpCode SimdOpCode => SimdOpCode.Vec128BitSelect;
     
     internal sealed override void Compile(CompilationContext context)
     {
@@ -30,12 +30,12 @@ public class V128BitSelect : SimdInstruction
         context.PopStackNoReturn(this.OpCode, WebAssemblyValueType.Vector128);
         stack.Push(WebAssemblyValueType.Vector128);
 
-        context.Emit(OpCodes.Call, context[HelperMethod.V128BitSelect, (_, c) =>
+        context.Emit(OpCodes.Call, context[HelperMethod.Vec128BitSelect, (_, c) =>
         {
             // NOTE: the matching method only differs in the order of the arguments
             var typeVec128 = typeof(Vector128<uint>);
             var builder = c.CheckedExportsBuilder.DefineMethod(
-                "☣ V128BitSelect",
+                "☣ Vec128BitSelect",
                 CompilationContext.HelperMethodAttributes,
                 typeVec128,
                 [

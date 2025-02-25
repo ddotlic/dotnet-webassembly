@@ -47,5 +47,10 @@ enum HelperMethod
     Int64TruncateSaturateFloat32Unsigned,
     Int64TruncateSaturateFloat64Signed,
     Int64TruncateSaturateFloat64Unsigned,
-    V128BitSelect,
+    Vec128BitSelect,
+    Vec128AnyTrue,
+    Int8X16AllTrue,
+    Int16X8AllTrue,
+    Int32X4AllTrue,
+    Int64X2AllTrue,
 }

@@ -87,7 +87,7 @@ public abstract class Instruction : IEquatable<Instruction>
                     switch (simdOpCode)
                     {
                         default: throw new ModuleLoadException($"Unexpected in initializer expression: SIMD opcode \"{simdOpCode}\".", simdOpCodeOffset);
-                        case SimdOpCode.V128Const: yield return new V128Const(reader); break;
+                        case SimdOpCode.Vec128Const: yield return new Vec128Const(reader); break;
                     }
                     break;
                 case OpCode.End: yield return new End(); yield break;
@@ -338,20 +338,28 @@ public abstract class Instruction : IEquatable<Instruction>
                     switch (simdOpCode)
                     {
                         default: throw new ModuleLoadException($"Don't know how to parse SIMD opcode \"{simdOpCode}\".", simdOpCodeOffset);
-                        case SimdOpCode.V128Load: yield return new V128Load(reader); break;
-                        case SimdOpCode.V128Const: yield return new V128Const(reader); break;
+                        case SimdOpCode.Vec128Load: yield return new Vec128Load(reader); break;
+                        case SimdOpCode.Vec128Const: yield return new Vec128Const(reader); break;
                         case SimdOpCode.Int8X16Neg: yield return new Int8X16Neg(); break;
+                        case SimdOpCode.Int8X16AllTrue: yield return new Int8X16AllTrue(); break;
+                        case SimdOpCode.Int8X16BitMask: yield return new Int8X16BitMask(); break;
                         case SimdOpCode.Int8X16Add: yield return new Int8X16Add(); break;
                         case SimdOpCode.Int8X16Sub: yield return new Int8X16Sub(); break;
                         case SimdOpCode.Int16X8Neg: yield return new Int16X8Neg(); break;
+                        case SimdOpCode.Int16X8AllTrue: yield return new Int16X8AllTrue(); break;
+                        case SimdOpCode.Int16X8BitMask: yield return new Int16X8BitMask(); break;
                         case SimdOpCode.Int16X8Add: yield return new Int16X8Add(); break;
                         case SimdOpCode.Int16X8Sub: yield return new Int16X8Sub(); break;
                         case SimdOpCode.Int16X8Mul: yield return new Int16X8Mul(); break;
                         case SimdOpCode.Int32X4Neg: yield return new Int32X4Neg(); break;
+                        case SimdOpCode.Int32X4AllTrue: yield return new Int32X4AllTrue(); break;
+                        case SimdOpCode.Int32X4BitMask: yield return new Int32X4BitMask(); break;
                         case SimdOpCode.Int32X4Add: yield return new Int32X4Add(); break;
                         case SimdOpCode.Int32X4Sub: yield return new Int32X4Sub(); break;
                         case SimdOpCode.Int32X4Mul: yield return new Int32X4Mul(); break;
                         case SimdOpCode.Int64X2Neg: yield return new Int64X2Neg(); break;
+                        case SimdOpCode.Int64X2AllTrue: yield return new Int64X2AllTrue(); break;
+                        case SimdOpCode.Int64X2BitMask: yield return new Int64X2BitMask(); break;
                         case SimdOpCode.Int64X2Add: yield return new Int64X2Add(); break;
                         case SimdOpCode.Int64X2Sub: yield return new Int64X2Sub(); break;
                         case SimdOpCode.Int64X2Mul: yield return new Int64X2Mul(); break;
@@ -367,12 +375,13 @@ public abstract class Instruction : IEquatable<Instruction>
                         case SimdOpCode.Float64X2Sub: yield return new Float64X2Sub(); break;
                         case SimdOpCode.Float64X2Mul: yield return new Float64X2Mul(); break;
                         case SimdOpCode.Float64X2Div: yield return new Float64X2Div(); break;
-                        case SimdOpCode.V128Not: yield return new V128Not(); break;
-                        case SimdOpCode.V128And: yield return new V128And(); break;
-                        case SimdOpCode.V128AndNot: yield return new V128AndNot(); break;
-                        case SimdOpCode.V128Or: yield return new V128Or(); break;
-                        case SimdOpCode.V128Xor: yield return new V128Xor(); break;
-                        case SimdOpCode.V128BitSelect: yield return new V128BitSelect(); break;
+                        case SimdOpCode.Vec128Not: yield return new Vec128Not(); break;
+                        case SimdOpCode.Vec128And: yield return new Vec128And(); break;
+                        case SimdOpCode.Vec128AndNot: yield return new Vec128AndNot(); break;
+                        case SimdOpCode.Vec128Or: yield return new Vec128Or(); break;
+                        case SimdOpCode.Vec128Xor: yield return new Vec128Xor(); break;
+                        case SimdOpCode.Vec128BitSelect: yield return new Vec128BitSelect(); break;
+                        case SimdOpCode.Vec128AnyTrue: yield return new Vec128AnyTrue(); break;
                     }
                     break;
             }
