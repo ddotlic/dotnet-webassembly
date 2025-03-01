@@ -16,7 +16,7 @@ public abstract class Vec128AllTrue : SimdInstruction
     {
     }
 
-    private string LaneKind => this.SimdOpCode.ToNativeName().Split('.')[0]; 
+    private string LaneKind => this.SimdOpCode.ToLaneKind(); 
     
     private HelperMethod AllTrueHelper => 
         LaneKind switch {

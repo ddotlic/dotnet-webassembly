@@ -341,6 +341,16 @@ public abstract class Instruction : IEquatable<Instruction>
                         case SimdOpCode.Vec128Load: yield return new Vec128Load(reader); break;
                         case SimdOpCode.Vec128Const: yield return new Vec128Const(reader); break;
                         case SimdOpCode.Int8X16Neg: yield return new Int8X16Neg(); break;
+                        case SimdOpCode.Int8X16Equal: yield return new Int8X16Equal(); break;
+                        case SimdOpCode.Int8X16NotEqual: yield return new Int8X16NotEqual(); break;
+                        case SimdOpCode.Int8X16LessThanSigned: yield return new Int8X16LessThanSigned(); break;
+                        case SimdOpCode.Int8X16LessThanUnsigned: yield return new Int8X16LessThanUnsigned(); break;
+                        case SimdOpCode.Int8X16GreaterThanSigned: yield return new Int8X16GreaterThanSigned(); break;
+                        case SimdOpCode.Int8X16GreaterThanUnsigned: yield return new Int8X16GreaterThanUnsigned(); break;
+                        case SimdOpCode.Int8X16LessThanOrEqualSigned: yield return new Int8X16LessThanOrEqualSigned(); break;
+                        case SimdOpCode.Int8X16LessThanOrEqualUnsigned: yield return new Int8X16LessThanOrEqualUnsigned(); break;
+                        case SimdOpCode.Int8X16GreaterThanOrEqualSigned: yield return new Int8X16GreaterThanOrEqualSigned(); break;
+                        case SimdOpCode.Int8X16GreaterThanOrEqualUnsigned: yield return new Int8X16GreaterThanOrEqualUnsigned(); break;
                         case SimdOpCode.Int8X16AllTrue: yield return new Int8X16AllTrue(); break;
                         case SimdOpCode.Int8X16BitMask: yield return new Int8X16BitMask(); break;
                         case SimdOpCode.Int8X16ShiftLeft: yield return new Int8X16ShiftLeft(); break;

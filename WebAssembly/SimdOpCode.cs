@@ -32,6 +32,75 @@ public enum SimdOpCode : byte
     Int8X16Neg = 0x61,
 
     /// <summary>
+    /// Lane-wise compare 16 8-bit lanes, equality.
+    /// </summary>
+    [OpCodeCharacteristics("i8x16.eq")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    Int8X16Equal = 0x23,
+    /// <summary>
+    /// Lane-wise compare 16 8-bit lanes, non-equality.
+    /// </summary>
+    [OpCodeCharacteristics("i8x16.ne")]
+    [SimdInstructionGenerate<Vec128NotEqual>()]
+    Int8X16NotEqual = 0x24,
+    
+    /// <summary>
+    /// Lane-wise compare 16 8-bit lanes, signed less than.
+    /// </summary>
+    [OpCodeCharacteristics("i8x16.lt_s")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    Int8X16LessThanSigned = 0x25,
+    
+    /// <summary>
+    /// Lane-wise compare 16 8-bit lanes, unsigned less than.
+    /// </summary>
+    [OpCodeCharacteristics("i8x16.lt_u")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    Int8X16LessThanUnsigned = 0x26,
+    
+    /// <summary>
+    /// Lane-wise compare 16 8-bit lanes, signed greater than.
+    /// </summary>
+    [OpCodeCharacteristics("i8x16.gt_s")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    Int8X16GreaterThanSigned = 0x27,
+    
+    /// <summary>
+    /// Lane-wise compare 16 8-bit lanes, unsigned greater than.
+    /// </summary>
+    [OpCodeCharacteristics("i8x16.gt_u")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    Int8X16GreaterThanUnsigned = 0x28,
+    
+    /// <summary>
+    /// Lane-wise compare 16 8-bit lanes, signed less than or equal.
+    /// </summary>
+    [OpCodeCharacteristics("i8x16.le_s")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    Int8X16LessThanOrEqualSigned = 0x29,
+    
+    /// <summary>
+    /// Lane-wise compare 16 8-bit lanes, unsigned less than or equal.
+    /// </summary>
+    [OpCodeCharacteristics("i8x16.le_u")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    Int8X16LessThanOrEqualUnsigned = 0x2a,
+    
+    /// <summary>
+    /// Lane-wise compare 16 8-bit lanes, signed greater than or equal.
+    /// </summary>
+    [OpCodeCharacteristics("i8x16.ge_s")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    Int8X16GreaterThanOrEqualSigned = 0x2b,
+    
+    /// <summary>
+    /// Lane-wise compare 16 8-bit lanes, unsigned greater than or equal.
+    /// </summary>
+    [OpCodeCharacteristics("i8x16.ge_u")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    Int8X16GreaterThanOrEqualUnsigned = 0x2c,
+    
+    /// <summary>
     /// Return 1 if all 16 8-bit lanes are non-zero, 0 otherwise.
     /// </summary>
     [OpCodeCharacteristics("i8x16.all_true")]
@@ -467,6 +536,16 @@ internal static class SimdOpCodeExtensions
         { "load", ("Load", 1, true) },
         { "const", ("Create", 4, false) },
         { "neg", ("Negate", 1, true) },
+        { "eq", ("Equals", 2, true) },
+        { "ne", ("Equals", 2, true) },
+        { "lt_s", ("LessThan", 2, true) },
+        { "lt_u", ("LessThan", 2, true) },
+        { "gt_s", ("GreaterThan", 2, true) },
+        { "gt_u", ("GreaterThan", 2, true) },
+        { "le_s", ("LessThanOrEqual", 2, true) },
+        { "le_u", ("LessThanOrEqual", 2, true) },
+        { "ge_s", ("GreaterThanOrEqual", 2, true) },
+        { "ge_u", ("GreaterThanOrEqual", 2, true) },
         { "add", ("Add", 2, true) },
         { "sub", ("Subtract", 2, true) },
         { "mul", ("Multiply", 2, true) },
@@ -495,11 +574,13 @@ internal static class SimdOpCodeExtensions
         { "f64x2", typeof(double) },
     };
 
-    private static Type? SpecialCaseLaneType(string methodName, string laneType)
+    private static Type? SpecialCaseLaneType(string methodName, string opName, string laneType)
     {
+        if (!opName.EndsWith("_s", StringComparison.InvariantCulture)) return null; 
         return methodName switch
         {
-            "ShiftRightArithmetic" => laneType switch
+            "LessThan" or "GreaterThan" or "LessThanOrEqual" 
+            or "GreaterThanOrEqual" or "ShiftRightArithmetic" => laneType switch
             {
                 "i8x16" => typeof(sbyte),
                 "i16x8" => typeof(short),
@@ -516,7 +597,7 @@ internal static class SimdOpCodeExtensions
         {
             var (laneType, opName) = oci.NativeName.Split('.');
             var (methodName, parCount, isGeneric) = opNameToMethodTuple[opName];
-            var parType = SpecialCaseLaneType(methodName, laneType) ?? laneTypeToType[laneType];
+            var parType = SpecialCaseLaneType(methodName, opName, laneType) ?? laneTypeToType[laneType];
             return FindVector128Method(methodName, parType, parCount, isGeneric);
         }));
 
