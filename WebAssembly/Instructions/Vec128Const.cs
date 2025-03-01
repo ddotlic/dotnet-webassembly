@@ -31,7 +31,7 @@ public class Vec128Const : SimdInstruction, IEquatable<Vec128Const>
     /// </summary>
     /// <returns>The hash code.</returns>
     /// <remarks><see cref="Value"/> should not be changed while this instance is used as a hash key.</remarks>
-    public override int GetHashCode() => HashCode.Combine((int)this.OpCode, (int)this.SimdOpCode, this.Value.GetHashCode());
+    public override int GetHashCode() => HashCode.Combine((int)base.GetHashCode(), this.Value.GetHashCode());
 
     /// <summary>
     /// Determines whether this instruction is identical to another.

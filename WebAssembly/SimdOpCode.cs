@@ -48,6 +48,27 @@ public enum SimdOpCode : byte
     Int8X16BitMask = 0x64,
 
     /// <summary>
+    /// Shift the bits in each of the 16 8-bit lanes left by the same amout.
+    /// </summary>
+    [OpCodeCharacteristics("i8x16.shl")]
+    [SimdInstructionGenerate<Vec128Shift>()]
+    Int8X16ShiftLeft = 0x6b,
+    
+    /// <summary>
+    /// Shift the bits in each of the 16 8-bit lanes arithmetic right by the same amout.
+    /// </summary>
+    [OpCodeCharacteristics("i8x16.shr_s")]
+    [SimdInstructionGenerate<Vec128Shift>()]
+    Int8X16ShiftArithRight = 0x6c,
+    
+    /// <summary>
+    /// Shift the bits in each of the 16 8-bit lanes logical right by the same amout.
+    /// </summary>
+    [OpCodeCharacteristics("i8x16.shr_u")]
+    [SimdInstructionGenerate<Vec128Shift>()]
+    Int8X16ShiftLogicRight = 0x6d,
+    
+    /// <summary>
     /// SIMD add 16 8-bit integers.
     /// </summary>
     [OpCodeCharacteristics("i8x16.add")]
@@ -84,6 +105,27 @@ public enum SimdOpCode : byte
     [SimdOpTraits(hasMethodInfo: true)]
     Int16X8BitMask = 0x84,
 
+    /// <summary>
+    /// Shift the bits in each of the 8 16-bit lanes left by the same amout.
+    /// </summary>
+    [OpCodeCharacteristics("i16x8.shl")]
+    [SimdInstructionGenerate<Vec128Shift>()]
+    Int16X8ShiftLeft = 0x8b,
+    
+    /// <summary>
+    /// Shift the bits in each of the 8 16-bit lanes arithmetic right by the same amout.
+    /// </summary>
+    [OpCodeCharacteristics("i16x8.shr_s")]
+    [SimdInstructionGenerate<Vec128Shift>()]
+    Int16X8ShiftArithRight = 0x8c,
+    
+    /// <summary>
+    /// Shift the bits in each of the 8 16-bit lanes logical right by the same amout.
+    /// </summary>
+    [OpCodeCharacteristics("i16x8.shr_u")]
+    [SimdInstructionGenerate<Vec128Shift>()]
+    Int16X8ShiftLogicRight = 0x8d,
+    
     /// <summary>
     /// SIMD add 8 16-bit integers. 
     /// </summary>
@@ -129,6 +171,27 @@ public enum SimdOpCode : byte
     Int32X4BitMask = 0xa4,
 
     /// <summary>
+    /// Shift the bits in each of the 4 32-bit lanes left by the same amout.
+    /// </summary>
+    [OpCodeCharacteristics("i32x4.shl")]
+    [SimdInstructionGenerate<Vec128Shift>()]
+    Int32X4ShiftLeft = 0xab,
+    
+    /// <summary>
+    /// Shift the bits in each of the 4 32-bit lanes arithmetic right by the same amout.
+    /// </summary>
+    [OpCodeCharacteristics("i32x4.shr_s")]
+    [SimdInstructionGenerate<Vec128Shift>()]
+    Int32X4ShiftArithRight = 0xac,
+    
+    /// <summary>
+    /// Shift the bits in each of the 4 32-bit lanes logical right by the same amout.
+    /// </summary>
+    [OpCodeCharacteristics("i32x4.shr_u")]
+    [SimdInstructionGenerate<Vec128Shift>()]
+    Int32X4ShiftLogicRight = 0xad,
+    
+    /// <summary>
     /// SIMD add 4 32-bit integers. 
     /// </summary>
     [OpCodeCharacteristics("i32x4.add")]
@@ -172,6 +235,27 @@ public enum SimdOpCode : byte
     [SimdOpTraits(hasMethodInfo: true)]
     Int64X2BitMask = 0xc4,
 
+    /// <summary>
+    /// Shift the bits in each of the 2 64-bit lanes left by the same amout.
+    /// </summary>
+    [OpCodeCharacteristics("i64x2.shl")]
+    [SimdInstructionGenerate<Vec128Shift>()]
+    Int64X2ShiftLeft = 0xcb,
+    
+    /// <summary>
+    /// Shift the bits in each of the 2 64-bit lanes arithmetic right by the same amout.
+    /// </summary>
+    [OpCodeCharacteristics("i64x2.shr_s")]
+    [SimdInstructionGenerate<Vec128Shift>()]
+    Int64X2ShiftArithRight = 0xcc,
+    
+    /// <summary>
+    /// Shift the bits in each of the 2 64-bit lanes logical right by the same amout.
+    /// </summary>
+    [OpCodeCharacteristics("i64x2.shr_u")]
+    [SimdInstructionGenerate<Vec128Shift>()]
+    Int64X2ShiftLogicRight = 0xcd,
+    
     /// <summary>
     /// SIMD add 2 64-bit integers.
     /// </summary>
@@ -360,16 +444,16 @@ internal static class SimdOpCodeExtensions
     internal static MethodInfo FindVector128Method(string name, Type parType, int parsCount, bool isGeneric)
     {
         var methods = typeof(Vector128).GetMethods(BindingFlags.Public | BindingFlags.Static);
-        var genericMethodInfo = methods.Where(m => m.Name == name).First(m =>
+        var methodInfo = methods.Where(m => m.Name == name).First(m =>
         {
             var pars = m.GetParameters();
             return pars.Length == parsCount && pars.Select(p => p.ParameterType).All(pt =>
                 isGeneric
                     ? pt.IsPointer || pt.IsByRef
                     || (pt.IsGenericType && pt.GetGenericTypeDefinition() == typeof(Vector128<>))
-                    : pt == parType);
+                    : pt == parType || pt == typeof(Vector128<>).MakeGenericType(parType) || pt.IsPrimitive);
         });
-        return isGeneric ? genericMethodInfo.MakeGenericMethod(parType) : genericMethodInfo;
+        return isGeneric && methodInfo.IsGenericMethodDefinition ? methodInfo.MakeGenericMethod(parType) : methodInfo;
     }
 
     internal static void Deconstruct<T>(this IList<T> list, out T first, out T second)
@@ -395,6 +479,9 @@ internal static class SimdOpCodeExtensions
         { "xor", ("Xor", 2, true) },
         { "bitselect", ("ConditionalSelect", 3, true) },
         { "bitmask", ("ExtractMostSignificantBits", 1, true) },
+        { "shl", ("ShiftLeft", 2, false) },
+        { "shr_s", ("ShiftRightArithmetic", 2, false) },
+        { "shr_u", ("ShiftRightLogical", 2, false) },
     };
 
     private static readonly Dictionary<string, Type> laneTypeToType = new()
@@ -408,12 +495,29 @@ internal static class SimdOpCodeExtensions
         { "f64x2", typeof(double) },
     };
 
+    private static Type? SpecialCaseLaneType(string methodName, string laneType)
+    {
+        return methodName switch
+        {
+            "ShiftRightArithmetic" => laneType switch
+            {
+                "i8x16" => typeof(sbyte),
+                "i16x8" => typeof(short),
+                "i32x4" => typeof(int),
+                "i64x2" => typeof(long),
+                _ => null,
+            },
+            _ => null,
+        };
+    }
+    
     private static readonly RegeneratingWeakReference<Dictionary<SimdOpCode, MethodInfo>> opCodeMethodInfoByOpCode =
         new(() => opCodeInfos.Where(oci => oci.HasMethodInfo).ToDictionary(oci => oci.OpCode, oci =>
         {
             var (laneType, opName) = oci.NativeName.Split('.');
             var (methodName, parCount, isGeneric) = opNameToMethodTuple[opName];
-            return FindVector128Method(methodName, laneTypeToType[laneType], parCount, isGeneric);
+            var parType = SpecialCaseLaneType(methodName, laneType) ?? laneTypeToType[laneType];
+            return FindVector128Method(methodName, parType, parCount, isGeneric);
         }));
 
     public static MethodInfo ToMethodInfo(this SimdOpCode opCode)
