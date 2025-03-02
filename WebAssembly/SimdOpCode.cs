@@ -294,6 +294,76 @@ public enum SimdOpCode : byte
     Int32X4Neg = 0xa1,
 
     /// <summary>
+    /// Lane-wise compare 4 32-bit lanes, equality.
+    /// </summary>
+    [OpCodeCharacteristics("i32x4.eq")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    Int32X4Equal = 0x37,
+    
+    /// <summary>
+    /// Lane-wise compare 4 32-bit lanes, non-equality.
+    /// </summary>
+    [OpCodeCharacteristics("i32x4.ne")]
+    [SimdInstructionGenerate<Vec128NotEqual>()]
+    Int32X4NotEqual = 0x38,
+    
+    /// <summary>
+    /// Lane-wise compare 4 32-bit lanes, signed less than.
+    /// </summary>
+    [OpCodeCharacteristics("i32x4.lt_s")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    Int32X4LessThanSigned = 0x39,
+    
+    /// <summary>
+    /// Lane-wise compare 4 32-bit lanes, unsigned less than.
+    /// </summary>
+    [OpCodeCharacteristics("i32x4.lt_u")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    Int32X4LessThanUnsigned = 0x3a,
+    
+    /// <summary>
+    /// Lane-wise compare 4 32-bit lanes, signed greater than.
+    /// </summary>
+    [OpCodeCharacteristics("i32x4.gt_s")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    Int32X4GreaterThanSigned = 0x3b,
+    
+    /// <summary>
+    /// Lane-wise compare 4 32-bit lanes, unsigned greater than.
+    /// </summary>
+    [OpCodeCharacteristics("i32x4.gt_u")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    Int32X4GreaterThanUnsigned = 0x3c,
+    
+    /// <summary>
+    /// Lane-wise compare 4 32-bit lanes, signed less than or equal.
+    /// </summary>
+    [OpCodeCharacteristics("i32x4.le_s")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    Int32X4LessThanOrEqualSigned = 0x3d,
+    
+    /// <summary>
+    /// Lane-wise compare 4 32-bit lanes, unsigned less than or equal.
+    /// </summary>
+    [OpCodeCharacteristics("i32x4.le_u")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    Int32X4LessThanOrEqualUnsigned = 0x3e,
+    
+    /// <summary>
+    /// Lane-wise compare 4 32-bit lanes, signed greater than or equal.
+    /// </summary>
+    [OpCodeCharacteristics("i32x4.ge_s")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    Int32X4GreaterThanOrEqualSigned = 0x3f,
+    
+    /// <summary>
+    /// Lane-wise compare 4 32-bit lanes, unsigned greater than or equal.
+    /// </summary>
+    [OpCodeCharacteristics("i32x4.ge_u")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    Int32X4GreaterThanOrEqualUnsigned = 0x40,
+    
+    /// <summary>
     /// Return 1 if all 4 32-bit lanes are non-zero, 0 otherwise.
     /// </summary>
     [OpCodeCharacteristics("i32x4.all_true")]
