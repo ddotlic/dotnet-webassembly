@@ -32,76 +32,76 @@ public enum SimdOpCode : byte
     Int8X16Neg = 0x61,
 
     /// <summary>
-    /// Lane-wise compare 16 8-bit lanes, equality.
+    /// Lane-wise compare 16 8-bit int lanes, equality.
     /// </summary>
     [OpCodeCharacteristics("i8x16.eq")]
     [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
     Int8X16Equal = 0x23,
     /// <summary>
-    /// Lane-wise compare 16 8-bit lanes, non-equality.
+    /// Lane-wise compare 16 8-bit int lanes, non-equality.
     /// </summary>
     [OpCodeCharacteristics("i8x16.ne")]
     [SimdInstructionGenerate<Vec128NotEqual>()]
     Int8X16NotEqual = 0x24,
     
     /// <summary>
-    /// Lane-wise compare 16 8-bit lanes, signed less than.
+    /// Lane-wise compare 16 8-bit int lanes, signed less than.
     /// </summary>
     [OpCodeCharacteristics("i8x16.lt_s")]
     [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
     Int8X16LessThanSigned = 0x25,
     
     /// <summary>
-    /// Lane-wise compare 16 8-bit lanes, unsigned less than.
+    /// Lane-wise compare 16 8-bit int lanes, unsigned less than.
     /// </summary>
     [OpCodeCharacteristics("i8x16.lt_u")]
     [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
     Int8X16LessThanUnsigned = 0x26,
     
     /// <summary>
-    /// Lane-wise compare 16 8-bit lanes, signed greater than.
+    /// Lane-wise compare 16 8-bit int lanes, signed greater than.
     /// </summary>
     [OpCodeCharacteristics("i8x16.gt_s")]
     [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
     Int8X16GreaterThanSigned = 0x27,
     
     /// <summary>
-    /// Lane-wise compare 16 8-bit lanes, unsigned greater than.
+    /// Lane-wise compare 16 8-bit int lanes, unsigned greater than.
     /// </summary>
     [OpCodeCharacteristics("i8x16.gt_u")]
     [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
     Int8X16GreaterThanUnsigned = 0x28,
     
     /// <summary>
-    /// Lane-wise compare 16 8-bit lanes, signed less than or equal.
+    /// Lane-wise compare 16 8-bit int lanes, signed less than or equal.
     /// </summary>
     [OpCodeCharacteristics("i8x16.le_s")]
     [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
     Int8X16LessThanOrEqualSigned = 0x29,
     
     /// <summary>
-    /// Lane-wise compare 16 8-bit lanes, unsigned less than or equal.
+    /// Lane-wise compare 16 8-bit int lanes, unsigned less than or equal.
     /// </summary>
     [OpCodeCharacteristics("i8x16.le_u")]
     [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
     Int8X16LessThanOrEqualUnsigned = 0x2a,
     
     /// <summary>
-    /// Lane-wise compare 16 8-bit lanes, signed greater than or equal.
+    /// Lane-wise compare 16 8-bit int lanes, signed greater than or equal.
     /// </summary>
     [OpCodeCharacteristics("i8x16.ge_s")]
     [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
     Int8X16GreaterThanOrEqualSigned = 0x2b,
     
     /// <summary>
-    /// Lane-wise compare 16 8-bit lanes, unsigned greater than or equal.
+    /// Lane-wise compare 16 8-bit int lanes, unsigned greater than or equal.
     /// </summary>
     [OpCodeCharacteristics("i8x16.ge_u")]
     [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
     Int8X16GreaterThanOrEqualUnsigned = 0x2c,
     
     /// <summary>
-    /// Return 1 if all 16 8-bit lanes are non-zero, 0 otherwise.
+    /// Return 1 if all 16 8-bit int lanes are non-zero, 0 otherwise.
     /// </summary>
     [OpCodeCharacteristics("i8x16.all_true")]
     [SimdInstructionGenerate<Vec128AllTrue>()]
@@ -109,7 +109,7 @@ public enum SimdOpCode : byte
     Int8X16AllTrue = 0x63,
 
     /// <summary>
-    /// Extract the high bit for each of the 16 8-bit lanes and produce a scalar mask with all bits concatenated.
+    /// Extract the high bit for each of the 16 8-bit int lanes and produce a scalar mask with all bits concatenated.
     /// </summary>
     [OpCodeCharacteristics("i8x16.bitmask")]
     [SimdInstructionGenerate<Vec128BitMask>()]
@@ -117,21 +117,21 @@ public enum SimdOpCode : byte
     Int8X16BitMask = 0x64,
 
     /// <summary>
-    /// Shift the bits in each of the 16 8-bit lanes left by the same amout.
+    /// Shift the bits in each of the 16 8-bit int lanes left by the same amout.
     /// </summary>
     [OpCodeCharacteristics("i8x16.shl")]
     [SimdInstructionGenerate<Vec128Shift>()]
     Int8X16ShiftLeft = 0x6b,
     
     /// <summary>
-    /// Shift the bits in each of the 16 8-bit lanes arithmetic right by the same amout.
+    /// Shift the bits in each of the 16 8-bit int lanes arithmetic right by the same amout.
     /// </summary>
     [OpCodeCharacteristics("i8x16.shr_s")]
     [SimdInstructionGenerate<Vec128Shift>()]
     Int8X16ShiftArithRight = 0x6c,
     
     /// <summary>
-    /// Shift the bits in each of the 16 8-bit lanes logical right by the same amout.
+    /// Shift the bits in each of the 16 8-bit int lanes logical right by the same amout.
     /// </summary>
     [OpCodeCharacteristics("i8x16.shr_u")]
     [SimdInstructionGenerate<Vec128Shift>()]
@@ -159,77 +159,77 @@ public enum SimdOpCode : byte
     Int16X8Neg = 0x81,
 
     /// <summary>
-    /// Lane-wise compare 8 16-bit lanes, equality.
+    /// Lane-wise compare 8 16-bit int lanes, equality.
     /// </summary>
     [OpCodeCharacteristics("i16x8.eq")]
     [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
     Int16X8Equal = 0x2d,
     
     /// <summary>
-    /// Lane-wise compare 8 16-bit lanes, non-equality.
+    /// Lane-wise compare 8 16-bit int lanes, non-equality.
     /// </summary>
     [OpCodeCharacteristics("i16x8.ne")]
     [SimdInstructionGenerate<Vec128NotEqual>()]
     Int16X8NotEqual = 0x2e,
     
     /// <summary>
-    /// Lane-wise compare 8 16-bit lanes, signed less than.
+    /// Lane-wise compare 8 16-bit int lanes, signed less than.
     /// </summary>
     [OpCodeCharacteristics("i16x8.lt_s")]
     [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
     Int16X8LessThanSigned = 0x2f,
     
     /// <summary>
-    /// Lane-wise compare 8 16-bit lanes, unsigned less than.
+    /// Lane-wise compare 8 16-bit int lanes, unsigned less than.
     /// </summary>
     [OpCodeCharacteristics("i16x8.lt_u")]
     [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
     Int16X8LessThanUnsigned = 0x30,
     
     /// <summary>
-    /// Lane-wise compare 8 16-bit lanes, signed greater than.
+    /// Lane-wise compare 8 16-bit int lanes, signed greater than.
     /// </summary>
     [OpCodeCharacteristics("i16x8.gt_s")]
     [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
     Int16X8GreaterThanSigned = 0x31,
     
     /// <summary>
-    /// Lane-wise compare 8 16-bit lanes, unsigned greater than.
+    /// Lane-wise compare 8 16-bit int lanes, unsigned greater than.
     /// </summary>
     [OpCodeCharacteristics("i16x8.gt_u")]
     [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
     Int16X8GreaterThanUnsigned = 0x32,
     
     /// <summary>
-    /// Lane-wise compare 8 16-bit lanes, signed less than or equal.
+    /// Lane-wise compare 8 16-bit int lanes, signed less than or equal.
     /// </summary>
     [OpCodeCharacteristics("i16x8.le_s")]
     [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
     Int16X8LessThanOrEqualSigned = 0x33,
     
     /// <summary>
-    /// Lane-wise compare 8 16-bit lanes, unsigned less than or equal.
+    /// Lane-wise compare 8 16-bit int lanes, unsigned less than or equal.
     /// </summary>
     [OpCodeCharacteristics("i16x8.le_u")]
     [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
     Int16X8LessThanOrEqualUnsigned = 0x34,
     
     /// <summary>
-    /// Lane-wise compare 8 16-bit lanes, signed greater than or equal.
+    /// Lane-wise compare 8 16-bit int lanes, signed greater than or equal.
     /// </summary>
     [OpCodeCharacteristics("i16x8.ge_s")]
     [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
     Int16X8GreaterThanOrEqualSigned = 0x35,
     
     /// <summary>
-    /// Lane-wise compare 8 16-bit lanes, unsigned greater than or equal.
+    /// Lane-wise compare 8 16-bit int lanes, unsigned greater than or equal.
     /// </summary>
     [OpCodeCharacteristics("i16x8.ge_u")]
     [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
     Int16X8GreaterThanOrEqualUnsigned = 0x36,
     
     /// <summary>
-    /// Return 1 if all 8 16-bit lanes are non-zero, 0 otherwise.
+    /// Return 1 if all 8 16-bit int lanes are non-zero, 0 otherwise.
     /// </summary>
     [OpCodeCharacteristics("i16x8.all_true")]
     [SimdInstructionGenerate<Vec128AllTrue>()]
@@ -237,7 +237,7 @@ public enum SimdOpCode : byte
     Int16X8AllTrue = 0x83,
 
     /// <summary>
-    /// Extract the high bit for each of the 8 16-bit lanes and produce a scalar mask with all bits concatenated.
+    /// Extract the high bit for each of the 8 16-bit int lanes and produce a scalar mask with all bits concatenated.
     /// </summary>
     [OpCodeCharacteristics("i16x8.bitmask")]
     [SimdInstructionGenerate<Vec128BitMask>()]
@@ -245,21 +245,21 @@ public enum SimdOpCode : byte
     Int16X8BitMask = 0x84,
 
     /// <summary>
-    /// Shift the bits in each of the 8 16-bit lanes left by the same amout.
+    /// Shift the bits in each of the 8 16-bit int lanes left by the same amout.
     /// </summary>
     [OpCodeCharacteristics("i16x8.shl")]
     [SimdInstructionGenerate<Vec128Shift>()]
     Int16X8ShiftLeft = 0x8b,
     
     /// <summary>
-    /// Shift the bits in each of the 8 16-bit lanes arithmetic right by the same amout.
+    /// Shift the bits in each of the 8 16-bit int lanes arithmetic right by the same amout.
     /// </summary>
     [OpCodeCharacteristics("i16x8.shr_s")]
     [SimdInstructionGenerate<Vec128Shift>()]
     Int16X8ShiftArithRight = 0x8c,
     
     /// <summary>
-    /// Shift the bits in each of the 8 16-bit lanes logical right by the same amout.
+    /// Shift the bits in each of the 8 16-bit int lanes logical right by the same amout.
     /// </summary>
     [OpCodeCharacteristics("i16x8.shr_u")]
     [SimdInstructionGenerate<Vec128Shift>()]
@@ -294,77 +294,77 @@ public enum SimdOpCode : byte
     Int32X4Neg = 0xa1,
 
     /// <summary>
-    /// Lane-wise compare 4 32-bit lanes, equality.
+    /// Lane-wise compare 4 32-bit int lanes, equality.
     /// </summary>
     [OpCodeCharacteristics("i32x4.eq")]
     [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
     Int32X4Equal = 0x37,
     
     /// <summary>
-    /// Lane-wise compare 4 32-bit lanes, non-equality.
+    /// Lane-wise compare 4 32-bit int lanes, non-equality.
     /// </summary>
     [OpCodeCharacteristics("i32x4.ne")]
     [SimdInstructionGenerate<Vec128NotEqual>()]
     Int32X4NotEqual = 0x38,
     
     /// <summary>
-    /// Lane-wise compare 4 32-bit lanes, signed less than.
+    /// Lane-wise compare 4 32-bit int lanes, signed less than.
     /// </summary>
     [OpCodeCharacteristics("i32x4.lt_s")]
     [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
     Int32X4LessThanSigned = 0x39,
     
     /// <summary>
-    /// Lane-wise compare 4 32-bit lanes, unsigned less than.
+    /// Lane-wise compare 4 32-bit int lanes, unsigned less than.
     /// </summary>
     [OpCodeCharacteristics("i32x4.lt_u")]
     [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
     Int32X4LessThanUnsigned = 0x3a,
     
     /// <summary>
-    /// Lane-wise compare 4 32-bit lanes, signed greater than.
+    /// Lane-wise compare 4 32-bit int lanes, signed greater than.
     /// </summary>
     [OpCodeCharacteristics("i32x4.gt_s")]
     [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
     Int32X4GreaterThanSigned = 0x3b,
     
     /// <summary>
-    /// Lane-wise compare 4 32-bit lanes, unsigned greater than.
+    /// Lane-wise compare 4 32-bit int lanes, unsigned greater than.
     /// </summary>
     [OpCodeCharacteristics("i32x4.gt_u")]
     [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
     Int32X4GreaterThanUnsigned = 0x3c,
     
     /// <summary>
-    /// Lane-wise compare 4 32-bit lanes, signed less than or equal.
+    /// Lane-wise compare 4 32-bit int lanes, signed less than or equal.
     /// </summary>
     [OpCodeCharacteristics("i32x4.le_s")]
     [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
     Int32X4LessThanOrEqualSigned = 0x3d,
     
     /// <summary>
-    /// Lane-wise compare 4 32-bit lanes, unsigned less than or equal.
+    /// Lane-wise compare 4 32-bit int lanes, unsigned less than or equal.
     /// </summary>
     [OpCodeCharacteristics("i32x4.le_u")]
     [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
     Int32X4LessThanOrEqualUnsigned = 0x3e,
     
     /// <summary>
-    /// Lane-wise compare 4 32-bit lanes, signed greater than or equal.
+    /// Lane-wise compare 4 32-bit int lanes, signed greater than or equal.
     /// </summary>
     [OpCodeCharacteristics("i32x4.ge_s")]
     [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
     Int32X4GreaterThanOrEqualSigned = 0x3f,
     
     /// <summary>
-    /// Lane-wise compare 4 32-bit lanes, unsigned greater than or equal.
+    /// Lane-wise compare 4 32-bit int lanes, unsigned greater than or equal.
     /// </summary>
     [OpCodeCharacteristics("i32x4.ge_u")]
     [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
     Int32X4GreaterThanOrEqualUnsigned = 0x40,
     
     /// <summary>
-    /// Return 1 if all 4 32-bit lanes are non-zero, 0 otherwise.
+    /// Return 1 if all 4 32-bit int lanes are non-zero, 0 otherwise.
     /// </summary>
     [OpCodeCharacteristics("i32x4.all_true")]
     [SimdInstructionGenerate<Vec128AllTrue>()]
@@ -372,7 +372,7 @@ public enum SimdOpCode : byte
     Int32X4AllTrue = 0xa3,
 
     /// <summary>
-    /// Extract the high bit for each of the 4 32-bit lanes and produce a scalar mask with all bits concatenated.
+    /// Extract the high bit for each of the 4 32-bit int lanes and produce a scalar mask with all bits concatenated.
     /// </summary>
     [OpCodeCharacteristics("i32x4.bitmask")]
     [SimdInstructionGenerate<Vec128BitMask>()]
@@ -380,21 +380,21 @@ public enum SimdOpCode : byte
     Int32X4BitMask = 0xa4,
 
     /// <summary>
-    /// Shift the bits in each of the 4 32-bit lanes left by the same amout.
+    /// Shift the bits in each of the 4 32-bit int lanes left by the same amout.
     /// </summary>
     [OpCodeCharacteristics("i32x4.shl")]
     [SimdInstructionGenerate<Vec128Shift>()]
     Int32X4ShiftLeft = 0xab,
     
     /// <summary>
-    /// Shift the bits in each of the 4 32-bit lanes arithmetic right by the same amout.
+    /// Shift the bits in each of the 4 32-bit int lanes arithmetic right by the same amout.
     /// </summary>
     [OpCodeCharacteristics("i32x4.shr_s")]
     [SimdInstructionGenerate<Vec128Shift>()]
     Int32X4ShiftArithRight = 0xac,
     
     /// <summary>
-    /// Shift the bits in each of the 4 32-bit lanes logical right by the same amout.
+    /// Shift the bits in each of the 4 32-bit int lanes logical right by the same amout.
     /// </summary>
     [OpCodeCharacteristics("i32x4.shr_u")]
     [SimdInstructionGenerate<Vec128Shift>()]
@@ -429,49 +429,49 @@ public enum SimdOpCode : byte
     Int64X2Neg = 0xc1,
 
     /// <summary>
-    /// Lane-wise compare 2 64-bit lanes, equality.
+    /// Lane-wise compare 2 64-bit int lanes, equality.
     /// </summary>
     [OpCodeCharacteristics("i64x2.eq")]
     [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
     Int64X2Equal = 0xd6,
     
     /// <summary>
-    /// Lane-wise compare 2 64-bit lanes, non-equality.
+    /// Lane-wise compare 2 64-bit int lanes, non-equality.
     /// </summary>
     [OpCodeCharacteristics("i64x2.ne")]
     [SimdInstructionGenerate<Vec128NotEqual>()]
     Int64X2NotEqual = 0xd7,
     
     /// <summary>
-    /// Lane-wise compare 2 64-bit lanes, signed less than.
+    /// Lane-wise compare 2 64-bit int lanes, signed less than.
     /// </summary>
     [OpCodeCharacteristics("i64x2.lt_s")]
     [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
     Int64X2LessThanSigned = 0xd8,
     
     /// <summary>
-    /// Lane-wise compare 2 64-bit lanes, signed greater than.
+    /// Lane-wise compare 2 64-bit int lanes, signed greater than.
     /// </summary>
     [OpCodeCharacteristics("i64x2.gt_s")]
     [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
     Int64X2GreaterThanSigned = 0xd9,
     
     /// <summary>
-    /// Lane-wise compare 2 64-bit lanes, signed less than or equal.
+    /// Lane-wise compare 2 64-bit int lanes, signed less than or equal.
     /// </summary>
     [OpCodeCharacteristics("i64x2.le_s")]
     [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
     Int64X2LessThanOrEqualSigned = 0xda,
     
     /// <summary>
-    /// Lane-wise compare 2 64-bit lanes, signed greater than or equal.
+    /// Lane-wise compare 2 64-bit int lanes, signed greater than or equal.
     /// </summary>
     [OpCodeCharacteristics("i64x2.ge_s")]
     [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
     Int64X2GreaterThanOrEqualSigned = 0xdb,
     
     /// <summary>
-    /// Return 1 if all 2 64-bit lanes are non-zero, 0 otherwise.
+    /// Return 1 if all 2 64-bit int lanes are non-zero, 0 otherwise.
     /// </summary>
     [OpCodeCharacteristics("i64x2.all_true")]
     [SimdInstructionGenerate<Vec128AllTrue>()]
@@ -479,7 +479,7 @@ public enum SimdOpCode : byte
     Int64X2AllTrue = 0xc3,
 
     /// <summary>
-    /// Extract the high bit for each of the 2 64-bit lanes and produce a scalar mask with all bits concatenated.
+    /// Extract the high bit for each of the 2 64-bit int lanes and produce a scalar mask with all bits concatenated.
     /// </summary>
     [OpCodeCharacteristics("i64x2.bitmask")]
     [SimdInstructionGenerate<Vec128BitMask>()]
@@ -487,21 +487,21 @@ public enum SimdOpCode : byte
     Int64X2BitMask = 0xc4,
 
     /// <summary>
-    /// Shift the bits in each of the 2 64-bit lanes left by the same amout.
+    /// Shift the bits in each of the 2 64-bit int lanes left by the same amout.
     /// </summary>
     [OpCodeCharacteristics("i64x2.shl")]
     [SimdInstructionGenerate<Vec128Shift>()]
     Int64X2ShiftLeft = 0xcb,
     
     /// <summary>
-    /// Shift the bits in each of the 2 64-bit lanes arithmetic right by the same amout.
+    /// Shift the bits in each of the 2 64-bit int lanes arithmetic right by the same amout.
     /// </summary>
     [OpCodeCharacteristics("i64x2.shr_s")]
     [SimdInstructionGenerate<Vec128Shift>()]
     Int64X2ShiftArithRight = 0xcc,
     
     /// <summary>
-    /// Shift the bits in each of the 2 64-bit lanes logical right by the same amout.
+    /// Shift the bits in each of the 2 64-bit int lanes logical right by the same amout.
     /// </summary>
     [OpCodeCharacteristics("i64x2.shr_u")]
     [SimdInstructionGenerate<Vec128Shift>()]
@@ -528,6 +528,48 @@ public enum SimdOpCode : byte
     [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
     Int64X2Mul = 0xd5,
 
+    /// <summary>
+    /// Lane-wise compare 4 32-bit float lanes, equality.
+    /// </summary>
+    [OpCodeCharacteristics("f32x4.eq")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    Float32X4Equal = 0x41,
+    
+    /// <summary>
+    /// Lane-wise compare 4 32-bit float lanes, non-equality.
+    /// </summary>
+    [OpCodeCharacteristics("f32x4.ne")]
+    [SimdInstructionGenerate<Vec128NotEqual>()]
+    Float32X4NotEqual = 0x42,
+    
+    /// <summary>
+    /// Lane-wise compare 4 32-bit float lanes, signed less than.
+    /// </summary>
+    [OpCodeCharacteristics("f32x4.lt")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    Float32X4LessThan = 0x43,
+    
+    /// <summary>
+    /// Lane-wise compare 4 32-bit float lanes, signed greater than.
+    /// </summary>
+    [OpCodeCharacteristics("f32x4.gt")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    Float32X4GreaterThan = 0x44,
+    
+    /// <summary>
+    /// Lane-wise compare 4 32-bit float lanes, signed less than or equal.
+    /// </summary>
+    [OpCodeCharacteristics("f32x4.le")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    Float32X4LessThanOrEqual = 0x45,
+    
+    /// <summary>
+    /// Lane-wise compare 4 32-bit float lanes, signed greater than or equal.
+    /// </summary>
+    [OpCodeCharacteristics("f32x4.ge")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    Float32X4GreaterThanOrEqual = 0x46,
+    
     /// <summary>
     /// SIMD negate 4 32-bit floats.
     /// </summary>
@@ -570,6 +612,48 @@ public enum SimdOpCode : byte
     [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
     Float32X4Div = 0xe7,
 
+    /// <summary>
+    /// Lane-wise compare 2 64-bit float lanes, equality.
+    /// </summary>
+    [OpCodeCharacteristics("f64x2.eq")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    Float64X2Equal = 0x47,
+    
+    /// <summary>
+    /// Lane-wise compare 2 64-bit float lanes, non-equality.
+    /// </summary>
+    [OpCodeCharacteristics("f64x2.ne")]
+    [SimdInstructionGenerate<Vec128NotEqual>()]
+    Float64X2NotEqual = 0x48,
+    
+    /// <summary>
+    /// Lane-wise compare 2 64-bit float lanes, signed less than.
+    /// </summary>
+    [OpCodeCharacteristics("f64x2.lt")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    Float64X2LessThan = 0x49,
+    
+    /// <summary>
+    /// Lane-wise compare 2 64-bit float lanes, signed greater than.
+    /// </summary>
+    [OpCodeCharacteristics("f64x2.gt")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    Float64X2GreaterThan = 0x4a,
+    
+    /// <summary>
+    /// Lane-wise compare 2 64-bit float lanes, signed less than or equal.
+    /// </summary>
+    [OpCodeCharacteristics("f64x2.le")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    Float64X2LessThanOrEqual = 0x4b,
+    
+    /// <summary>
+    /// Lane-wise compare 2 64-bit float lanes, signed greater than or equal.
+    /// </summary>
+    [OpCodeCharacteristics("f64x2.ge")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    Float64X2GreaterThanOrEqual = 0x4c,
+    
     /// <summary>
     /// SIMD negate 2 64-bit floats.
     /// </summary>
@@ -620,28 +704,28 @@ public enum SimdOpCode : byte
     Vec128Not = 0x4d,
 
     /// <summary>
-    /// SIMD bitwise and two 128-bit vectorc.
+    /// SIMD bitwise and two 128-bit vectors.
     /// </summary>
     [OpCodeCharacteristics("v128.and")]
     [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
     Vec128And = 0x4e,
 
     /// <summary>
-    /// SIMD bitwise and-not two 128-bit vectorc.
+    /// SIMD bitwise and-not two 128-bit vectors.
     /// </summary>
     [OpCodeCharacteristics("v128.andnot")]
     [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
     Vec128AndNot = 0x4f,
 
     /// <summary>
-    /// SIMD bitwise or two 128-bit vectorc.
+    /// SIMD bitwise or two 128-bit vectors.
     /// </summary>
     [OpCodeCharacteristics("v128.or")]
     [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
     Vec128Or = 0x50,
 
     /// <summary>
-    /// SIMD bitwise xor two 128-bit vectorc.
+    /// SIMD bitwise xor two 128-bit vectors.
     /// </summary>
     [OpCodeCharacteristics("v128.xor")]
     [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
@@ -654,7 +738,7 @@ public enum SimdOpCode : byte
     Vec128BitSelect = 0x52,
 
     /// <summary>
-    /// Return 1 if any bit is non-zero, 0 otherwise.
+    /// Return 1 if any bit in a 128-bit vector is non-zero, 0 otherwise.
     /// </summary>
     [OpCodeCharacteristics("v128.any_true")]
     [SimdOpTraits(hasMethodInfo: false)]
@@ -720,12 +804,16 @@ internal static class SimdOpCodeExtensions
         { "neg", ("Negate", 1, true) },
         { "eq", ("Equals", 2, true) },
         { "ne", ("Equals", 2, true) },
+        { "lt", ("LessThan", 2, true) },
         { "lt_s", ("LessThan", 2, true) },
         { "lt_u", ("LessThan", 2, true) },
+        { "gt", ("GreaterThan", 2, true) },
         { "gt_s", ("GreaterThan", 2, true) },
         { "gt_u", ("GreaterThan", 2, true) },
+        { "le", ("LessThanOrEqual", 2, true) },
         { "le_s", ("LessThanOrEqual", 2, true) },
         { "le_u", ("LessThanOrEqual", 2, true) },
+        { "ge", ("GreaterThanOrEqual", 2, true) },
         { "ge_s", ("GreaterThanOrEqual", 2, true) },
         { "ge_u", ("GreaterThanOrEqual", 2, true) },
         { "add", ("Add", 2, true) },
