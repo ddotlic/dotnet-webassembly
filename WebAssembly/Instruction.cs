@@ -397,6 +397,12 @@ public abstract class Instruction : IEquatable<Instruction>
                         case SimdOpCode.Int32X4Sub: yield return new Int32X4Sub(); break;
                         case SimdOpCode.Int32X4Mul: yield return new Int32X4Mul(); break;
                         case SimdOpCode.Int64X2Neg: yield return new Int64X2Neg(); break;
+                        case SimdOpCode.Int64X2Equal: yield return new Int64X2Equal(); break;
+                        case SimdOpCode.Int64X2NotEqual: yield return new Int64X2NotEqual(); break;
+                        case SimdOpCode.Int64X2LessThanSigned: yield return new Int64X2LessThanSigned(); break;
+                        case SimdOpCode.Int64X2GreaterThanSigned: yield return new Int64X2GreaterThanSigned(); break;
+                        case SimdOpCode.Int64X2LessThanOrEqualSigned: yield return new Int64X2LessThanOrEqualSigned(); break;
+                        case SimdOpCode.Int64X2GreaterThanOrEqualSigned: yield return new Int64X2GreaterThanOrEqualSigned(); break;
                         case SimdOpCode.Int64X2AllTrue: yield return new Int64X2AllTrue(); break;
                         case SimdOpCode.Int64X2BitMask: yield return new Int64X2BitMask(); break;
                         case SimdOpCode.Int64X2ShiftLeft: yield return new Int64X2ShiftLeft(); break;

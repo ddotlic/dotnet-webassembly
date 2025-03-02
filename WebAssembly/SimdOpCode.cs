@@ -429,6 +429,48 @@ public enum SimdOpCode : byte
     Int64X2Neg = 0xc1,
 
     /// <summary>
+    /// Lane-wise compare 2 64-bit lanes, equality.
+    /// </summary>
+    [OpCodeCharacteristics("i64x2.eq")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    Int64X2Equal = 0xd6,
+    
+    /// <summary>
+    /// Lane-wise compare 2 64-bit lanes, non-equality.
+    /// </summary>
+    [OpCodeCharacteristics("i64x2.ne")]
+    [SimdInstructionGenerate<Vec128NotEqual>()]
+    Int64X2NotEqual = 0xd7,
+    
+    /// <summary>
+    /// Lane-wise compare 2 64-bit lanes, signed less than.
+    /// </summary>
+    [OpCodeCharacteristics("i64x2.lt_s")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    Int64X2LessThanSigned = 0xd8,
+    
+    /// <summary>
+    /// Lane-wise compare 2 64-bit lanes, signed greater than.
+    /// </summary>
+    [OpCodeCharacteristics("i64x2.gt_s")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    Int64X2GreaterThanSigned = 0xd9,
+    
+    /// <summary>
+    /// Lane-wise compare 2 64-bit lanes, signed less than or equal.
+    /// </summary>
+    [OpCodeCharacteristics("i64x2.le_s")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    Int64X2LessThanOrEqualSigned = 0xda,
+    
+    /// <summary>
+    /// Lane-wise compare 2 64-bit lanes, signed greater than or equal.
+    /// </summary>
+    [OpCodeCharacteristics("i64x2.ge_s")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    Int64X2GreaterThanOrEqualSigned = 0xdb,
+    
+    /// <summary>
     /// Return 1 if all 2 64-bit lanes are non-zero, 0 otherwise.
     /// </summary>
     [OpCodeCharacteristics("i64x2.all_true")]
