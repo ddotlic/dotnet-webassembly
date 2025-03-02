@@ -159,6 +159,76 @@ public enum SimdOpCode : byte
     Int16X8Neg = 0x81,
 
     /// <summary>
+    /// Lane-wise compare 8 16-bit lanes, equality.
+    /// </summary>
+    [OpCodeCharacteristics("i16x8.eq")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    Int16X8Equal = 0x2d,
+    
+    /// <summary>
+    /// Lane-wise compare 8 16-bit lanes, non-equality.
+    /// </summary>
+    [OpCodeCharacteristics("i16x8.ne")]
+    [SimdInstructionGenerate<Vec128NotEqual>()]
+    Int16X8NotEqual = 0x2e,
+    
+    /// <summary>
+    /// Lane-wise compare 8 16-bit lanes, signed less than.
+    /// </summary>
+    [OpCodeCharacteristics("i16x8.lt_s")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    Int16X8LessThanSigned = 0x2f,
+    
+    /// <summary>
+    /// Lane-wise compare 8 16-bit lanes, unsigned less than.
+    /// </summary>
+    [OpCodeCharacteristics("i16x8.lt_u")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    Int16X8LessThanUnsigned = 0x30,
+    
+    /// <summary>
+    /// Lane-wise compare 8 16-bit lanes, signed greater than.
+    /// </summary>
+    [OpCodeCharacteristics("i16x8.gt_s")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    Int16X8GreaterThanSigned = 0x31,
+    
+    /// <summary>
+    /// Lane-wise compare 8 16-bit lanes, unsigned greater than.
+    /// </summary>
+    [OpCodeCharacteristics("i16x8.gt_u")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    Int16X8GreaterThanUnsigned = 0x32,
+    
+    /// <summary>
+    /// Lane-wise compare 8 16-bit lanes, signed less than or equal.
+    /// </summary>
+    [OpCodeCharacteristics("i16x8.le_s")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    Int16X8LessThanOrEqualSigned = 0x33,
+    
+    /// <summary>
+    /// Lane-wise compare 8 16-bit lanes, unsigned less than or equal.
+    /// </summary>
+    [OpCodeCharacteristics("i16x8.le_u")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    Int16X8LessThanOrEqualUnsigned = 0x34,
+    
+    /// <summary>
+    /// Lane-wise compare 8 16-bit lanes, signed greater than or equal.
+    /// </summary>
+    [OpCodeCharacteristics("i16x8.ge_s")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    Int16X8GreaterThanOrEqualSigned = 0x35,
+    
+    /// <summary>
+    /// Lane-wise compare 8 16-bit lanes, unsigned greater than or equal.
+    /// </summary>
+    [OpCodeCharacteristics("i16x8.ge_u")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    Int16X8GreaterThanOrEqualUnsigned = 0x36,
+    
+    /// <summary>
     /// Return 1 if all 8 16-bit lanes are non-zero, 0 otherwise.
     /// </summary>
     [OpCodeCharacteristics("i16x8.all_true")]

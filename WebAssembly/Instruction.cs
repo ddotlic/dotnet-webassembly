@@ -359,6 +359,16 @@ public abstract class Instruction : IEquatable<Instruction>
                         case SimdOpCode.Int8X16Add: yield return new Int8X16Add(); break;
                         case SimdOpCode.Int8X16Sub: yield return new Int8X16Sub(); break;
                         case SimdOpCode.Int16X8Neg: yield return new Int16X8Neg(); break;
+                        case SimdOpCode.Int16X8Equal: yield return new Int16X8Equal(); break;
+                        case SimdOpCode.Int16X8NotEqual: yield return new Int16X8NotEqual(); break;
+                        case SimdOpCode.Int16X8LessThanSigned: yield return new Int16X8LessThanSigned(); break;
+                        case SimdOpCode.Int16X8LessThanUnsigned: yield return new Int16X8LessThanUnsigned(); break;
+                        case SimdOpCode.Int16X8GreaterThanSigned: yield return new Int16X8GreaterThanSigned(); break;
+                        case SimdOpCode.Int16X8GreaterThanUnsigned: yield return new Int16X8GreaterThanUnsigned(); break;
+                        case SimdOpCode.Int16X8LessThanOrEqualSigned: yield return new Int16X8LessThanOrEqualSigned(); break;
+                        case SimdOpCode.Int16X8LessThanOrEqualUnsigned: yield return new Int16X8LessThanOrEqualUnsigned(); break;
+                        case SimdOpCode.Int16X8GreaterThanOrEqualSigned: yield return new Int16X8GreaterThanOrEqualSigned(); break;
+                        case SimdOpCode.Int16X8GreaterThanOrEqualUnsigned: yield return new Int16X8GreaterThanOrEqualUnsigned(); break;
                         case SimdOpCode.Int16X8AllTrue: yield return new Int16X8AllTrue(); break;
                         case SimdOpCode.Int16X8BitMask: yield return new Int16X8BitMask(); break;
                         case SimdOpCode.Int16X8ShiftLeft: yield return new Int16X8ShiftLeft(); break;
