@@ -18,12 +18,18 @@ public abstract class SimdMemoryReadInstruction : SimdMemoryImmediateInstruction
     {
     }
 
+    private protected virtual System.Reflection.Emit.OpCode[] LoadOpCodes => [];
+    
     internal sealed override void Compile(CompilationContext context)
     {
-        MemoryImmediateInstruction.EmitMemoryAccessProlog(context, OpCode, Offset, Flags, 16);
+        MemoryImmediateInstruction.EmitMemoryAccessProlog(context, OpCode, Offset, Flags, Size);
 
-        context.Emit(OpCodes.Conv_U);
-        context.Emit(OpCodes.Call, SimdOpCode.Vec128Load.ToMethodInfo()); 
+        foreach (var opCode in LoadOpCodes)
+        {
+            context.Emit(opCode);
+        }
+        
+        context.Emit(OpCodes.Call, this.SimdOpCode.ToMethodInfo()); 
 
         context.Stack.Push(WebAssemblyValueType.Vector128);
     }

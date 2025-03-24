@@ -37,6 +37,8 @@ public abstract class SimdMemoryImmediateInstruction : SimdInstruction, IEquatab
         writer.WriteVar(this.Offset);
     }
 
+    private protected abstract byte Size { get; }
+
     /// <inheritdoc/>
     public override bool Equals(object? obj) => this.Equals(obj as SimdMemoryImmediateInstruction);
 

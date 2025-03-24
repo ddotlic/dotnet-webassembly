@@ -11,9 +11,6 @@ namespace WebAssembly.Instructions;
 /// </summary>
 public abstract class SimdValueOneToOneCallInstruction : SimdInstruction
 {
-    private static MethodInfo Converter => typeof(Vector128).GetMethods(BindingFlags.Public | BindingFlags.Static)
-        .First(m => m.Name == "As");
-    
     private protected SimdValueOneToOneCallInstruction()
     {
     }

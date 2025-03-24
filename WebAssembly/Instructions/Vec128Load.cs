@@ -25,4 +25,5 @@ public class Vec128Load : SimdMemoryReadInstruction
     /// </summary>
     public sealed override SimdOpCode SimdOpCode => SimdOpCode.Vec128Load;
 
+    private protected override byte Size => 16;
 }

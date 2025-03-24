@@ -222,12 +222,14 @@ public static class Compile
         KeyValuePair<string, uint>[]? exportedFunctions = null;
         var previousSection = Section.None;
 
-        var module = AssemblyBuilder.DefineDynamicAssembly(
+        // NOTE: uncomment when you need to see the IL generated, also see end of this method
+        //var builder = new PersistedAssemblyBuilder(new AssemblyName("MyAssembly"), typeof(object).Assembly);
+
+        var builder = AssemblyBuilder.DefineDynamicAssembly(
             new AssemblyName("CompiledWebAssembly"),
-            AssemblyBuilderAccess.RunAndCollect
-            )
-            .DefineDynamicModule("CompiledWebAssembly")
-            ;
+            AssemblyBuilderAccess.RunAndCollect);
+        
+        var module = builder.DefineDynamicModule("CompiledWebAssembly");
 
         var context = new CompilationContext(configuration);
         var exportsBuilder = context.CheckedExportsBuilder = module.DefineType("CompiledExports", ClassAttributes, exportContainer);
@@ -574,6 +576,9 @@ public static class Compile
         }
 
         module.CreateGlobalFunctions();
+        
+        // NOTE: uncomment when you need to see the IL generated
+        // builder.Save("/Users/draza/Downloads/CompiledWebAssembly.dll");
         return instance.DeclaredConstructors.First();
     }
 
@@ -1299,7 +1304,7 @@ public static class Compile
 
             //Ensure sufficient memory is allocated, error if max is exceeded.
             instanceConstructorIL.Emit(OpCodes.Ldloc, address);
-            instanceConstructorIL.Emit(OpCodes.Ldc_I4, data.Length);
+            instanceConstructorIL.Emit(OpCodes.Ldc_I4, data.Length - 1);
             instanceConstructorIL.Emit(OpCodes.Add_Ovf_Un);
 
             instanceConstructorIL.Emit(OpCodes.Ldarg_0);

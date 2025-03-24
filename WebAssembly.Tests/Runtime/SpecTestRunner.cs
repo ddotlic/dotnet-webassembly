@@ -19,8 +19,30 @@ using System.Text.Json.Serialization;
 
 namespace WebAssembly.Runtime;
 
+
+
 static class SpecTestRunner
 {
+    internal static TUnsigned ParseToUnsigned<TUnsigned, TSigned>(string input, bool acceptNaN = false, TUnsigned canonicalNaN = default!, TUnsigned arithmeticNaN = default!)
+    where TUnsigned : IBinaryInteger<TUnsigned>
+    where TSigned : IBinaryInteger<TSigned>
+    {
+        if (input == "nan:canonical")
+            return acceptNaN ? canonicalNaN : throw new OverflowException("Canonical NaN not expected here.");
+        else if (input == "nan:arithmetic")
+            return acceptNaN ? arithmeticNaN : throw new OverflowException("Arithmetic NaN not expected here.");
+
+        try
+        {
+            var signedValue = TSigned.Parse(input, null); // Try parsing as signed
+            return TUnsigned.CreateTruncating(signedValue);
+        }
+        catch
+        {
+            return TUnsigned.Parse(input, null); // If signed parsing fails, try parsing as unsigned
+        }
+    }
+    
     public static void Run(string pathBase, string json) => Run<object>(pathBase, json);
 
     public static void Run(string pathBase, string json, Func<uint, bool>? skip) => Run<object>(pathBase, json, skip);
@@ -610,9 +632,23 @@ static class SpecTestRunner
         public abstract object BoxedValue { get; }
     }
     
+    class Int32ToUint32Converter : JsonConverter<uint>
+    {
+        public override uint Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            var value = reader.GetString(); // May be negative
+            return ParseToUnsigned<uint, int>(value!);
+        }
+
+        public override void Write(Utf8JsonWriter writer, uint value, JsonSerializerOptions options)
+        {
+            throw new NotSupportedException("Serialization is not supported by this converter.");
+        }
+    }
+    
     class Int32Value : TypedValue
     {
-        [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
+        [JsonConverter(typeof(Int32ToUint32Converter))]
         public uint value;
 
         public override object BoxedValue => (int)value;
@@ -620,9 +656,23 @@ static class SpecTestRunner
         public override string ToString() => $"i32: {value}";
     }
 
+    class Int64ToUint64Converter : JsonConverter<ulong>
+    {
+        public override ulong Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            var value = reader.GetString(); // May be negative
+            return ParseToUnsigned<ulong, long>(value!);
+        }
+
+        public override void Write(Utf8JsonWriter writer, ulong value, JsonSerializerOptions options)
+        {
+            throw new NotSupportedException("Serialization is not supported by this converter.");
+        }
+    }
+    
     class Int64Value : TypedValue
     {
-        [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
+        [JsonConverter(typeof(Int64ToUint64Converter))]
         public ulong value;
 
         public override object BoxedValue => (long)value;
@@ -671,26 +721,6 @@ static class SpecTestRunner
         
         public string[] value;
 
-        private static TUnsigned ParseToUnsigned<TUnsigned, TSigned>(string input, bool acceptNaN = false, TUnsigned canonicalNaN = default!, TUnsigned arithmeticNaN = default!)
-        where TUnsigned : IBinaryInteger<TUnsigned>
-        where TSigned : IBinaryInteger<TSigned>
-        {
-            if (input == "nan:canonical")
-                return acceptNaN ? canonicalNaN : throw new OverflowException("Canonical NaN not expected here.");
-            else if (input == "nan:arithmetic")
-                return acceptNaN ? arithmeticNaN : throw new OverflowException("Arithmetic NaN not expected here.");
-
-            try
-            {
-                var signedValue = TSigned.Parse(input, null); // Try parsing as signed
-                return TUnsigned.CreateTruncating(signedValue);
-            }
-            catch
-            {
-                return TUnsigned.Parse(input, null); // If signed parsing fails, try parsing as unsigned
-            }
-        }
-        
         public virtual Vector128<uint> ActualValue
         {
             get

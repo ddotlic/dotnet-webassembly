@@ -19,6 +19,18 @@ public enum SimdOpCode : byte
     Vec128Load = 0x00,
 
     /// <summary>
+    /// Load a 32-bit value from memory into vector and zero pad.
+    /// </summary>
+    [OpCodeCharacteristics("v128.load32_zero")]
+    Vec128Load32Zero = 0x5c,
+    
+    /// <summary>
+    /// Load a 64-bit value from memory into vector and zero pad.
+    /// </summary>
+    [OpCodeCharacteristics("v128.load64_zero")]
+    Vec128Load64Zero = 0x5d,
+    
+    /// <summary>
     /// Instantiate a new SIMD vector with 16 8-bit elements.
     /// </summary>
     [OpCodeCharacteristics("v128.const")]
@@ -286,6 +298,14 @@ public enum SimdOpCode : byte
     [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
     Int16X8Mul = 0x95,
 
+    
+    /// <summary>
+    /// Extract a lane (32-bit int value) from a SIMD vector.
+    /// </summary>
+    [OpCodeCharacteristics("i32x4.extract_lane")]
+    [SimdInstructionGenerate<Vec128ExtractLane>(includeReaderConstructor: true)]
+    Int32X4ExtractLane = 0x1b,
+    
     /// <summary>
     /// SIMD negate 4 32-bit integers. 
     /// </summary>
@@ -422,6 +442,13 @@ public enum SimdOpCode : byte
     Int32X4Mul = 0xb5,
 
     /// <summary>
+    /// Extract a lane (64-bit int value) from a SIMD vector.
+    /// </summary>
+    [OpCodeCharacteristics("i64x2.extract_lane")]
+    [SimdInstructionGenerate<Vec128ExtractLane>(includeReaderConstructor: true)]
+    Int64X2ExtractLane = 0x1d,
+    
+    /// <summary>
     /// SIMD negate 2 64-bit integers.
     /// </summary>
     [OpCodeCharacteristics("i64x2.neg")]
@@ -529,6 +556,13 @@ public enum SimdOpCode : byte
     Int64X2Mul = 0xd5,
 
     /// <summary>
+    /// Extract a lane (32-bit float value) from a SIMD vector.
+    /// </summary>
+    [OpCodeCharacteristics("f32x4.extract_lane")]
+    [SimdInstructionGenerate<Vec128ExtractLane>(includeReaderConstructor: true)]
+    Float32X4ExtractLane = 0x1f,
+    
+    /// <summary>
     /// Lane-wise compare 4 32-bit float lanes, equality.
     /// </summary>
     [OpCodeCharacteristics("f32x4.eq")]
@@ -612,6 +646,13 @@ public enum SimdOpCode : byte
     [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
     Float32X4Div = 0xe7,
 
+    /// <summary>
+    /// Extract a lane (64-bit float value) from a SIMD vector.
+    /// </summary>
+    [OpCodeCharacteristics("f64x2.extract_lane")]
+    [SimdInstructionGenerate<Vec128ExtractLane>(includeReaderConstructor: true)]
+    Float64X2ExtractLane = 0x21,
+    
     /// <summary>
     /// Lane-wise compare 2 64-bit float lanes, equality.
     /// </summary>
@@ -782,11 +823,19 @@ internal static class SimdOpCodeExtensions
         var methodInfo = methods.Where(m => m.Name == name).First(m =>
         {
             var pars = m.GetParameters();
-            return pars.Length == parsCount && pars.Select(p => p.ParameterType).All(pt =>
-                isGeneric
-                    ? pt.IsPointer || pt.IsByRef
-                    || (pt.IsGenericType && pt.GetGenericTypeDefinition() == typeof(Vector128<>))
-                    : pt == parType || pt == typeof(Vector128<>).MakeGenericType(parType) || pt.IsPrimitive);
+            if (pars.Length != parsCount) return false;
+            return name switch
+            {
+                "ShiftLeft" or "ShiftRightArithmetic" or "ShiftRightLogical" =>
+                    pars[0].ParameterType == typeof(Vector128<>).MakeGenericType(parType)
+                    && pars[1].ParameterType == typeof(int),
+                "GetElement" => true,
+                _ => pars.Select(p => p.ParameterType).All(pt =>
+                    isGeneric
+                        ? pt.IsPointer || pt.IsByRef
+                        || (pt.IsGenericType && pt.GetGenericTypeDefinition() == typeof(Vector128<>))
+                        : pt == parType),
+            };
         });
         return isGeneric && methodInfo.IsGenericMethodDefinition ? methodInfo.MakeGenericMethod(parType) : methodInfo;
     }
@@ -831,6 +880,9 @@ internal static class SimdOpCodeExtensions
         { "shl", ("ShiftLeft", 2, false) },
         { "shr_s", ("ShiftRightArithmetic", 2, false) },
         { "shr_u", ("ShiftRightLogical", 2, false) },
+        { "load32_zero", ("CreateScalar", 1, false) },
+        { "load64_zero", ("CreateScalar", 1, false) },
+        { "extract_lane", ("GetElement", 2, true) },
     };
 
     private static readonly Dictionary<string, Type> laneTypeToType = new()
@@ -846,6 +898,8 @@ internal static class SimdOpCodeExtensions
 
     private static Type? SpecialCaseLaneType(string methodName, string opName, string laneType)
     {
+        if (opName == "load32_zero") return typeof(uint);
+        if (opName == "load64_zero") return typeof(ulong);
         if (!opName.EndsWith("_s", StringComparison.InvariantCulture)) return null; 
         return methodName switch
         {

@@ -30,15 +30,17 @@ public class SimdInstructionGenerator : IIncrementalGenerator
             transform: static (context, _) =>
             {
                 var attr = context.Attributes[0];
+                var includeReaderConstructor = attr.ConstructorArguments[0].Value as bool? ?? false;
                 var docs = GetSummary(context.TargetSymbol.GetDocumentationCommentXml() ?? defaultDocs);
                 var @base = attr.AttributeClass!.TypeArguments[0].Name;
                 var @class = context.TargetSymbol.Name;
-                return new Model(docs, @class, @base);
+                return new Model(docs, @class, @base, includeReaderConstructor);
             });
         
         context.RegisterSourceOutput(pipeline, static (context, model) =>
         {
             var @class = model.ClassName;
+            var readerConstructor = model.IncludeReaderConstructor ? $"internal {@class}(Reader reader): base(reader) {{}}" : string.Empty;
             var sourceText = SourceText.From(
                 $$"""
                 namespace WebAssembly.Instructions;
@@ -51,6 +53,8 @@ public class SimdInstructionGenerator : IIncrementalGenerator
                      /// </summary>
                      public sealed override SimdOpCode SimdOpCode => SimdOpCode.{{@class}};
                      
+                     {{readerConstructor}}
+                     
                      /// <summary>
                      /// Creates a new  <see cref="{{@class}}"/> instance.
                      /// </summary>
@@ -62,5 +66,5 @@ public class SimdInstructionGenerator : IIncrementalGenerator
         });
     }
 
-    private record Model(string Docs, string ClassName, string BaseClassName);
+    private record Model(string Docs, string ClassName, string BaseClassName, bool IncludeReaderConstructor);
 }
