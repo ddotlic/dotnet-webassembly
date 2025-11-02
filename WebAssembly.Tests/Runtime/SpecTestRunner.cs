@@ -275,6 +275,7 @@ static class SpecTestRunner
                                 throw new AssertFailedException($"{command.line} should have thrown an exception but did not.");
                             case "alignment must not be larger than natural":
                             case "global is immutable":
+                            case "invalid lane index":
                                 Assert.ThrowsException<CompilerException>(trapExpected, $"{command.line}");
                                 continue;
                             case "unknown memory 0":

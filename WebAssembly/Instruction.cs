@@ -341,6 +341,10 @@ public abstract class Instruction : IEquatable<Instruction>
                         case SimdOpCode.Vec128Load: yield return new Vec128Load(reader); break;
                         case SimdOpCode.Vec128Load32Zero: yield return new Vec128Load32Zero(reader); break;
                         case SimdOpCode.Vec128Load64Zero: yield return new Vec128Load64Zero(reader); break;
+                        case SimdOpCode.Vec128Load8Lane: yield return new Vec128Load8Lane(reader); break;
+                        case SimdOpCode.Vec128Load16Lane: yield return new Vec128Load16Lane(reader); break;
+                        case SimdOpCode.Vec128Load32Lane: yield return new Vec128Load32Lane(reader); break;
+                        case SimdOpCode.Vec128Load64Lane: yield return new Vec128Load64Lane(reader); break;
                         case SimdOpCode.Vec128Const: yield return new Vec128Const(reader); break;
                         case SimdOpCode.Int8X16Neg: yield return new Int8X16Neg(); break;
                         case SimdOpCode.Int8X16Equal: yield return new Int8X16Equal(); break;

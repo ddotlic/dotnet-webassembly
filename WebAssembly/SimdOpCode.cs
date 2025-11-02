@@ -23,13 +23,41 @@ public enum SimdOpCode : byte
     /// </summary>
     [OpCodeCharacteristics("v128.load32_zero")]
     Vec128Load32Zero = 0x5c,
-    
+
     /// <summary>
     /// Load a 64-bit value from memory into vector and zero pad.
     /// </summary>
     [OpCodeCharacteristics("v128.load64_zero")]
     Vec128Load64Zero = 0x5d,
-    
+
+    /// <summary>
+    /// Load a single 8-bit value from memory into a lane of a v128 vector.
+    /// </summary>
+    [OpCodeCharacteristics("v128.load8_lane")]
+    [SimdInstructionGenerate<Vec128LoadLane>(includeReaderConstructor: true)]
+    Vec128Load8Lane = 0x54,
+
+    /// <summary>
+    /// Load a single 16-bit value from memory into a lane of a v128 vector.
+    /// </summary>
+    [OpCodeCharacteristics("v128.load16_lane")]
+    [SimdInstructionGenerate<Vec128LoadLane>(includeReaderConstructor: true)]
+    Vec128Load16Lane = 0x55,
+
+    /// <summary>
+    /// Load a single 32-bit value from memory into a lane of a v128 vector.
+    /// </summary>
+    [OpCodeCharacteristics("v128.load32_lane")]
+    [SimdInstructionGenerate<Vec128LoadLane>(includeReaderConstructor: true)]
+    Vec128Load32Lane = 0x56,
+
+    /// <summary>
+    /// Load a single 64-bit value from memory into a lane of a v128 vector.
+    /// </summary>
+    [OpCodeCharacteristics("v128.load64_lane")]
+    [SimdInstructionGenerate<Vec128LoadLane>(includeReaderConstructor: true)]
+    Vec128Load64Lane = 0x57,
+
     /// <summary>
     /// Instantiate a new SIMD vector with 16 8-bit elements.
     /// </summary>
@@ -829,7 +857,7 @@ internal static class SimdOpCodeExtensions
                 "ShiftLeft" or "ShiftRightArithmetic" or "ShiftRightLogical" =>
                     pars[0].ParameterType == typeof(Vector128<>).MakeGenericType(parType)
                     && pars[1].ParameterType == typeof(int),
-                "GetElement" => true,
+                "GetElement" or "WithElement" => true,
                 _ => pars.Select(p => p.ParameterType).All(pt =>
                     isGeneric
                         ? pt.IsPointer || pt.IsByRef
@@ -849,6 +877,10 @@ internal static class SimdOpCodeExtensions
     private static readonly Dictionary<string, (string, int, bool)> opNameToMethodTuple = new()
     {
         { "load", ("Load", 1, true) },
+        { "load8_lane", ("WithElement", 3, true) },
+        { "load16_lane", ("WithElement", 3, true) },
+        { "load32_lane", ("WithElement", 3, true) },
+        { "load64_lane", ("WithElement", 3, true) },
         { "const", ("Create", 4, false) },
         { "neg", ("Negate", 1, true) },
         { "eq", ("Equals", 2, true) },
@@ -898,12 +930,26 @@ internal static class SimdOpCodeExtensions
 
     private static Type? SpecialCaseLaneType(string methodName, string opName, string laneType)
     {
-        if (opName == "load32_zero") return typeof(uint);
-        if (opName == "load64_zero") return typeof(ulong);
-        if (!opName.EndsWith("_s", StringComparison.InvariantCulture)) return null; 
-        return methodName switch
+        switch (opName)
         {
-            "LessThan" or "GreaterThan" or "LessThanOrEqual" 
+            case "load32_zero":
+                return typeof(uint);
+            case "load64_zero":
+                return typeof(ulong);
+            case "load8_lane":
+                return typeof(byte);
+            case "load16_lane":
+                return typeof(ushort);
+            case "load32_lane":
+                return typeof(uint);
+            case "load64_lane":
+                return typeof(ulong);
+        }
+        return !opName.EndsWith("_s", StringComparison.InvariantCulture)
+            ? null
+            : methodName switch
+        {
+            "LessThan" or "GreaterThan" or "LessThanOrEqual"
             or "GreaterThanOrEqual" or "ShiftRightArithmetic" => laneType switch
             {
                 "i8x16" => typeof(sbyte),
@@ -915,7 +961,7 @@ internal static class SimdOpCodeExtensions
             _ => null,
         };
     }
-    
+
     private static readonly RegeneratingWeakReference<Dictionary<SimdOpCode, MethodInfo>> opCodeMethodInfoByOpCode =
         new(() => opCodeInfos.Where(oci => oci.HasMethodInfo).ToDictionary(oci => oci.OpCode, oci =>
         {
