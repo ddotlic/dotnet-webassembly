@@ -121,23 +121,8 @@ public abstract class MemoryImmediateInstruction : Instruction, IEquatable<Memor
         context.Emit(OpCodes.Call, context[RangeCheckHelper(size), CreateRangeCheck]);
     }
 
-    internal static void EmitMemoryAccessProlog(CompilationContext context, OpCode opCode, uint offset, Options flags, byte size)
+    internal static void EmitAlignment(CompilationContext context, Options flags)
     {
-        context.PopStackNoReturn(opCode, WebAssemblyValueType.Int32);
-
-        if (offset != 0)
-        {
-            Int32Constant.Emit(context, (int)offset);
-            context.Emit(OpCodes.Add_Ovf_Un);
-        }
-
-        EmitRangeCheck(context, size);
-
-        context.EmitLoadThis();
-        context.Emit(OpCodes.Ldfld, context.CheckedMemory);
-        context.Emit(OpCodes.Call, UnmanagedMemory.StartGetter);
-        context.Emit(OpCodes.Add);
-
         byte alignment;
         switch (flags) // TODO: why was it `flags & Options.Align8` (why bitmasking)?
         {
@@ -155,6 +140,26 @@ public abstract class MemoryImmediateInstruction : Instruction, IEquatable<Memor
         //We don't have to consider it.
         if (alignment != 4 && alignment != 8 && alignment != 16)
             context.Emit(OpCodes.Unaligned, alignment);
+    }
+    
+    internal static void EmitMemoryAccessProlog(CompilationContext context, OpCode opCode, uint offset, Options flags, byte size, bool emitAlignment = true)
+    {
+        context.PopStackNoReturn(opCode, WebAssemblyValueType.Int32);
+
+        if (offset != 0)
+        {
+            Int32Constant.Emit(context, (int)offset);
+            context.Emit(OpCodes.Add_Ovf_Un);
+        }
+
+        EmitRangeCheck(context, size);
+
+        context.EmitLoadThis();
+        context.Emit(OpCodes.Ldfld, context.CheckedMemory);
+        context.Emit(OpCodes.Call, UnmanagedMemory.StartGetter);
+        context.Emit(OpCodes.Add);
+        
+        if(emitAlignment) EmitAlignment(context, flags);
     }
     
     internal static MethodBuilder CreateRangeCheck(HelperMethod helper, CompilationContext context)

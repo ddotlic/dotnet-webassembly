@@ -339,12 +339,17 @@ public abstract class Instruction : IEquatable<Instruction>
                     {
                         default: throw new ModuleLoadException($"Don't know how to parse SIMD opcode \"{simdOpCode}\".", simdOpCodeOffset);
                         case SimdOpCode.Vec128Load: yield return new Vec128Load(reader); break;
+                        case SimdOpCode.Vec128Store: yield return new Vec128Store(reader); break;
                         case SimdOpCode.Vec128Load32Zero: yield return new Vec128Load32Zero(reader); break;
                         case SimdOpCode.Vec128Load64Zero: yield return new Vec128Load64Zero(reader); break;
                         case SimdOpCode.Vec128Load8Lane: yield return new Vec128Load8Lane(reader); break;
                         case SimdOpCode.Vec128Load16Lane: yield return new Vec128Load16Lane(reader); break;
                         case SimdOpCode.Vec128Load32Lane: yield return new Vec128Load32Lane(reader); break;
                         case SimdOpCode.Vec128Load64Lane: yield return new Vec128Load64Lane(reader); break;
+                        case SimdOpCode.Vec128Store8Lane: yield return new Vec128Store8Lane(reader); break;
+                        case SimdOpCode.Vec128Store16Lane: yield return new Vec128Store16Lane(reader); break;
+                        case SimdOpCode.Vec128Store32Lane: yield return new Vec128Store32Lane(reader); break;
+                        case SimdOpCode.Vec128Store64Lane: yield return new Vec128Store64Lane(reader); break;
                         case SimdOpCode.Vec128Const: yield return new Vec128Const(reader); break;
                         case SimdOpCode.Int8X16Neg: yield return new Int8X16Neg(); break;
                         case SimdOpCode.Int8X16Equal: yield return new Int8X16Equal(); break;

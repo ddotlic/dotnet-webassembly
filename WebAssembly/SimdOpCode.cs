@@ -19,6 +19,12 @@ public enum SimdOpCode : byte
     Vec128Load = 0x00,
 
     /// <summary>
+    /// Store a SIMD vector to memory.
+    /// </summary>
+    [OpCodeCharacteristics("v128.store")]
+    Vec128Store = 0x0b,
+
+    /// <summary>
     /// Load a 32-bit value from memory into vector and zero pad.
     /// </summary>
     [OpCodeCharacteristics("v128.load32_zero")]
@@ -57,6 +63,34 @@ public enum SimdOpCode : byte
     [OpCodeCharacteristics("v128.load64_lane")]
     [SimdInstructionGenerate<Vec128LoadLane>(includeReaderConstructor: true)]
     Vec128Load64Lane = 0x57,
+
+    /// <summary>
+    /// Store a single 8-bit value from a lane of a v128 vector to memory.
+    /// </summary>
+    [OpCodeCharacteristics("v128.store8_lane")]
+    [SimdInstructionGenerate<Vec128StoreLane>(includeReaderConstructor: true)]
+    Vec128Store8Lane = 0x58,
+
+    /// <summary>
+    /// Store a single 16-bit value from a lane of a v128 vector to memory.
+    /// </summary>
+    [OpCodeCharacteristics("v128.store16_lane")]
+    [SimdInstructionGenerate<Vec128StoreLane>(includeReaderConstructor: true)]
+    Vec128Store16Lane = 0x59,
+
+    /// <summary>
+    /// Store a single 32-bit value from a lane of a v128 vector to memory.
+    /// </summary>
+    [OpCodeCharacteristics("v128.store32_lane")]
+    [SimdInstructionGenerate<Vec128StoreLane>(includeReaderConstructor: true)]
+    Vec128Store32Lane = 0x5a,
+
+    /// <summary>
+    /// Store a single 64-bit value from a lane of a v128 vector to memory.
+    /// </summary>
+    [OpCodeCharacteristics("v128.store64_lane")]
+    [SimdInstructionGenerate<Vec128StoreLane>(includeReaderConstructor: true)]
+    Vec128Store64Lane = 0x5b,
 
     /// <summary>
     /// Instantiate a new SIMD vector with 16 8-bit elements.
@@ -881,6 +915,11 @@ internal static class SimdOpCodeExtensions
         { "load16_lane", ("WithElement", 3, true) },
         { "load32_lane", ("WithElement", 3, true) },
         { "load64_lane", ("WithElement", 3, true) },
+        { "store", ("Store", 2, true) },
+        { "store8_lane", ("GetElement", 2, true) },
+        { "store16_lane", ("GetElement", 2, true) },
+        { "store32_lane", ("GetElement", 2, true) },
+        { "store64_lane", ("GetElement", 2, true) },
         { "const", ("Create", 4, false) },
         { "neg", ("Negate", 1, true) },
         { "eq", ("Equals", 2, true) },
@@ -943,6 +982,16 @@ internal static class SimdOpCodeExtensions
             case "load32_lane":
                 return typeof(uint);
             case "load64_lane":
+                return typeof(ulong);
+            case "store":
+                return typeof(byte);
+            case "store8_lane":
+                return typeof(byte);
+            case "store16_lane":
+                return typeof(ushort);
+            case "store32_lane":
+                return typeof(uint);
+            case "store64_lane":
                 return typeof(ulong);
         }
         return !opName.EndsWith("_s", StringComparison.InvariantCulture)
