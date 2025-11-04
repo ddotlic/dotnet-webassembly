@@ -19,6 +19,34 @@ public enum SimdOpCode : byte
     Vec128Load = 0x00,
 
     /// <summary>
+    /// Load an 8-bit scalar from memory and splat across lanes.
+    /// </summary>
+    [OpCodeCharacteristics("v128.load8_splat")]
+    [SimdInstructionGenerate<Vec128LoadSplat>(includeReaderConstructor: true)]
+    Vec128Load8Splat = 0x07,
+
+    /// <summary>
+    /// Load a 16-bit scalar from memory and splat across lanes.
+    /// </summary>
+    [OpCodeCharacteristics("v128.load16_splat")]
+    [SimdInstructionGenerate<Vec128LoadSplat>(includeReaderConstructor: true)]
+    Vec128Load16Splat = 0x08,
+
+    /// <summary>
+    /// Load a 32-bit scalar from memory and splat across lanes.
+    /// </summary>
+    [OpCodeCharacteristics("v128.load32_splat")]
+    [SimdInstructionGenerate<Vec128LoadSplat>(includeReaderConstructor: true)]
+    Vec128Load32Splat = 0x09,
+
+    /// <summary>
+    /// Load a 64-bit scalar from memory and splat across lanes.
+    /// </summary>
+    [OpCodeCharacteristics("v128.load64_splat")]
+    [SimdInstructionGenerate<Vec128LoadSplat>(includeReaderConstructor: true)]
+    Vec128Load64Splat = 0x0a,
+
+    /// <summary>
     /// Store a SIMD vector to memory.
     /// </summary>
     [OpCodeCharacteristics("v128.store")]
@@ -911,6 +939,10 @@ internal static class SimdOpCodeExtensions
     private static readonly Dictionary<string, (string, int, bool)> opNameToMethodTuple = new()
     {
         { "load", ("Load", 1, true) },
+        { "load8_splat", ("Create", 1, false) },
+        { "load16_splat", ("Create", 1, false) },
+        { "load32_splat", ("Create", 1, false) },
+        { "load64_splat", ("Create", 1, false) },
         { "load8_lane", ("WithElement", 3, true) },
         { "load16_lane", ("WithElement", 3, true) },
         { "load32_lane", ("WithElement", 3, true) },
@@ -976,12 +1008,16 @@ internal static class SimdOpCodeExtensions
             case "load64_zero":
                 return typeof(ulong);
             case "load8_lane":
+            case "load8_splat":
                 return typeof(byte);
             case "load16_lane":
+            case "load16_splat":
                 return typeof(ushort);
             case "load32_lane":
+            case "load32_splat":
                 return typeof(uint);
             case "load64_lane":
+            case "load64_splat":
                 return typeof(ulong);
             case "store":
                 return typeof(byte);
