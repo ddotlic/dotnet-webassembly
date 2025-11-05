@@ -53,6 +53,48 @@ public enum SimdOpCode : byte
     Vec128Store = 0x0b,
 
     /// <summary>
+    /// Splat an 8-bit value into a v128 vector.
+    /// </summary>
+    [OpCodeCharacteristics("i8x16.splat")]
+    [SimdInstructionGenerate<Vec128Splat>()]
+    Int8X16Splat = 0x0f,
+    
+    /// <summary>
+    /// Splat a 16-bit value into a v128 vector.
+    /// </summary>
+    [OpCodeCharacteristics("i16x8.splat")]
+    [SimdInstructionGenerate<Vec128Splat>()]
+    Int16X8Splat = 0x10,
+    
+    /// <summary>
+    /// Splat a 32-bit value into a v128 vector.
+    /// </summary>
+    [OpCodeCharacteristics("i32x4.splat")]
+    [SimdInstructionGenerate<Vec128Splat>()]
+    Int32X4Splat = 0x11,
+    
+    /// <summary>
+    /// Splat a 32-bit value into a v128 vector.
+    /// </summary>
+    [OpCodeCharacteristics("i64x2.splat")]
+    [SimdInstructionGenerate<Vec128Splat>()]
+    Int64X2Splat = 0x12,
+    
+    /// <summary>
+    /// Splat a 32-bit float into a v128 vector.
+    /// </summary>
+    [OpCodeCharacteristics("f32x4.splat")]
+    [SimdInstructionGenerate<Vec128Splat>()]
+    Float32X4Splat = 0x13,
+    
+    /// <summary>
+    /// Splat a 64-bit float into a v128 vector.
+    /// </summary>
+    [OpCodeCharacteristics("f64x2.splat")]
+    [SimdInstructionGenerate<Vec128Splat>()]
+    Float64X2Splat = 0x14,
+    
+    /// <summary>
     /// Load a 32-bit value from memory into vector and zero pad.
     /// </summary>
     [OpCodeCharacteristics("v128.load32_zero")]
@@ -986,6 +1028,7 @@ internal static class SimdOpCodeExtensions
         { "load32_zero", ("CreateScalar", 1, false) },
         { "load64_zero", ("CreateScalar", 1, false) },
         { "extract_lane", ("GetElement", 2, true) },
+        { "splat", ("Create", 1, false) },
     };
 
     private static readonly Dictionary<string, Type> laneTypeToType = new()
