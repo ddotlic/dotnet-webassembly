@@ -362,8 +362,10 @@ public abstract class Instruction : IEquatable<Instruction>
                         case SimdOpCode.Float64X2Splat: yield return new Float64X2Splat(); break;
                         case SimdOpCode.Int8X16ExtractLaneS: yield return new Int8X16ExtractLaneS(reader); break;
                         case SimdOpCode.Int8X16ExtractLaneU: yield return new Int8X16ExtractLaneU(reader); break;
+                        case SimdOpCode.Int8X16ReplaceLane: yield return new Int8X16ReplaceLane(reader); break;
                         case SimdOpCode.Int16X8ExtractLaneS: yield return new Int16X8ExtractLaneS(reader); break;
                         case SimdOpCode.Int16X8ExtractLaneU: yield return new Int16X8ExtractLaneU(reader); break;
+                        case SimdOpCode.Int16X8ReplaceLane: yield return new Int16X8ReplaceLane(reader); break;
                         case SimdOpCode.Int8X16Swizzle: yield return new Int8X16Swizzle(); break;
                         case SimdOpCode.Vec128Const: yield return new Vec128Const(reader); break;
                         case SimdOpCode.Int8X16Neg: yield return new Int8X16Neg(); break;
@@ -404,6 +406,7 @@ public abstract class Instruction : IEquatable<Instruction>
                         case SimdOpCode.Int16X8Sub: yield return new Int16X8Sub(); break;
                         case SimdOpCode.Int16X8Mul: yield return new Int16X8Mul(); break;
                         case SimdOpCode.Int32X4ExtractLane: yield return new Int32X4ExtractLane(reader); break;
+                        case SimdOpCode.Int32X4ReplaceLane: yield return new Int32X4ReplaceLane(reader); break;
                         case SimdOpCode.Int32X4Neg: yield return new Int32X4Neg(); break;
                         case SimdOpCode.Int32X4Equal: yield return new Int32X4Equal(); break;
                         case SimdOpCode.Int32X4NotEqual: yield return new Int32X4NotEqual(); break;
@@ -424,6 +427,7 @@ public abstract class Instruction : IEquatable<Instruction>
                         case SimdOpCode.Int32X4Sub: yield return new Int32X4Sub(); break;
                         case SimdOpCode.Int32X4Mul: yield return new Int32X4Mul(); break;
                         case SimdOpCode.Int64X2ExtractLane: yield return new Int64X2ExtractLane(reader); break;
+                        case SimdOpCode.Int64X2ReplaceLane: yield return new Int64X2ReplaceLane(reader); break;
                         case SimdOpCode.Int64X2Neg: yield return new Int64X2Neg(); break;
                         case SimdOpCode.Int64X2Equal: yield return new Int64X2Equal(); break;
                         case SimdOpCode.Int64X2NotEqual: yield return new Int64X2NotEqual(); break;
@@ -440,6 +444,7 @@ public abstract class Instruction : IEquatable<Instruction>
                         case SimdOpCode.Int64X2Sub: yield return new Int64X2Sub(); break;
                         case SimdOpCode.Int64X2Mul: yield return new Int64X2Mul(); break;
                         case SimdOpCode.Float32X4ExtractLane: yield return new Float32X4ExtractLane(reader); break;
+                        case SimdOpCode.Float32X4ReplaceLane: yield return new Float32X4ReplaceLane(reader); break;
                         case SimdOpCode.Float32X4Equal: yield return new Float32X4Equal(); break;
                         case SimdOpCode.Float32X4NotEqual: yield return new Float32X4NotEqual(); break;
                         case SimdOpCode.Float32X4LessThan: yield return new Float32X4LessThan(); break;
@@ -453,6 +458,7 @@ public abstract class Instruction : IEquatable<Instruction>
                         case SimdOpCode.Float32X4Mul: yield return new Float32X4Mul(); break;
                         case SimdOpCode.Float32X4Div: yield return new Float32X4Div(); break;
                         case SimdOpCode.Float64X2ExtractLane: yield return new Float64X2ExtractLane(reader); break;
+                        case SimdOpCode.Float64X2ReplaceLane: yield return new Float64X2ReplaceLane(reader); break;
                         case SimdOpCode.Float64X2Equal: yield return new Float64X2Equal(); break;
                         case SimdOpCode.Float64X2NotEqual: yield return new Float64X2NotEqual(); break;
                         case SimdOpCode.Float64X2LessThan: yield return new Float64X2LessThan(); break;

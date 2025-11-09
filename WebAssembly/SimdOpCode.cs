@@ -121,13 +121,83 @@ public enum SimdOpCode : byte
     [OpCodeCharacteristics("i16x8.extract_lane_s")]
     [SimdInstructionGenerate<Vec128ExtractLane>(includeReaderConstructor: true)]
     Int16X8ExtractLaneS = 0x17,
-
+    
     /// <summary>
     /// Extract an unsigned 16-bit lane from a SIMD vector and zero-extend to i32.
     /// </summary>
     [OpCodeCharacteristics("i16x8.extract_lane_u")]
     [SimdInstructionGenerate<Vec128ExtractLane>(includeReaderConstructor: true)]
     Int16X8ExtractLaneU = 0x18,
+
+    /// <summary>
+    /// Replace an 8-bit lane in a SIMD vector with a new value.
+    /// </summary>
+    [OpCodeCharacteristics("i8x16.replace_lane")]
+    [SimdInstructionGenerate<Vec128ReplaceLane>(includeReaderConstructor: true)]
+    Int8X16ReplaceLane = 0x19,
+
+    /// <summary>
+    /// Replace a 16-bit lane in a SIMD vector with a new value.
+    /// </summary>
+    [OpCodeCharacteristics("i16x8.replace_lane")]
+    [SimdInstructionGenerate<Vec128ReplaceLane>(includeReaderConstructor: true)]
+    Int16X8ReplaceLane = 0x1a,
+
+    /// <summary>
+    /// Extract a lane (32-bit int value) from a SIMD vector.
+    /// </summary>
+    [OpCodeCharacteristics("i32x4.extract_lane")]
+    [SimdInstructionGenerate<Vec128ExtractLane>(includeReaderConstructor: true)]
+    Int32X4ExtractLane = 0x1b,
+
+    /// <summary>
+    /// Replace a 32-bit lane in a SIMD vector with a new value.
+    /// </summary>
+    [OpCodeCharacteristics("i32x4.replace_lane")]
+    [SimdInstructionGenerate<Vec128ReplaceLane>(includeReaderConstructor: true)]
+    Int32X4ReplaceLane = 0x1c,
+
+    /// <summary>
+    /// Extract a lane (64-bit int value) from a SIMD vector.
+    /// </summary>
+    [OpCodeCharacteristics("i64x2.extract_lane")]
+    [SimdInstructionGenerate<Vec128ExtractLane>(includeReaderConstructor: true)]
+    Int64X2ExtractLane = 0x1d,
+
+    /// <summary>
+    /// Replace a 64-bit lane in a SIMD vector with a new value.
+    /// </summary>
+    [OpCodeCharacteristics("i64x2.replace_lane")]
+    [SimdInstructionGenerate<Vec128ReplaceLane>(includeReaderConstructor: true)]
+    Int64X2ReplaceLane = 0x1e,
+
+    /// <summary>
+    /// Extract a lane (32-bit float value) from a SIMD vector.
+    /// </summary>
+    [OpCodeCharacteristics("f32x4.extract_lane")]
+    [SimdInstructionGenerate<Vec128ExtractLane>(includeReaderConstructor: true)]
+    Float32X4ExtractLane = 0x1f,
+
+    /// <summary>
+    /// Replace a 32-bit float lane in a SIMD vector with a new value.
+    /// </summary>
+    [OpCodeCharacteristics("f32x4.replace_lane")]
+    [SimdInstructionGenerate<Vec128ReplaceLane>(includeReaderConstructor: true)]
+    Float32X4ReplaceLane = 0x20,
+
+    /// <summary>
+    /// Extract a lane (64-bit float value) from a SIMD vector.
+    /// </summary>
+    [OpCodeCharacteristics("f64x2.extract_lane")]
+    [SimdInstructionGenerate<Vec128ExtractLane>(includeReaderConstructor: true)]
+    Float64X2ExtractLane = 0x21,
+
+    /// <summary>
+    /// Replace a 64-bit float lane in a SIMD vector with a new value.
+    /// </summary>
+    [OpCodeCharacteristics("f64x2.replace_lane")]
+    [SimdInstructionGenerate<Vec128ReplaceLane>(includeReaderConstructor: true)]
+    Float64X2ReplaceLane = 0x22,
 
     /// <summary>
     /// Load a 32-bit value from memory into vector and zero pad.
@@ -465,14 +535,6 @@ public enum SimdOpCode : byte
     [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
     Int16X8Mul = 0x95,
 
-
-    /// <summary>
-    /// Extract a lane (32-bit int value) from a SIMD vector.
-    /// </summary>
-    [OpCodeCharacteristics("i32x4.extract_lane")]
-    [SimdInstructionGenerate<Vec128ExtractLane>(includeReaderConstructor: true)]
-    Int32X4ExtractLane = 0x1b,
-
     /// <summary>
     /// SIMD negate 4 32-bit integers. 
     /// </summary>
@@ -609,13 +671,6 @@ public enum SimdOpCode : byte
     Int32X4Mul = 0xb5,
 
     /// <summary>
-    /// Extract a lane (64-bit int value) from a SIMD vector.
-    /// </summary>
-    [OpCodeCharacteristics("i64x2.extract_lane")]
-    [SimdInstructionGenerate<Vec128ExtractLane>(includeReaderConstructor: true)]
-    Int64X2ExtractLane = 0x1d,
-
-    /// <summary>
     /// SIMD negate 2 64-bit integers.
     /// </summary>
     [OpCodeCharacteristics("i64x2.neg")]
@@ -723,13 +778,6 @@ public enum SimdOpCode : byte
     Int64X2Mul = 0xd5,
 
     /// <summary>
-    /// Extract a lane (32-bit float value) from a SIMD vector.
-    /// </summary>
-    [OpCodeCharacteristics("f32x4.extract_lane")]
-    [SimdInstructionGenerate<Vec128ExtractLane>(includeReaderConstructor: true)]
-    Float32X4ExtractLane = 0x1f,
-
-    /// <summary>
     /// Lane-wise compare 4 32-bit float lanes, equality.
     /// </summary>
     [OpCodeCharacteristics("f32x4.eq")]
@@ -812,13 +860,6 @@ public enum SimdOpCode : byte
     [OpCodeCharacteristics("f32x4.div")]
     [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
     Float32X4Div = 0xe7,
-
-    /// <summary>
-    /// Extract a lane (64-bit float value) from a SIMD vector.
-    /// </summary>
-    [OpCodeCharacteristics("f64x2.extract_lane")]
-    [SimdInstructionGenerate<Vec128ExtractLane>(includeReaderConstructor: true)]
-    Float64X2ExtractLane = 0x21,
 
     /// <summary>
     /// Lane-wise compare 2 64-bit float lanes, equality.
@@ -1065,6 +1106,7 @@ internal static class SimdOpCodeExtensions
         { "extract_lane", ("GetElement", 2, true) },
         { "extract_lane_s", ("GetElement", 2, true) },
         { "extract_lane_u", ("GetElement", 2, true) },
+        { "replace_lane", ("WithElement", 3, true) },
         { "splat", ("Create", 1, false) },
         { "swizzle", ("Shuffle", 2, true) },
     };
