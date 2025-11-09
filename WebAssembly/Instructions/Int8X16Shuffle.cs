@@ -38,6 +38,33 @@ public class Int8X16Shuffle : SimdInstruction
             writer.WriteVar(Control[i]);
     }
 
+    // The following code is an IL version of this C# (except for ReadOnlySpan usage, control - c - is read from stream):
+    // static Vector128<byte> WasmShuffle(Vector128<byte> a, Vector128<byte> b, ReadOnlySpan<byte> ctrl16) {
+    //     
+    //     var c = Vector128.Create(
+    //         ctrl16[0], ctrl16[1], ctrl16[2], ctrl16[3],
+    //         ctrl16[4], ctrl16[5], ctrl16[6], ctrl16[7],
+    //         ctrl16[8], ctrl16[9], ctrl16[10], ctrl16[11],
+    //         ctrl16[12], ctrl16[13], ctrl16[14], ctrl16[15]);
+    // 
+    //     var sixteen = Vector128.Create((byte)0x10);
+    //     var zero = Vector128<byte>.Zero;
+    // 
+    //     var maskB = Vector128.GreaterThanOrEqual(c, sixteen);
+    // 
+    //     var cA = Vector128.BitwiseAnd(c, Vector128.Create((byte)0x0F));
+    //     var cMinus16 = Vector128.Subtract(c, sixteen);
+    //     var cB = Vector128.Max(cMinus16, zero);
+    // 
+    //     var fromA = Vector128.Shuffle(a, cA);
+    //     var fromB = Vector128.Shuffle(b, cB);
+    // 
+    //     var res = Vector128.BitwiseOr(
+    //         Vector128.BitwiseAnd(fromA, Vector128.OnesComplement(maskB)),
+    //         Vector128.BitwiseAnd(fromB, maskB));
+    // 
+    //     return res;
+    // }
     internal sealed override void Compile(CompilationContext context)
     {
         // Stack on entry: [v1:v128, v2:v128]
