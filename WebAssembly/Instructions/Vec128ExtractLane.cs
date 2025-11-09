@@ -55,6 +55,8 @@ public abstract class Vec128ExtractLane : SimdInstruction
 
     private WebAssemblyValueType OutputType => this.SimdOpCode.ToLaneKind() switch
     {
+        "i8x16" => WebAssemblyValueType.Int32,
+        "i16x8" => WebAssemblyValueType.Int32,
         "i32x4" => WebAssemblyValueType.Int32,
         "i64x2" => WebAssemblyValueType.Int64,
         "f32x4" => WebAssemblyValueType.Float32,
@@ -72,4 +74,3 @@ public abstract class Vec128ExtractLane : SimdInstruction
         context.Emit(OpCodes.Call, this.SimdOpCode.ToMethodInfo());
     }
 }
-

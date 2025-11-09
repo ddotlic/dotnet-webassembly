@@ -360,6 +360,11 @@ public abstract class Instruction : IEquatable<Instruction>
                         case SimdOpCode.Int64X2Splat: yield return new Int64X2Splat(); break;
                         case SimdOpCode.Float32X4Splat: yield return new Float32X4Splat(); break;
                         case SimdOpCode.Float64X2Splat: yield return new Float64X2Splat(); break;
+                        case SimdOpCode.Int8X16ExtractLaneS: yield return new Int8X16ExtractLaneS(reader); break;
+                        case SimdOpCode.Int8X16ExtractLaneU: yield return new Int8X16ExtractLaneU(reader); break;
+                        case SimdOpCode.Int16X8ExtractLaneS: yield return new Int16X8ExtractLaneS(reader); break;
+                        case SimdOpCode.Int16X8ExtractLaneU: yield return new Int16X8ExtractLaneU(reader); break;
+                        case SimdOpCode.Int8X16Swizzle: yield return new Int8X16Swizzle(); break;
                         case SimdOpCode.Vec128Const: yield return new Vec128Const(reader); break;
                         case SimdOpCode.Int8X16Neg: yield return new Int8X16Neg(); break;
                         case SimdOpCode.Int8X16Equal: yield return new Int8X16Equal(); break;
