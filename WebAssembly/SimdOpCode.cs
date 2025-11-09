@@ -53,6 +53,13 @@ public enum SimdOpCode : byte
     Vec128Store = 0x0b,
 
     /// <summary>
+    /// Shuffle bytes from two vectors using indices from immediate values.
+    /// </summary>
+    [OpCodeCharacteristics("i8x16.shuffle")]
+    [SimdOpTraits(hasMethodInfo: false)]
+    Int8X16Shuffle = 0x0d,
+
+    /// <summary>
     /// Shuffle bytes from the first vector using indices from the second vector.
     /// </summary>
     [OpCodeCharacteristics("i8x16.swizzle")]
@@ -116,25 +123,25 @@ public enum SimdOpCode : byte
     Int8X16ExtractLaneU = 0x16,
 
     /// <summary>
+    /// Replace an 8-bit lane in a SIMD vector with a new value.
+    /// </summary>
+    [OpCodeCharacteristics("i8x16.replace_lane")]
+    [SimdInstructionGenerate<Vec128ReplaceLane>(includeReaderConstructor: true)]
+    Int8X16ReplaceLane = 0x17,
+
+    /// <summary>
     /// Extract a signed 16-bit lane from a SIMD vector and sign-extend to i32.
     /// </summary>
     [OpCodeCharacteristics("i16x8.extract_lane_s")]
     [SimdInstructionGenerate<Vec128ExtractLane>(includeReaderConstructor: true)]
-    Int16X8ExtractLaneS = 0x17,
-    
+    Int16X8ExtractLaneS = 0x18,
+
     /// <summary>
     /// Extract an unsigned 16-bit lane from a SIMD vector and zero-extend to i32.
     /// </summary>
     [OpCodeCharacteristics("i16x8.extract_lane_u")]
     [SimdInstructionGenerate<Vec128ExtractLane>(includeReaderConstructor: true)]
-    Int16X8ExtractLaneU = 0x18,
-
-    /// <summary>
-    /// Replace an 8-bit lane in a SIMD vector with a new value.
-    /// </summary>
-    [OpCodeCharacteristics("i8x16.replace_lane")]
-    [SimdInstructionGenerate<Vec128ReplaceLane>(includeReaderConstructor: true)]
-    Int8X16ReplaceLane = 0x19,
+    Int16X8ExtractLaneU = 0x19,
 
     /// <summary>
     /// Replace a 16-bit lane in a SIMD vector with a new value.

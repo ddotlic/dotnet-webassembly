@@ -12,7 +12,7 @@ public abstract class Vec128Splat : SimdInstruction
     private protected Vec128Splat()
     {
     }
-    
+
     private WebAssemblyValueType InputType => SimdOpCode switch
     {
         SimdOpCode.Int8X16Splat or SimdOpCode.Int16X8Splat or SimdOpCode.Int32X4Splat => WebAssemblyValueType.Int32,
@@ -21,13 +21,13 @@ public abstract class Vec128Splat : SimdInstruction
         SimdOpCode.Float64X2Splat => WebAssemblyValueType.Float64,
         _ => throw new CompilerException("Invalid SimdOpCode for splat instruction.")
     };
-    
+
     internal sealed override void Compile(CompilationContext context)
     {
         // TODO: Maybe add an override which accepts SimdOpCode too
         context.PopStackNoReturn(this.OpCode, InputType);
         context.Stack.Push(WebAssemblyValueType.Vector128);
-        
+
         context.Emit(OpCodes.Call, this.SimdOpCode.ToMethodInfo());
     }
 }

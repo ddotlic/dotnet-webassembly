@@ -55,9 +55,7 @@ public abstract class Vec128ReplaceLane : SimdInstruction
 
     private WebAssemblyValueType InputType => this.SimdOpCode.ToLaneKind() switch
     {
-        "i8x16" => WebAssemblyValueType.Int32,
-        "i16x8" => WebAssemblyValueType.Int32,
-        "i32x4" => WebAssemblyValueType.Int32,
+        "i8x16" or "i16x8" or "i32x4" => WebAssemblyValueType.Int32,
         "i64x2" => WebAssemblyValueType.Int64,
         "f32x4" => WebAssemblyValueType.Float32,
         "f64x2" => WebAssemblyValueType.Float64,

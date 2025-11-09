@@ -10,27 +10,27 @@ namespace WebAssembly.Instructions;
 public abstract class Vec128ExtractLane : SimdInstruction
 {
     private protected Vec128ExtractLane() { }
-    
+
     /// <summary>
     /// The index of the lane to extract.
     /// </summary>
     public int LaneIndex { get; set; }
-    
+
     /// <summary>
     /// Creates a new <see cref="Vec128ExtractLane"/> instance from binary data.
     /// </summary>
     /// <param name="reader">The source of binary data.</param>
     private protected Vec128ExtractLane(Reader reader)
     {
-        LaneIndex = (int)reader.ReadByte();
+        LaneIndex = reader.ReadByte();
     }
-    
+
     internal sealed override void WriteTo(Writer writer)
     {
         base.WriteTo(writer);
         writer.WriteVar((byte)this.LaneIndex);
     }
-    
+
     /// <inheritdoc/>
     public override bool Equals(object? obj) => this.Equals(obj as Vec128ExtractLane);
 
@@ -63,13 +63,13 @@ public abstract class Vec128ExtractLane : SimdInstruction
         "f64x2" => WebAssemblyValueType.Float64,
         _ => throw new NotSupportedException($"Unsupported lane kind: {this.SimdOpCode.ToLaneKind()}"),
     };
-    
+
     internal sealed override void Compile(CompilationContext context)
     {
         // TODO: Maybe add an override which accepts SimdOpCode too
         context.PopStackNoReturn(this.OpCode, WebAssemblyValueType.Vector128);
         context.Stack.Push(OutputType);
-        
+
         context.Emit(OpCodes.Ldc_I4, LaneIndex);
         context.Emit(OpCodes.Call, this.SimdOpCode.ToMethodInfo());
     }

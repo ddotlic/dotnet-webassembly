@@ -368,6 +368,7 @@ public abstract class Instruction : IEquatable<Instruction>
                         case SimdOpCode.Int16X8ReplaceLane: yield return new Int16X8ReplaceLane(reader); break;
                         case SimdOpCode.Int8X16Swizzle: yield return new Int8X16Swizzle(); break;
                         case SimdOpCode.Vec128Const: yield return new Vec128Const(reader); break;
+                        case SimdOpCode.Int8X16Shuffle: yield return new Int8X16Shuffle(reader); break;
                         case SimdOpCode.Int8X16Neg: yield return new Int8X16Neg(); break;
                         case SimdOpCode.Int8X16Equal: yield return new Int8X16Equal(); break;
                         case SimdOpCode.Int8X16NotEqual: yield return new Int8X16NotEqual(); break;
