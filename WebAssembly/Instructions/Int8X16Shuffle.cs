@@ -38,7 +38,7 @@ public class Int8X16Shuffle : SimdInstruction
             writer.WriteVar(Control[i]);
     }
 
-    // The following code is an IL version of this C# (except for ReadOnlySpan usage, control - c - is read from stream):
+    // The following code is an IL version of this C#, except for ReadOnlySpan usage, control (local c) is read from stream:
     // static Vector128<byte> WasmShuffle(Vector128<byte> a, Vector128<byte> b, ReadOnlySpan<byte> ctrl16) {
     //     
     //     var c = Vector128.Create(
@@ -73,16 +73,27 @@ public class Int8X16Shuffle : SimdInstruction
 
         var laneKind = "i8x16";
         var vType = typeof(Vector128<byte>);
+        
+        // Cache frequently used method references
+        // TODO: consider adding some of these to the 'well known' cache.
+        var createByteScalar = FindVector128Method(nameof(Vector128.Create), typeof(byte), 1, isGeneric: false);
+        var bitwiseAnd = FindVector128Method(nameof(Vector128.BitwiseAnd), typeof(byte), 2, isGeneric: true);
+        var bitwiseOr = FindVector128Method(nameof(Vector128.BitwiseOr), typeof(byte), 2, isGeneric: true);
+        var subtract = FindVector128Method(nameof(Vector128.Subtract), typeof(byte), 2, isGeneric: true);
+        var max = FindVector128Method(nameof(Vector128.Max), typeof(byte), 2, isGeneric: true);
+        var shuffle = FindVector128Method(nameof(Vector128.Shuffle), typeof(byte), 2, isGeneric: true);
+        var greaterThanOrEqual = FindVector128Method(nameof(Vector128.GreaterThanOrEqual), typeof(byte), 2, isGeneric: true);
+        var onesComplement = GetWellKnownMethod(laneKind, KnownMethodName.OnesComplement);
 
         var v2Local = context.DeclareLocal(vType);
         var v1Local = context.DeclareLocal(vType);
 
-        // Store v1 then v2 (v1 is on top)
-        context.Emit(OpCodes.Stloc, v1Local.LocalIndex);
+        // Store v2 then v1 (v2 is on top of stack, v1 is below)
         context.Emit(OpCodes.Stloc, v2Local.LocalIndex);
+        context.Emit(OpCodes.Stloc, v1Local.LocalIndex);
 
         // c = Vector128.Create(c0..c15)
-        for (int i = 0; i < 16; i++)
+        for (var i = 0; i < 16; i++)
             context.Emit(OpCodes.Ldc_I4, (int)Control[i]);
         context.Emit(OpCodes.Call, FindVector128Method(nameof(Vector128.Create), typeof(byte), 16, isGeneric: false));
         var cLocal = context.DeclareLocal(vType);
@@ -91,7 +102,7 @@ public class Int8X16Shuffle : SimdInstruction
         // sixteen = Vector128.Create((byte)0x10)
         context.Emit(OpCodes.Ldc_I4_S, 0x10);
         context.Emit(OpCodes.Conv_U1);
-        context.Emit(OpCodes.Call, FindVector128Method(nameof(Vector128.Create), typeof(byte), 1, isGeneric: false));
+        context.Emit(OpCodes.Call, createByteScalar);
         var sixteenLocal = context.DeclareLocal(vType);
         context.Emit(OpCodes.Stloc, sixteenLocal.LocalIndex);
 
@@ -103,7 +114,7 @@ public class Int8X16Shuffle : SimdInstruction
         // maskB = GreaterThanOrEqual(c, sixteen)
         context.Emit(OpCodes.Ldloc, cLocal.LocalIndex);
         context.Emit(OpCodes.Ldloc, sixteenLocal.LocalIndex);
-        context.Emit(OpCodes.Call, FindVector128Method(nameof(Vector128.GreaterThanOrEqual), typeof(byte), 2, isGeneric: true));
+        context.Emit(OpCodes.Call, greaterThanOrEqual);
         var maskBLocal = context.DeclareLocal(vType);
         context.Emit(OpCodes.Stloc, maskBLocal.LocalIndex);
 
@@ -111,63 +122,63 @@ public class Int8X16Shuffle : SimdInstruction
         context.Emit(OpCodes.Ldloc, cLocal.LocalIndex);
         context.Emit(OpCodes.Ldc_I4_S, 0x0F);
         context.Emit(OpCodes.Conv_U1);
-        context.Emit(OpCodes.Call, FindVector128Method(nameof(Vector128.Create), typeof(byte), 1, isGeneric: false));
-        context.Emit(OpCodes.Call, FindVector128Method(nameof(Vector128.BitwiseAnd), typeof(byte), 2, isGeneric: true));
+        context.Emit(OpCodes.Call, createByteScalar);
+        context.Emit(OpCodes.Call, bitwiseAnd);
         var cALocal = context.DeclareLocal(vType);
         context.Emit(OpCodes.Stloc, cALocal.LocalIndex);
 
         // cMinus16 = c - sixteen
         context.Emit(OpCodes.Ldloc, cLocal.LocalIndex);
         context.Emit(OpCodes.Ldloc, sixteenLocal.LocalIndex);
-        context.Emit(OpCodes.Call, FindVector128Method(nameof(Vector128.Subtract), typeof(byte), 2, isGeneric: true));
+        context.Emit(OpCodes.Call, subtract);
         var cMinus16Local = context.DeclareLocal(vType);
         context.Emit(OpCodes.Stloc, cMinus16Local.LocalIndex);
 
         // cB = Max(cMinus16, zero)  // saturate at 0
         context.Emit(OpCodes.Ldloc, cMinus16Local.LocalIndex);
         context.Emit(OpCodes.Ldloc, zeroLocal.LocalIndex);
-        context.Emit(OpCodes.Call, FindVector128Method(nameof(Vector128.Max), typeof(byte), 2, isGeneric: true));
+        context.Emit(OpCodes.Call, max);
         var cBLocal = context.DeclareLocal(vType);
         context.Emit(OpCodes.Stloc, cBLocal.LocalIndex);
 
         // fromA = Shuffle(v1, cA)
         context.Emit(OpCodes.Ldloc, v1Local.LocalIndex);
         context.Emit(OpCodes.Ldloc, cALocal.LocalIndex);
-        context.Emit(OpCodes.Call, FindVector128Method(nameof(Vector128.Shuffle), typeof(byte), 2, isGeneric: true));
+        context.Emit(OpCodes.Call, shuffle);
         var fromALocal = context.DeclareLocal(vType);
         context.Emit(OpCodes.Stloc, fromALocal.LocalIndex);
 
         // fromB = Shuffle(v2, cB)
         context.Emit(OpCodes.Ldloc, v2Local.LocalIndex);
         context.Emit(OpCodes.Ldloc, cBLocal.LocalIndex);
-        context.Emit(OpCodes.Call, FindVector128Method(nameof(Vector128.Shuffle), typeof(byte), 2, isGeneric: true));
+        context.Emit(OpCodes.Call, shuffle);
         var fromBLocal = context.DeclareLocal(vType);
         context.Emit(OpCodes.Stloc, fromBLocal.LocalIndex);
 
         // notMaskB = ~maskB
         context.Emit(OpCodes.Ldloc, maskBLocal.LocalIndex);
-        context.Emit(OpCodes.Call, GetWellKnownMethod(laneKind, KnownMethodName.OnesComplement));
+        context.Emit(OpCodes.Call, onesComplement);
         var notMaskBLocal = context.DeclareLocal(vType);
         context.Emit(OpCodes.Stloc, notMaskBLocal.LocalIndex);
 
         // partA = fromA & notMaskB
         context.Emit(OpCodes.Ldloc, fromALocal.LocalIndex);
         context.Emit(OpCodes.Ldloc, notMaskBLocal.LocalIndex);
-        context.Emit(OpCodes.Call, FindVector128Method(nameof(Vector128.BitwiseAnd), typeof(byte), 2, isGeneric: true));
+        context.Emit(OpCodes.Call, bitwiseAnd);
         var partALocal = context.DeclareLocal(vType);
         context.Emit(OpCodes.Stloc, partALocal.LocalIndex);
 
         // partB = fromB & maskB
         context.Emit(OpCodes.Ldloc, fromBLocal.LocalIndex);
         context.Emit(OpCodes.Ldloc, maskBLocal.LocalIndex);
-        context.Emit(OpCodes.Call, FindVector128Method(nameof(Vector128.BitwiseAnd), typeof(byte), 2, isGeneric: true));
+        context.Emit(OpCodes.Call, bitwiseAnd);
         var partBLocal = context.DeclareLocal(vType);
         context.Emit(OpCodes.Stloc, partBLocal.LocalIndex);
 
         // result = partA | partB
         context.Emit(OpCodes.Ldloc, partALocal.LocalIndex);
         context.Emit(OpCodes.Ldloc, partBLocal.LocalIndex);
-        context.Emit(OpCodes.Call, FindVector128Method(nameof(Vector128.BitwiseOr), typeof(byte), 2, isGeneric: true));
+        context.Emit(OpCodes.Call, bitwiseOr);
 
         // Push result
         context.Stack.Push(WebAssemblyValueType.Vector128);
