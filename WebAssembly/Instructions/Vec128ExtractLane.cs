@@ -1,5 +1,7 @@
 using System;
 using System.Reflection.Emit;
+using WebAssembly;
+using WebAssembly.Runtime;
 using WebAssembly.Runtime.Compilation;
 
 namespace WebAssembly.Instructions;
@@ -64,8 +66,21 @@ public abstract class Vec128ExtractLane : SimdInstruction
         _ => throw new NotSupportedException($"Unsupported lane kind: {this.SimdOpCode.ToLaneKind()}"),
     };
 
+    private int MaxIndex
+    {
+        get
+        {
+            var native = this.SimdOpCode.ToNativeName().Split('.')[0];
+            var bits = native.Split('x')[1];
+            return int.Parse(bits, null) - 1;
+        }
+    }
+
     internal sealed override void Compile(CompilationContext context)
     {
+        var maxIndex = MaxIndex;
+        if (LaneIndex < 0 || LaneIndex > maxIndex)
+            throw new CompilerException($"Lane index must be less than {maxIndex + 1}");
         // TODO: Maybe add an override which accepts SimdOpCode too
         context.PopStackNoReturn(this.OpCode, WebAssemblyValueType.Vector128);
         context.Stack.Push(OutputType);

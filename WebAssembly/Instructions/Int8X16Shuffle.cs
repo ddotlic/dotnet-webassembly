@@ -1,5 +1,6 @@
 using System.Reflection.Emit;
 using System.Runtime.Intrinsics;
+using WebAssembly.Runtime;
 using WebAssembly.Runtime.Compilation;
 using static WebAssembly.SimdOpCodeExtensions;
 
@@ -67,13 +68,18 @@ public class Int8X16Shuffle : SimdInstruction
     // }
     internal sealed override void Compile(CompilationContext context)
     {
+        foreach (var c in Control)
+        {
+            if (c > 31)
+                throw new CompilerException($"Lane index must be less than 31");
+        }
         // Stack on entry: [v1:v128, v2:v128]
         context.PopStackNoReturn(this.OpCode, WebAssemblyValueType.Vector128);
         context.PopStackNoReturn(this.OpCode, WebAssemblyValueType.Vector128);
 
         var laneKind = "i8x16";
         var vType = typeof(Vector128<byte>);
-        
+
         // Cache frequently used method references
         // TODO: consider adding some of these to the 'well known' cache.
         var createByteScalar = FindVector128Method(nameof(Vector128.Create), typeof(byte), 1, isGeneric: false);
