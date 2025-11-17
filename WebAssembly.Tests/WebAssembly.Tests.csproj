@@ -1,78 +1,78 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>    
-    <TargetFramework>net9.0</TargetFramework>
-    <LangVersion>latest</LangVersion>
-    <RootNamespace>WebAssembly</RootNamespace>
-    <Nullable>enable</Nullable>
-    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
-    <DocumentationFile>bin\WebAssembly.Tests.xml</DocumentationFile>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <LangVersion>latest</LangVersion>
+        <RootNamespace>WebAssembly</RootNamespace>
+        <Nullable>enable</Nullable>
+        <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+        <DocumentationFile>bin\WebAssembly.Tests.xml</DocumentationFile>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Include="Samples\*" />
-    <Compile Include="..\WebAssembly\RegeneratingWeakReference.cs" Link="RegeneratingWeakReference.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.10.0" />
-    <PackageReference Include="MSTest.TestAdapter" Version="3.4.3" />
-    <PackageReference Include="MSTest.TestFramework" Version="3.4.3" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\WebAssembly\WebAssembly.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\WebAssembly.SourceGenerators\WebAssembly.SourceGenerators.csproj"
-                      OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <!-- Collect all WAST files -->
-    <WastFiles Include="Runtime\SpecTestData\**\*.wast" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <!-- Used by the source generator to automatically create unit test methods for each WAST file -->
-    <AdditionalFiles Include="@(WastFiles)" />
-  </ItemGroup>
-  
-  <Target Name="CheckWasmToolsAvailability" BeforeTargets="GenerateJsonFiles">
-    
-    <Exec Command="wasm-tools --version" IgnoreExitCode="true" EchoOff="true"
-          StandardOutputImportance="Low" StandardErrorImportance="Low">
-      <Output TaskParameter="ExitCode" PropertyName="ToolExitCode" />
-    </Exec>
-
-    <Error Text="The required tool 'wasm-tools' is not installed or is not in the path.
-     For instructions on how to install it, please see https://github.com/bytecodealliance/wasm-tools"
-           Condition="'$(ToolExitCode)' != '0'" />
-  </Target>
-  
-  <Target Name="GenerateJsonFiles" BeforeTargets="PrepareForBuild">
-    
     <ItemGroup>
-      <!-- Detect missing JSON files -->
-      <MissingJsonFiles Include="@(WastFiles)" Condition="!Exists('%(RootDir)%(Directory)%(Filename).json')" />
+        <EmbeddedResource Include="Samples\*"/>
+        <Compile Include="..\WebAssembly\RegeneratingWeakReference.cs" Link="RegeneratingWeakReference.cs"/>
     </ItemGroup>
 
-    <Exec Command="wasm-tools json-from-wast --output %(RootDir)%(Directory)%(Filename).json --wasm-dir %(RootDir)%(Directory) --pretty %(FullPath)"
-          Condition="'@(MissingJsonFiles)' != ''" EchoOff="true" />
-  </Target>
-  
-  <ItemGroup>
-    <None Update="Runtime\SpecTestData\**\*.wasm">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Runtime\SpecTestData\**\*.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.10.0"/>
+        <PackageReference Include="MSTest.TestAdapter" Version="3.4.3"/>
+        <PackageReference Include="MSTest.TestFramework" Version="3.4.3"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\WebAssembly\WebAssembly.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\WebAssembly.SourceGenerators\WebAssembly.SourceGenerators.csproj"
+                          OutputItemType="Analyzer" ReferenceOutputAssembly="false"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <!-- Collect all WAST files -->
+        <WastFiles Include="Runtime\SpecTestData\**\*.wast"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <!-- Used by the source generator to automatically create unit test methods for each WAST file -->
+        <AdditionalFiles Include="@(WastFiles)"/>
+    </ItemGroup>
+
+    <Target Name="CheckWasmToolsAvailability" BeforeTargets="GenerateJsonFiles">
+
+        <Exec Command="wasm-tools --version" IgnoreExitCode="true" EchoOff="true"
+              StandardOutputImportance="Low" StandardErrorImportance="Low">
+            <Output TaskParameter="ExitCode" PropertyName="ToolExitCode"/>
+        </Exec>
+
+        <Error Text="The required tool 'wasm-tools' is not installed or is not in the path.
+     For instructions on how to install it, please see https://github.com/bytecodealliance/wasm-tools"
+               Condition="'$(ToolExitCode)' != '0'"/>
+    </Target>
+
+    <Target Name="GenerateJsonFiles" BeforeTargets="PrepareForBuild">
+
+        <ItemGroup>
+            <!-- Detect missing JSON files -->
+            <MissingJsonFiles Include="@(WastFiles)" Condition="!Exists('%(RootDir)%(Directory)%(Filename).json')"/>
+        </ItemGroup>
+
+        <Exec Command="wasm-tools json-from-wast --output %(RootDir)%(Directory)%(Filename).json --wasm-dir %(RootDir)%(Directory) --pretty %(FullPath)"
+              Condition="'@(MissingJsonFiles)' != ''" EchoOff="true"/>
+    </Target>
+
+    <ItemGroup>
+        <None Update="Runtime\SpecTestData\**\*.wasm">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="Runtime\SpecTestData\**\*.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
 
 </Project>

@@ -1,52 +1,52 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <!-- Due to the SIMD support, .NET 9.0 is required; even 8.0 has bugs in the implementation -->
-    <TargetFramework>net9.0</TargetFramework>
-    <Title>WebAssembly for .NET</Title>
-    <AssemblyTitle>WebAssembly for .NET</AssemblyTitle>
-    <Authors>Ryan Lamansky</Authors>
-    <Description>Create, read, modify, write and execute WebAssembly (WASM) files using pure 100% .NET.</Description>
-    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageReleaseNotes>Full support for creation and modification of WASM 1.0 files; .NET CLR JIT-based execution works well but may not support every WASM.</PackageReleaseNotes>
-    <PackageProjectUrl>https://github.com/RyanLamansky/dotnet-webassembly</PackageProjectUrl>
-    <Copyright>Copyright © Ryan Lamansky. All rights reserved.</Copyright>
-    <PackageTags>WebAssembly WASM JIT</PackageTags>
-    <LangVersion>latest</LangVersion>
-    <Nullable>enable</Nullable>
-    <RepositoryUrl>https://github.com/RyanLamansky/dotnet-webassembly</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <SignAssembly>true</SignAssembly>
-    <DelaySign>false</DelaySign>
-    <AssemblyOriginatorKeyFile>Properties\WebAssembly.snk</AssemblyOriginatorKeyFile>
-    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
-    <NoWarn>CA1716;CA1720</NoWarn>
-    <DocumentationFile>bin\WebAssembly.xml</DocumentationFile>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <DebugType>embedded</DebugType>
-    <AnalysisMode>Recommended</AnalysisMode>
-    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-  </PropertyGroup>
+    <PropertyGroup>
+        <!-- Due to the SIMD support, .NET 9.0 is required (8.0 has bugs); use 10.0 since it is LTS -->
+        <TargetFramework>net10.0</TargetFramework>
+        <Title>WebAssembly for .NET</Title>
+        <AssemblyTitle>WebAssembly for .NET</AssemblyTitle>
+        <Authors>Ryan Lamansky</Authors>
+        <Description>Create, read, modify, write and execute WebAssembly (WASM) files using pure 100% .NET.</Description>
+        <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+        <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+        <PackageReleaseNotes>Full support for creation and modification of WASM 1.0 files; .NET CLR JIT-based execution works well but may not support every WASM.</PackageReleaseNotes>
+        <PackageProjectUrl>https://github.com/RyanLamansky/dotnet-webassembly</PackageProjectUrl>
+        <Copyright>Copyright © Ryan Lamansky. All rights reserved.</Copyright>
+        <PackageTags>WebAssembly WASM JIT</PackageTags>
+        <LangVersion>latest</LangVersion>
+        <Nullable>enable</Nullable>
+        <RepositoryUrl>https://github.com/RyanLamansky/dotnet-webassembly</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <SignAssembly>true</SignAssembly>
+        <DelaySign>false</DelaySign>
+        <AssemblyOriginatorKeyFile>Properties\WebAssembly.snk</AssemblyOriginatorKeyFile>
+        <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+        <NoWarn>CA1716;CA1720</NoWarn>
+        <DocumentationFile>bin\WebAssembly.xml</DocumentationFile>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <DebugType>embedded</DebugType>
+        <AnalysisMode>Recommended</AnalysisMode>
+        <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\WebAssembly.SourceGenerators\WebAssembly.SourceGenerators.csproj" 
-                      OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <None Include="../LICENSE" Pack="true" PackagePath="LICENSE" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\WebAssembly.SourceGenerators\WebAssembly.SourceGenerators.csproj"
+                          OutputItemType="Analyzer" ReferenceOutputAssembly="false"/>
+    </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-    <PackageReference Include="System.Reflection.Emit" Version="4.3.0" />
-  </ItemGroup>
+    <ItemGroup>
+        <None Include="../LICENSE" Pack="true" PackagePath="LICENSE"/>
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All"/>
+    </ItemGroup>
 
-  <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
-    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
-  </PropertyGroup>
+    <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+        <PackageReference Include="System.Reflection.Emit" Version="4.3.0"/>
+    </ItemGroup>
+
+    <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+        <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    </PropertyGroup>
 
 </Project>
