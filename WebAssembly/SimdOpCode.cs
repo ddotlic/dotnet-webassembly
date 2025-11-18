@@ -1059,6 +1059,20 @@ public enum SimdOpCode : byte
     Float64X2Div = 0xf3,
 
     /// <summary>
+    /// SIMD convert signed i32x4 -> f32x4 (vectorized convert).
+    /// </summary>
+    [OpCodeCharacteristics("f32x4.convert_i32x4_s")]
+    [SimdInstructionGenerate<SimdValueOneToOneCallInstruction>()]
+    Float32X4ConvertI32X4Signed = 0xfa,
+
+    /// <summary>
+    /// SIMD convert unsigned i32x4 -> f32x4 (vectorized convert).
+    /// </summary>
+    [OpCodeCharacteristics("f32x4.convert_i32x4_u")]
+    [SimdInstructionGenerate<SimdValueOneToOneCallInstruction>()]
+    Float32X4ConvertI32X4Unsigned = 0xfb,
+
+    /// <summary>
     /// SIMD bitwise not one 128-bit vector.
     /// </summary>
     [OpCodeCharacteristics("v128.not")]
@@ -1225,6 +1239,9 @@ internal static class SimdOpCodeExtensions
         { "swizzle", ("Shuffle", 2, true) },
         { "min", ("Min", 2, true) },
         { "max", ("Max", 2, true) },
+        // direct Vector128 conversion mappings
+        { "convert_i32x4_s", ("ConvertToSingle", 1, true) },
+        { "convert_i32x4_u", ("ConvertToSingle", 1, true) },
     };
 
     private static readonly Dictionary<string, Type> laneTypeToType = new()
@@ -1282,6 +1299,10 @@ internal static class SimdOpCodeExtensions
                     "i16x8" => typeof(ushort),
                     _ => null,
                 };
+            case "convert_i32x4_s":
+                return typeof(int);
+            case "convert_i32x4_u":
+                return typeof(uint);
         }
         return !opName.EndsWith("_s", StringComparison.InvariantCulture)
             ? null
