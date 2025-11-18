@@ -408,6 +408,38 @@ public enum SimdOpCode : byte
     Int8X16Sub = 0x71,
 
     /// <summary>
+    /// SIMD add 16 8-bit integers with saturation (signed).
+    /// </summary>
+    [OpCodeCharacteristics("i8x16.add_saturate_s")]
+    [SimdInstructionGenerate<Vec128AddSaturate>()]
+    [SimdOpTraits(hasMethodInfo: false)]
+    Int8X16AddSaturateSigned = 0x6f,
+
+    /// <summary>
+    /// SIMD add 16 8-bit integers with saturation (unsigned).
+    /// </summary>
+    [OpCodeCharacteristics("i8x16.add_saturate_u")]
+    [SimdInstructionGenerate<Vec128AddSaturate>()]
+    [SimdOpTraits(hasMethodInfo: false)]
+    Int8X16AddSaturateUnsigned = 0x70,
+
+    /// <summary>
+    /// SIMD subtract 16 8-bit integers with saturation (signed).
+    /// </summary>
+    [OpCodeCharacteristics("i8x16.sub_saturate_s")]
+    [SimdInstructionGenerate<Vec128SubSaturate>()]
+    [SimdOpTraits(hasMethodInfo: false)]
+    Int8X16SubSaturateSigned = 0x72,
+
+    /// <summary>
+    /// SIMD subtract 16 8-bit integers with saturation (unsigned).
+    /// </summary>
+    [OpCodeCharacteristics("i8x16.sub_saturate_u")]
+    [SimdInstructionGenerate<Vec128SubSaturate>()]
+    [SimdOpTraits(hasMethodInfo: false)]
+    Int8X16SubSaturateUnsigned = 0x73,
+
+    /// <summary>
     /// SIMD negate 8 16-bit integers. 
     /// </summary>
     [OpCodeCharacteristics("i16x8.neg")]
@@ -541,6 +573,38 @@ public enum SimdOpCode : byte
     [OpCodeCharacteristics("i16x8.mul")]
     [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
     Int16X8Mul = 0x95,
+
+    /// <summary>
+    /// SIMD add 8 16-bit integers with saturation (signed).
+    /// </summary>
+    [OpCodeCharacteristics("i16x8.add_saturate_s")]
+    [SimdInstructionGenerate<Vec128AddSaturate>()]
+    [SimdOpTraits(hasMethodInfo: false)]
+    Int16X8AddSaturateSigned = 0x8f,
+
+    /// <summary>
+    /// SIMD add 8 16-bit integers with saturation (unsigned).
+    /// </summary>
+    [OpCodeCharacteristics("i16x8.add_saturate_u")]
+    [SimdInstructionGenerate<Vec128AddSaturate>()]
+    [SimdOpTraits(hasMethodInfo: false)]
+    Int16X8AddSaturateUnsigned = 0x90,
+
+    /// <summary>
+    /// SIMD subtract 8 16-bit integers with saturation (signed).
+    /// </summary>
+    [OpCodeCharacteristics("i16x8.sub_saturate_s")]
+    [SimdInstructionGenerate<Vec128SubSaturate>()]
+    [SimdOpTraits(hasMethodInfo: false)]
+    Int16X8SubSaturateSigned = 0x92,
+
+    /// <summary>
+    /// SIMD subtract 8 16-bit integers with saturation (unsigned).
+    /// </summary>
+    [OpCodeCharacteristics("i16x8.sub_saturate_u")]
+    [SimdInstructionGenerate<Vec128SubSaturate>()]
+    [SimdOpTraits(hasMethodInfo: false)]
+    Int16X8SubSaturateUnsigned = 0x93,
 
     /// <summary>
     /// SIMD negate 4 32-bit integers. 
@@ -827,6 +891,13 @@ public enum SimdOpCode : byte
     Float32X4GreaterThanOrEqual = 0x46,
 
     /// <summary>
+    /// SIMD absolute value 4 32-bit floats.
+    /// </summary>
+    [OpCodeCharacteristics("f32x4.abs")]
+    [SimdInstructionGenerate<SimdValueOneToOneCallInstruction>()]
+    Float32X4Abs = 0xe0,
+
+    /// <summary>
     /// SIMD negate 4 32-bit floats.
     /// </summary>
     [OpCodeCharacteristics("f32x4.neg")]
@@ -923,6 +994,13 @@ public enum SimdOpCode : byte
     [OpCodeCharacteristics("f64x2.sqrt")]
     [SimdInstructionGenerate<SimdValueOneToOneCallInstruction>()]
     Float64X2Sqrt = 0xef,
+
+    /// <summary>
+    /// SIMD absolute value 2 64-bit floats.
+    /// </summary>
+    [OpCodeCharacteristics("f64x2.abs")]
+    [SimdInstructionGenerate<SimdValueOneToOneCallInstruction>()]
+    Float64X2Abs = 0xec,
 
     /// <summary>
     /// SIMD add 2 64-bit floats.
@@ -1097,6 +1175,7 @@ internal static class SimdOpCodeExtensions
         { "sub", ("Subtract", 2, true) },
         { "mul", ("Multiply", 2, true) },
         { "sqrt", ("Sqrt", 1, true) },
+        { "abs", ("Abs", 1, true) },
         { "div", ("Divide", 2, true) },
         { "not", ("OnesComplement", 1, true) },
         { "and", ("BitwiseAnd", 2, true) },
