@@ -898,6 +898,20 @@ public enum SimdOpCode : byte
     Float32X4Abs = 0xe0,
 
     /// <summary>
+    /// SIMD minimum 4 32-bit floats (lane-wise, WebAssembly semantics).
+    /// </summary>
+    [OpCodeCharacteristics("f32x4.min")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    Float32X4Min = 0xe8,
+
+    /// <summary>
+    /// SIMD maximum 4 32-bit floats (lane-wise, WebAssembly semantics).
+    /// </summary>
+    [OpCodeCharacteristics("f32x4.max")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    Float32X4Max = 0xe9,
+
+    /// <summary>
     /// SIMD negate 4 32-bit floats.
     /// </summary>
     [OpCodeCharacteristics("f32x4.neg")]
@@ -1001,6 +1015,20 @@ public enum SimdOpCode : byte
     [OpCodeCharacteristics("f64x2.abs")]
     [SimdInstructionGenerate<SimdValueOneToOneCallInstruction>()]
     Float64X2Abs = 0xec,
+
+    /// <summary>
+    /// SIMD minimum 2 64-bit floats (lane-wise, WebAssembly semantics).
+    /// </summary>
+    [OpCodeCharacteristics("f64x2.min")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    Float64X2Min = 0xf4,
+
+    /// <summary>
+    /// SIMD maximum 2 64-bit floats (lane-wise, WebAssembly semantics).
+    /// </summary>
+    [OpCodeCharacteristics("f64x2.max")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
+    Float64X2Max = 0xf5,
 
     /// <summary>
     /// SIMD add 2 64-bit floats.
@@ -1195,6 +1223,8 @@ internal static class SimdOpCodeExtensions
         { "replace_lane", ("WithElement", 3, true) },
         { "splat", ("Create", 1, false) },
         { "swizzle", ("Shuffle", 2, true) },
+        { "min", ("Min", 2, true) },
+        { "max", ("Max", 2, true) },
     };
 
     private static readonly Dictionary<string, Type> laneTypeToType = new()
