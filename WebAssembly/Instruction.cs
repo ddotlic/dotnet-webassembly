@@ -469,6 +469,10 @@ public abstract class Instruction : IEquatable<Instruction>
                         case SimdOpCode.Float32X4Sub: yield return new Float32X4Sub(); break;
                         case SimdOpCode.Float32X4Mul: yield return new Float32X4Mul(); break;
                         case SimdOpCode.Float32X4Div: yield return new Float32X4Div(); break;
+                        case SimdOpCode.Float32X4Ceil: yield return new Float32X4Ceil(); break;
+                        case SimdOpCode.Float32X4Floor: yield return new Float32X4Floor(); break;
+                        case SimdOpCode.Float32X4Trunc: yield return new Float32X4Trunc(); break;
+                        case SimdOpCode.Float32X4Nearest: yield return new Float32X4Nearest(); break;
                         case SimdOpCode.Float32X4ConvertI32X4Signed: yield return new Float32X4ConvertI32X4Signed(); break;
                         case SimdOpCode.Float32X4ConvertI32X4Unsigned: yield return new Float32X4ConvertI32X4Unsigned(); break;
                         case SimdOpCode.Float64X2ExtractLane: yield return new Float64X2ExtractLane(reader); break;
@@ -488,6 +492,10 @@ public abstract class Instruction : IEquatable<Instruction>
                         case SimdOpCode.Float64X2Sub: yield return new Float64X2Sub(); break;
                         case SimdOpCode.Float64X2Mul: yield return new Float64X2Mul(); break;
                         case SimdOpCode.Float64X2Div: yield return new Float64X2Div(); break;
+                        case SimdOpCode.Float64X2Ceil: yield return new Float64X2Ceil(); break;
+                        case SimdOpCode.Float64X2Floor: yield return new Float64X2Floor(); break;
+                        case SimdOpCode.Float64X2Trunc: yield return new Float64X2Trunc(); break;
+                        case SimdOpCode.Float64X2Nearest: yield return new Float64X2Nearest(); break;
                         case SimdOpCode.Vec128Not: yield return new Vec128Not(); break;
                         case SimdOpCode.Vec128And: yield return new Vec128And(); break;
                         case SimdOpCode.Vec128AndNot: yield return new Vec128AndNot(); break;

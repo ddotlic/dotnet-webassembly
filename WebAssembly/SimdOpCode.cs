@@ -1071,6 +1071,62 @@ public enum SimdOpCode : byte
     [OpCodeCharacteristics("f32x4.convert_i32x4_u")]
     [SimdInstructionGenerate<SimdValueOneToOneCallInstruction>()]
     Float32X4ConvertI32X4Unsigned = 0xfb,
+    
+    /// <summary>
+    /// SIMD ceiling of 4 32-bit floats.
+    /// </summary>
+    [OpCodeCharacteristics("f32x4.ceil")]
+    [SimdInstructionGenerate<SimdValueOneToOneCallInstruction>()]
+    Float32X4Ceil = 0x67,
+
+    /// <summary>
+    /// SIMD floor of 4 32-bit floats.
+    /// </summary>
+    [OpCodeCharacteristics("f32x4.floor")]
+    [SimdInstructionGenerate<SimdValueOneToOneCallInstruction>()]
+    Float32X4Floor = 0x68,
+
+    /// <summary>
+    /// SIMD truncate of 4 32-bit floats.
+    /// </summary>
+    [OpCodeCharacteristics("f32x4.trunc")]
+    [SimdInstructionGenerate<SimdValueOneToOneCallInstruction>()]
+    Float32X4Trunc = 0x69,
+
+    /// <summary>
+    /// SIMD round-to-nearest of 4 32-bit floats.
+    /// </summary>
+    [OpCodeCharacteristics("f32x4.nearest")]
+    [SimdInstructionGenerate<SimdValueOneToOneCallInstruction>()]
+    Float32X4Nearest = 0x6a,
+
+    /// <summary>
+    /// SIMD ceiling of 2 64-bit floats.
+    /// </summary>
+    [OpCodeCharacteristics("f64x2.ceil")]
+    [SimdInstructionGenerate<SimdValueOneToOneCallInstruction>()]
+    Float64X2Ceil = 0x74,
+
+    /// <summary>
+    /// SIMD floor of 2 64-bit floats.
+    /// </summary>
+    [OpCodeCharacteristics("f64x2.floor")]
+    [SimdInstructionGenerate<SimdValueOneToOneCallInstruction>()]
+    Float64X2Floor = 0x75,
+
+    /// <summary>
+    /// SIMD truncate of 2 64-bit floats.
+    /// </summary>
+    [OpCodeCharacteristics("f64x2.trunc")]
+    [SimdInstructionGenerate<SimdValueOneToOneCallInstruction>()]
+    Float64X2Trunc = 0x7a,
+
+    /// <summary>
+    /// SIMD round-to-nearest of 2 64-bit floats.
+    /// </summary>
+    [OpCodeCharacteristics("f64x2.nearest")]
+    [SimdInstructionGenerate<SimdValueOneToOneCallInstruction>()]
+    Float64X2Nearest = 0x94,
 
     /// <summary>
     /// SIMD bitwise not one 128-bit vector.
@@ -1159,12 +1215,14 @@ internal static class SimdOpCodeExtensions
         {
             var pars = m.GetParameters();
             if (pars.Length != parsCount) return false;
+            var vectorType = typeof(Vector128<>).MakeGenericType(parType);
             return name switch
             {
                 "ShiftLeft" or "ShiftRightArithmetic" or "ShiftRightLogical" =>
-                    pars[0].ParameterType == typeof(Vector128<>).MakeGenericType(parType)
+                    pars[0].ParameterType == vectorType
                     && pars[1].ParameterType == typeof(int),
                 "GetElement" or "WithElement" => true,
+                "Ceiling" or "Floor" or "Truncate" or "Round" => pars[0].ParameterType == vectorType,
                 _ => pars.Select(p => p.ParameterType).All(pt =>
                     isGeneric
                         ? pt.IsPointer || pt.IsByRef
@@ -1239,9 +1297,12 @@ internal static class SimdOpCodeExtensions
         { "swizzle", ("Shuffle", 2, true) },
         { "min", ("Min", 2, true) },
         { "max", ("Max", 2, true) },
-        // direct Vector128 conversion mappings
         { "convert_i32x4_s", ("ConvertToSingle", 1, true) },
         { "convert_i32x4_u", ("ConvertToSingle", 1, true) },
+        { "ceil", ("Ceiling", 1, false) },
+        { "floor", ("Floor", 1, false) },
+        { "trunc", ("Truncate", 1, false) },
+        { "nearest", ("Round", 1, false) },
     };
 
     private static readonly Dictionary<string, Type> laneTypeToType = new()
@@ -1315,6 +1376,12 @@ internal static class SimdOpCodeExtensions
                     "i16x8" => typeof(short),
                     "i32x4" => typeof(int),
                     "i64x2" => typeof(long),
+                    _ => null,
+                },
+                "Ceiling" or "Floor" or "Truncate" or "Round" => laneType switch
+                {
+                    "f32x4" => typeof(float),
+                    "f64x2" => typeof(double),
                     _ => null,
                 },
                 _ => null,
