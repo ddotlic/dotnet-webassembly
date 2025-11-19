@@ -23,34 +23,25 @@ public class Vec128BitSelect : SimdInstruction
     
     internal sealed override void Compile(CompilationContext context)
     {
-        // TODO: Maybe add an override which accepts SimdOpCode too
+        // Reads a mask and two vectors from the stack (mask is on top, followed by the "true" and "false" operands).
+        var vectorType = typeof(Vector128<uint>);
+
+        var maskLocal = context.DeclareLocal(vectorType);
+        var falseLocal = context.DeclareLocal(vectorType);
+        var trueLocal = context.DeclareLocal(vectorType);
+
         context.PopStackNoReturn(this.OpCode, WebAssemblyValueType.Vector128, WebAssemblyValueType.Vector128);
         context.PopStackNoReturn(this.OpCode, WebAssemblyValueType.Vector128);
+
+        context.Emit(OpCodes.Stloc, maskLocal.LocalIndex);
+        context.Emit(OpCodes.Stloc, falseLocal.LocalIndex);
+        context.Emit(OpCodes.Stloc, trueLocal.LocalIndex);
+
+        context.Emit(OpCodes.Ldloc, maskLocal.LocalIndex);
+        context.Emit(OpCodes.Ldloc, trueLocal.LocalIndex);
+        context.Emit(OpCodes.Ldloc, falseLocal.LocalIndex);
+
+        context.Emit(OpCodes.Call, this.SimdOpCode.ToMethodInfo());
         context.Stack.Push(WebAssemblyValueType.Vector128);
-
-        context.Emit(OpCodes.Call, context[HelperMethod.Vec128BitSelect, (_, c) =>
-        {
-            // NOTE: the matching method only differs in the order of the arguments
-            var typeVec128 = typeof(Vector128<uint>);
-            var builder = c.CheckedExportsBuilder.DefineMethod(
-                "☣ Vec128BitSelect",
-                CompilationContext.HelperMethodAttributes,
-                typeVec128,
-                [
-                    typeVec128,
-                    typeVec128,
-                    typeVec128
-                ]
-                );
-
-            var il = builder.GetILGenerator();
-            il.Emit(OpCodes.Ldarg_2);
-            il.Emit(OpCodes.Ldarg_0);
-            il.Emit(OpCodes.Ldarg_1);
-            il.Emit(OpCodes.Call, this.SimdOpCode.ToMethodInfo());
-            il.Emit(OpCodes.Ret);
-            return builder;
-        }
-        ]);
     }
 }

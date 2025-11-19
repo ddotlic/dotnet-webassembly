@@ -28,30 +28,17 @@ public class Vec128AnyTrue : SimdInstruction
         context.PopStackNoReturn(this.OpCode, WebAssemblyValueType.Vector128);
         context.Stack.Push(WebAssemblyValueType.Int32);
 
-        context.Emit(OpCodes.Call, context[HelperMethod.Vec128AnyTrue, (_, c) =>
-        {
-            var builder = c.CheckedExportsBuilder.DefineMethod(
-                "☣ Vec128AnyTrue",
-                CompilationContext.HelperMethodAttributes,
-                typeof(int),
-                [
-                    typeof(Vector128<uint>),
-                ]
-                );
-            
-            const string uintLane = "i32x4";
-            
-            var il = builder.GetILGenerator();
-            il.Emit(OpCodes.Ldarg_0);
-            il.Emit(OpCodes.Call, GetWellKnownMethod(uintLane, Zero));
-            il.Emit(OpCodes.Call, GetWellKnownMethod(uintLane, VecEquals));
-            il.Emit(OpCodes.Call, GetWellKnownMethod(uintLane, OnesComplement));
-            il.Emit(OpCodes.Call, GetWellKnownMethod(uintLane, ExtractMostSignificantBits));
-            il.Emit(OpCodes.Ldc_I4_0);
-            il.Emit(OpCodes.Cgt_Un);
-            il.Emit(OpCodes.Ret);
-            return builder;
-        }
-        ]);
+        const string uintLane = "i32x4";
+        var zeroMethod = GetWellKnownMethod(uintLane, Zero);
+        var equalsMethod = GetWellKnownMethod(uintLane, VecEquals);
+        var onesComplementMethod = GetWellKnownMethod(uintLane, OnesComplement);
+        var extractMsbMethod = GetWellKnownMethod(uintLane, ExtractMostSignificantBits);
+
+        context.Emit(OpCodes.Call, zeroMethod);
+        context.Emit(OpCodes.Call, equalsMethod);
+        context.Emit(OpCodes.Call, onesComplementMethod);
+        context.Emit(OpCodes.Call, extractMsbMethod);
+        context.Emit(OpCodes.Ldc_I4_0);
+        context.Emit(OpCodes.Cgt_Un);
     }
 }

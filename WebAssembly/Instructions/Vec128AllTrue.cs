@@ -18,15 +18,6 @@ public abstract class Vec128AllTrue : SimdInstruction
 
     private string LaneKind => this.SimdOpCode.ToLaneKind(); 
     
-    private HelperMethod AllTrueHelper => 
-        LaneKind switch {
-            "i8x16" => HelperMethod.Int8X16AllTrue,
-            "i16x8" => HelperMethod.Int16X8AllTrue,
-            "i32x4" => HelperMethod.Int32X4AllTrue,
-            "i64x2" => HelperMethod.Int64X2AllTrue,
-            _ => throw new InvalidOperationException($"Unexpected lane type: {LaneKind}.")
-            };
-    
     private uint Mask => 
         LaneKind switch {
             "i8x16" => 0b1111_1111_1111_1111u,
@@ -38,33 +29,22 @@ public abstract class Vec128AllTrue : SimdInstruction
     
     internal sealed override void Compile(CompilationContext context)
     {
+        var laneKind = this.SimdOpCode.ToLaneKind();
+
         // TODO: Maybe add an override which accepts SimdOpCode too
         context.PopStackNoReturn(this.OpCode, WebAssemblyValueType.Vector128);
         context.Stack.Push(WebAssemblyValueType.Int32);
-        
-        context.Emit(OpCodes.Call, context[AllTrueHelper, (_, c) =>
-        {
-            var builder = c.CheckedExportsBuilder.DefineMethod(
-                $"☣ Int{LaneKind.Substring(1)}AllTrue",
-                CompilationContext.HelperMethodAttributes,
-                typeof(int),
-                [
-                    typeof(Vector128<uint>),
-                ]
-                );
-            var laneKind = LaneKind;
-            
-            var il = builder.GetILGenerator();
-            il.Emit(OpCodes.Ldarg_0);
-            il.Emit(OpCodes.Call, GetWellKnownMethod(laneKind, Zero));
-            il.Emit(OpCodes.Call, GetWellKnownMethod(laneKind, VecEquals));
-            il.Emit(OpCodes.Call, GetWellKnownMethod(laneKind, OnesComplement));
-            il.Emit(OpCodes.Call, GetWellKnownMethod(laneKind, ExtractMostSignificantBits));
-            il.Emit(OpCodes.Ldc_I4, Mask);
-            il.Emit(OpCodes.Ceq);
-            il.Emit(OpCodes.Ret);
-            return builder;
-        }
-        ]);
+
+        var zeroMethod = GetWellKnownMethod(laneKind, Zero);
+        var equalsMethod = GetWellKnownMethod(laneKind, VecEquals);
+        var onesComplementMethod = GetWellKnownMethod(laneKind, OnesComplement);
+        var extractMsbMethod = GetWellKnownMethod(laneKind, ExtractMostSignificantBits);
+
+        context.Emit(OpCodes.Call, zeroMethod);
+        context.Emit(OpCodes.Call, equalsMethod);
+        context.Emit(OpCodes.Call, onesComplementMethod);
+        context.Emit(OpCodes.Call, extractMsbMethod);
+        context.Emit(OpCodes.Ldc_I4, (int)Mask);
+        context.Emit(OpCodes.Ceq);
     }
 }

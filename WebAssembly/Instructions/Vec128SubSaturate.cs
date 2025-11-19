@@ -46,9 +46,9 @@ public abstract class Vec128SubSaturate : SimdInstruction
         var maxInt = laneKind switch
         {
             "i8x16" when isSigned => 127,
-            "i8x16" when !isSigned => 0xFF,
+            "i8x16" when !isSigned => 255,
             "i16x8" when isSigned => 32767,
-            "i16x8" when !isSigned => 0xFFFF,
+            "i16x8" when !isSigned => 65535,
             _ => throw new InvalidOperationException("Unsupported lane kind for constants."),
         };
         var minInt = laneKind switch

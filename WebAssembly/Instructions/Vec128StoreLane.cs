@@ -71,9 +71,9 @@ public abstract class Vec128StoreLane : SimdMemoryLaneInstruction
 
         // Stack on entry: [address:i32, vector:v128]
         // Strategy: Extract lane into local, process address, then store
-        
+
         context.PopStackNoReturn(this.OpCode, WebAssemblyValueType.Vector128);
-        
+
         // Extract lane value directly from stack
         context.Emit(OpCodes.Ldc_I4, (int)LaneIndex);
         var getElementMethod = SimdOpCode.ToMethodInfo();
@@ -87,7 +87,7 @@ public abstract class Vec128StoreLane : SimdMemoryLaneInstruction
         // Stack is now: [address:i32]
         // Process address to get memory pointer, this consumes (pops) address from WASM stack
         // NOTE: do NOT emit Unaligned since we CANNOT follow with the Stind_* instruction immediately.
-        //  turns out Unaligned must be IMMEDIATELY followed by Ldind_* or Stind_*, otherwise 
+        //  turns out Unaligned must be IMMEDIATELY followed by Ldind_* or Stind_*, otherwise
         //  the IL compiler will throw the `InvalidProgramException`
         MemoryImmediateInstruction.EmitMemoryAccessProlog(context, OpCode, Offset, Flags, Size, false);
 
@@ -96,7 +96,7 @@ public abstract class Vec128StoreLane : SimdMemoryLaneInstruction
         context.Emit(OpCodes.Ldloc, laneLocal.LocalIndex);
         MemoryImmediateInstruction.EmitAlignment(context, Flags);
         context.Emit(StoreOpCode);
-        
+
         // No value left on the stack
     }
 }
