@@ -17,12 +17,7 @@ public abstract class Vec128AverageUnsigned : SimdInstruction
         context.PopStackNoReturn(this.OpCode, WebAssemblyValueType.Vector128, WebAssemblyValueType.Vector128);
         context.Stack.Push(WebAssemblyValueType.Vector128);
 
-        var laneKind = this.SimdOpCode.ToLaneKind();
-        var parType = laneKind switch
-        {
-            "i8x16" => typeof(byte),
-            _ => typeof(byte), // TODO: extend support to i16x8 when opcode is enabled.
-        };
+        var parType = this.SimdOpCode.ToLaneType();
 
         var vecType = typeof(Vector128<>).MakeGenericType(parType);
 

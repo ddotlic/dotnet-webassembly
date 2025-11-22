@@ -1418,6 +1418,42 @@ internal static class SimdOpCodeExtensions
                 return typeof(int);
             case "convert_i32x4_u":
                 return typeof(uint);
+            case "min_s":
+            case "max_s":
+                return laneType switch
+                {
+                    "i8x16" => typeof(sbyte),
+                    "i16x8" => typeof(short),
+                    "i32x4" => typeof(int),
+                    _ => null,
+                };
+            case "min_u":
+            case "max_u":
+                return laneType switch
+                {
+                    "i8x16" => typeof(byte),
+                    "i16x8" => typeof(ushort),
+                    "i32x4" => typeof(uint),
+                    _ => null,
+                };
+            case "avgr_u":
+                return laneType switch
+                {
+                    "i8x16" => typeof(byte),
+                    "i16x8" => typeof(ushort),
+                    _ => null,
+                };
+            case "abs":
+                return laneType switch
+                {
+                    "i8x16" => typeof(sbyte),
+                    "i16x8" => typeof(short),
+                    "i32x4" => typeof(int),
+                    "i64x2" => typeof(long),
+                    "f32x4" => typeof(float),
+                    "f64x2" => typeof(double),
+                    _ => null,
+                };
         }
         return !opName.EndsWith("_s", StringComparison.InvariantCulture)
             ? null
