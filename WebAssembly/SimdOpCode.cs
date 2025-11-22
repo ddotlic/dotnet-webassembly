@@ -483,6 +483,13 @@ public enum SimdOpCode : byte
     Int8X16AverageUnsigned = 0x7b,
     
     /// <summary>
+    /// SIMD absolute value 8 16-bit ints.
+    /// </summary>
+    [OpCodeCharacteristics("i16x8.abs")]
+    [SimdInstructionGenerate<SimdValueOneToOneCallInstruction>()]
+    Int16X8Abs = 0x80,
+    
+    /// <summary>
     /// SIMD population count of 16 8-bit lanes (lane-wise, WebAssembly semantics).
     /// </summary>
     [OpCodeCharacteristics("i8x16.popcnt")]
@@ -657,6 +664,49 @@ public enum SimdOpCode : byte
     Int16X8SubSaturateUnsigned = 0x93,
 
     /// <summary>
+    /// SIMD signed minimum 8 16-bit ints (lane-wise, WebAssembly semantics).
+    /// </summary>
+    [OpCodeCharacteristics("i16x8.min_s")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>]
+    Int16X8MinSigned = 0x96,
+    
+    /// <summary>
+    /// SIMD unsigned minimum 8 16-bit ints (lane-wise, WebAssembly semantics).
+    /// </summary>
+    [OpCodeCharacteristics("i16x8.min_u")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>]
+    Int16X8MinUnsigned = 0x97,
+    
+    /// <summary>
+    /// SIMD signed maximum 8 16-bit ints (lane-wise, WebAssembly semantics).
+    /// </summary>
+    [OpCodeCharacteristics("i16x8.max_s")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>]
+    Int16X8MaxSigned = 0x98,
+    
+    /// <summary>
+    /// SIMD unsigned maximum 8 16-bit ints (lane-wise, WebAssembly semantics).
+    /// </summary>
+    [OpCodeCharacteristics("i16x8.max_u")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>]
+    Int16X8MaxUnsigned = 0x99,
+    
+    /// <summary>
+    /// SIMD unsigned average 8 16-bit ints (lane-wise, WebAssembly semantics).
+    /// </summary>
+    [OpCodeCharacteristics("i16x8.avgr_u")]
+    [SimdInstructionGenerate<Vec128AverageUnsigned>()]
+    [SimdOpTraits(hasMethodInfo: false)]
+    Int16X8AverageUnsigned = 0x9b,
+    
+    /// <summary>
+    /// SIMD absolute value 4 32-bit ints.
+    /// </summary>
+    [OpCodeCharacteristics("i32x4.abs")]
+    [SimdInstructionGenerate<SimdValueOneToOneCallInstruction>()]
+    Int32X4Abs = 0xa0,
+    
+    /// <summary>
     /// SIMD negate 4 32-bit integers. 
     /// </summary>
     [OpCodeCharacteristics("i32x4.neg")]
@@ -791,6 +841,41 @@ public enum SimdOpCode : byte
     [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>()]
     Int32X4Mul = 0xb5,
 
+    /// <summary>
+    /// SIMD signed minimum 4 32-bit ints (lane-wise, WebAssembly semantics).
+    /// </summary>
+    [OpCodeCharacteristics("i32x4.min_s")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>]
+    Int32X4MinSigned = 0xb6,
+    
+    /// <summary>
+    /// SIMD unsigned minimum 4 32-bit ints (lane-wise, WebAssembly semantics).
+    /// </summary>
+    [OpCodeCharacteristics("i32x4.min_u")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>]
+    Int32X4MinUnsigned = 0xb7,
+    
+    /// <summary>
+    /// SIMD signed maximum 4 32-bit ints (lane-wise, WebAssembly semantics).
+    /// </summary>
+    [OpCodeCharacteristics("i32x4.max_s")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>]
+    Int32X4MaxSigned = 0xb8,
+    
+    /// <summary>
+    /// SIMD unsigned maximum 4 32-bit ints (lane-wise, WebAssembly semantics).
+    /// </summary>
+    [OpCodeCharacteristics("i32x4.max_u")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>]
+    Int32X4MaxUnsigned = 0xb9,
+    
+    /// <summary>
+    /// SIMD absolute value 2 64-bit ints.
+    /// </summary>
+    [OpCodeCharacteristics("i64x2.abs")]
+    [SimdInstructionGenerate<SimdValueOneToOneCallInstruction>()]
+    Int64X2Abs = 0xc0,
+    
     /// <summary>
     /// SIMD negate 2 64-bit integers.
     /// </summary>
