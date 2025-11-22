@@ -357,6 +357,13 @@ public enum SimdOpCode : byte
     Int8X16GreaterThanOrEqualUnsigned = 0x2c,
 
     /// <summary>
+    /// SIMD absolute value 16 8-bit ints.
+    /// </summary>
+    [OpCodeCharacteristics("i8x16.abs")]
+    [SimdInstructionGenerate<SimdValueOneToOneCallInstruction>()]
+    Int8X16Abs = 0x60,
+    
+    /// <summary>
     /// Return 1 if all 16 8-bit int lanes are non-zero, 0 otherwise.
     /// </summary>
     [OpCodeCharacteristics("i8x16.all_true")]
@@ -439,6 +446,49 @@ public enum SimdOpCode : byte
     [SimdOpTraits(hasMethodInfo: false)]
     Int8X16SubSaturateUnsigned = 0x73,
 
+    /// <summary>
+    /// SIMD signed minimum 16 8-bit ints (lane-wise, WebAssembly semantics).
+    /// </summary>
+    [OpCodeCharacteristics("i8x16.min_s")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>]
+    Int8X16MinSigned = 0x76,
+    
+    /// <summary>
+    /// SIMD unsigned minimum 16 8-bit ints (lane-wise, WebAssembly semantics).
+    /// </summary>
+    [OpCodeCharacteristics("i8x16.min_u")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>]
+    Int8X16MinUnsigned = 0x77,
+    
+    /// <summary>
+    /// SIMD signed maximum 16 8-bit ints (lane-wise, WebAssembly semantics).
+    /// </summary>
+    [OpCodeCharacteristics("i8x16.max_s")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>]
+    Int8X16MaxSigned = 0x78,
+    
+    /// <summary>
+    /// SIMD unsigned maximum 16 8-bit ints (lane-wise, WebAssembly semantics).
+    /// </summary>
+    [OpCodeCharacteristics("i8x16.max_u")]
+    [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>]
+    Int8X16MaxUnsigned = 0x79,
+    
+    /// <summary>
+    /// SIMD unsigned average 16 8-bit ints (lane-wise, WebAssembly semantics).
+    /// </summary>
+    [OpCodeCharacteristics("i8x16.avgr_u")]
+    [SimdInstructionGenerate<Vec128AverageUnsigned>()]
+    [SimdOpTraits(hasMethodInfo: false)]
+    Int8X16AverageUnsigned = 0x7b,
+    
+    /// <summary>
+    /// SIMD population count of 16 8-bit lanes (lane-wise, WebAssembly semantics).
+    /// </summary>
+    [OpCodeCharacteristics("i8x16.popcnt")]
+    [SimdOpTraits(hasMethodInfo: false)]
+    Int8X16PopulationCount = 0x62,
+    
     /// <summary>
     /// SIMD negate 8 16-bit integers. 
     /// </summary>
@@ -1296,7 +1346,11 @@ internal static class SimdOpCodeExtensions
         { "splat", ("Create", 1, false) },
         { "swizzle", ("Shuffle", 2, true) },
         { "min", ("Min", 2, true) },
+        { "min_s", ("Min", 2, true) },
+        { "min_u", ("Min", 2, true) },
         { "max", ("Max", 2, true) },
+        { "max_s", ("Max", 2, true) },
+        { "max_u", ("Max", 2, true) },
         { "convert_i32x4_s", ("ConvertToSingle", 1, true) },
         { "convert_i32x4_u", ("ConvertToSingle", 1, true) },
         { "ceil", ("Ceiling", 1, false) },

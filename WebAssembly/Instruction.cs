@@ -391,6 +391,13 @@ public abstract class Instruction : IEquatable<Instruction>
                         case SimdOpCode.Int8X16AddSaturateUnsigned: yield return new Int8X16AddSaturateUnsigned(); break;
                         case SimdOpCode.Int8X16SubSaturateSigned: yield return new Int8X16SubSaturateSigned(); break;
                         case SimdOpCode.Int8X16SubSaturateUnsigned: yield return new Int8X16SubSaturateUnsigned(); break;
+                        case SimdOpCode.Int8X16MinSigned: yield return new Int8X16MinSigned(); break;
+                        case SimdOpCode.Int8X16MinUnsigned: yield return new Int8X16MinUnsigned(); break;
+                        case SimdOpCode.Int8X16MaxSigned: yield return new Int8X16MaxSigned(); break;
+                        case SimdOpCode.Int8X16MaxUnsigned: yield return new Int8X16MaxUnsigned(); break;
+                        case SimdOpCode.Int8X16AverageUnsigned: yield return new Int8X16AverageUnsigned(); break;
+                        case SimdOpCode.Int8X16PopulationCount: yield return new Int8X16PopulationCount(); break;
+                        case SimdOpCode.Int8X16Abs: yield return new Int8X16Abs(); break;
                         case SimdOpCode.Int16X8Neg: yield return new Int16X8Neg(); break;
                         case SimdOpCode.Int16X8Equal: yield return new Int16X8Equal(); break;
                         case SimdOpCode.Int16X8NotEqual: yield return new Int16X8NotEqual(); break;
