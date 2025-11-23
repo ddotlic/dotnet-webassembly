@@ -7,7 +7,7 @@ using static WebAssembly.SimdOpCodeExtensions;
 namespace WebAssembly.Instructions;
 
 /// <summary>
-/// Implements i16x8.extadd_pairwise_i8x16_{s|u} (extensible for other lanes).
+/// Implements pairwise addition of two vectors of the same type.
 /// </summary>
 public abstract class Vec128ExtAddPairwise : SimdInstruction
 {
@@ -19,7 +19,6 @@ public abstract class Vec128ExtAddPairwise : SimdInstruction
         context.Stack.Push(WebAssemblyValueType.Vector128);
 
         var opcodeName = this.SimdOpCode.ToNativeName();
-        var isSigned = opcodeName.EndsWith("_s", StringComparison.InvariantCulture);
 
         var (srcLaneType, dstLaneType) = opcodeName switch
         {
@@ -29,86 +28,37 @@ public abstract class Vec128ExtAddPairwise : SimdInstruction
         };
 
         var vecSrc = typeof(Vector128<>).MakeGenericType(srcLaneType);
-        var vecDst = typeof(Vector128<>).MakeGenericType(dstLaneType);
 
         // 1. Get MethodInfos for the required Vector128 operations.
-        var createBytes = FindVector128Method("Create", typeof(byte), 16, false);
+        var createFromUlongs = FindVector128Method("Create", typeof(ulong), 1, false);
         var shuffle = FindVector128Method("Shuffle", srcLaneType, 2, true);
-        var widenLower = FindVector128Method("WidenLower", srcLaneType, 1, false);
+        var widenLower = FindVector128Method("WidenLower", srcLaneType, 1, true);
         var add = FindVector128Method("Add", dstLaneType, 2, true);
 
         var input = context.DeclareLocal(vecSrc);
         context.Emit(OpCodes.Stloc, input.LocalIndex);
 
-        // 2. Create shuffle control vectors.
-        var evensIndices = context.DeclareLocal(vecSrc);
-        context.Emit(OpCodes.Ldc_I4_0);
-        context.Emit(OpCodes.Ldc_I4_2);
-        context.Emit(OpCodes.Ldc_I4_4);
-        context.Emit(OpCodes.Ldc_I4_6);
-        context.Emit(OpCodes.Ldc_I4_8);
-        context.Emit(OpCodes.Ldc_I4, 10);
-        context.Emit(OpCodes.Ldc_I4, 12);
-        context.Emit(OpCodes.Ldc_I4, 14);
-        context.Emit(OpCodes.Ldc_I4_0);
-        context.Emit(OpCodes.Ldc_I4_0);
-        context.Emit(OpCodes.Ldc_I4_0);
-        context.Emit(OpCodes.Ldc_I4_0);
-        context.Emit(OpCodes.Ldc_I4_0);
-        context.Emit(OpCodes.Ldc_I4_0);
-        context.Emit(OpCodes.Ldc_I4_0);
-        context.Emit(OpCodes.Ldc_I4_0);
-        context.Emit(OpCodes.Call, createBytes);
-        // context.Emit(OpCodes.Call, asSrc);
-        context.Emit(OpCodes.Stloc, evensIndices.LocalIndex);
-
-        var oddsIndices = context.DeclareLocal(vecSrc);
-        context.Emit(OpCodes.Ldc_I4_1);
-        context.Emit(OpCodes.Ldc_I4_3);
-        context.Emit(OpCodes.Ldc_I4_5);
-        context.Emit(OpCodes.Ldc_I4_7);
-        context.Emit(OpCodes.Ldc_I4, 9);
-        context.Emit(OpCodes.Ldc_I4, 11);
-        context.Emit(OpCodes.Ldc_I4, 13);
-        context.Emit(OpCodes.Ldc_I4, 15);
-        context.Emit(OpCodes.Ldc_I4_0);
-        context.Emit(OpCodes.Ldc_I4_0);
-        context.Emit(OpCodes.Ldc_I4_0);
-        context.Emit(OpCodes.Ldc_I4_0);
-        context.Emit(OpCodes.Ldc_I4_0);
-        context.Emit(OpCodes.Ldc_I4_0);
-        context.Emit(OpCodes.Ldc_I4_0);
-        context.Emit(OpCodes.Ldc_I4_0);
-        context.Emit(OpCodes.Call, createBytes);
-        context.Emit(OpCodes.Stloc, oddsIndices.LocalIndex);
-
-        // 3. Shuffle to isolate even and odd bytes into the lower 8 bytes of two vectors.
-        var evens = context.DeclareLocal(vecSrc);
+        // 1. Load input vector for the "evens" shuffle.
         context.Emit(OpCodes.Ldloc, input.LocalIndex);
-        context.Emit(OpCodes.Ldloc, evensIndices.LocalIndex);
-        context.Emit(OpCodes.Call, shuffle);
-        context.Emit(OpCodes.Stloc, evens.LocalIndex);
 
-        var odds = context.DeclareLocal(vecSrc);
+        // 2. Create and load the shuffle control vector for evens.
+        context.Emit(OpCodes.Ldc_I8, 0x0E0C0A0806040200);
+        context.Emit(OpCodes.Call, createFromUlongs);
+
+        // 3. Shuffle and widen.
+        context.Emit(OpCodes.Call, shuffle);
+        context.Emit(OpCodes.Call, widenLower);
+
+        // 4. Repeat for "odds": Load input, create indices, shuffle, widen.
         context.Emit(OpCodes.Ldloc, input.LocalIndex);
-        context.Emit(OpCodes.Ldloc, oddsIndices.LocalIndex);
+
+        context.Emit(OpCodes.Ldc_I8, 0x0F0D0B0907050301);
+        context.Emit(OpCodes.Call, createFromUlongs);
+
         context.Emit(OpCodes.Call, shuffle);
-        context.Emit(OpCodes.Stloc, odds.LocalIndex);
-
-        // 4. Widen the lower 8 bytes of each shuffled vector.
-        var evensWider = context.DeclareLocal(vecDst);
-        context.Emit(OpCodes.Ldloc, evens.LocalIndex);
         context.Emit(OpCodes.Call, widenLower);
-        context.Emit(OpCodes.Stloc, evensWider.LocalIndex);
 
-        var oddsWider = context.DeclareLocal(vecDst);
-        context.Emit(OpCodes.Ldloc, odds.LocalIndex);
-        context.Emit(OpCodes.Call, widenLower);
-        context.Emit(OpCodes.Stloc, oddsWider.LocalIndex);
-
-        // 5. Add the two widened vectors to get the final result.
-        context.Emit(OpCodes.Ldloc, evensWider.LocalIndex);
-        context.Emit(OpCodes.Ldloc, oddsWider.LocalIndex);
+        // 5. Add the two results from the stack.
         context.Emit(OpCodes.Call, add);
     }
 }
