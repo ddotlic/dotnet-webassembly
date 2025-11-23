@@ -7,65 +7,66 @@ using static System.Diagnostics.Debug;
 namespace WebAssembly;
 
 /// <summary>
-/// A combination of <see cref="OpCode"/> and its associated parameters.
+///     A combination of <see cref="OpCode" /> and its associated parameters.
 /// </summary>
 public abstract class Instruction : IEquatable<Instruction>
 {
     /// <summary>
-    /// Creates a new <see cref="Instruction"/> instance.
+    ///     Creates a new <see cref="Instruction" /> instance.
     /// </summary>
     private protected Instruction()
     {
     }
 
     /// <summary>
-    /// Gets the <see cref="OpCode"/> associated with this instruction.
+    ///     Gets the <see cref="OpCode" /> associated with this instruction.
     /// </summary>
     public abstract OpCode OpCode { get; }
+
+    /// <summary>
+    ///     Determines whether this instruction is identical to another.
+    /// </summary>
+    /// <param name="other">The instruction to compare against.</param>
+    /// <returns>True if they have the same type and value, otherwise false.</returns>
+    public abstract bool Equals(Instruction? other);
 
     internal abstract void WriteTo(Writer writer);
 
     internal abstract void Compile(CompilationContext context);
 
     /// <summary>
-    /// Determines whether this instruction is identical to another.
-    /// </summary>
-    /// <param name="other">The instruction to compare against.</param>
-    /// <returns>True if they have the same type and value, otherwise false.</returns>
-    public abstract bool Equals(Instruction? other);
-
-    /// <summary>
-    /// Determines whether this instruction is identical to another.
+    ///     Determines whether this instruction is identical to another.
     /// </summary>
     /// <param name="obj">The object instance to compare against.</param>
     /// <returns>True if they have the same type and value, otherwise false.</returns>
-    public override bool Equals(object? obj) => this.Equals(obj as Instruction);
+    public override bool Equals(object? obj) => Equals(obj as Instruction);
 
     /// <summary>
-    /// Returns a simple hash code based on the value of the instruction.
+    ///     Returns a simple hash code based on the value of the instruction.
     /// </summary>
     /// <returns>The hash code.</returns>
     public abstract override int GetHashCode();
 
     /// <summary>
-    /// Provides a native representation of the instruction; the base implementation returns the opcode in WASM spec format.
+    ///     Provides a native representation of the instruction; the base implementation returns the opcode in WASM spec
+    ///     format.
     /// </summary>
     /// <returns>A string representation of this instance.</returns>
-    public override string ToString() => this.OpCode.ToNativeName();
+    public override string ToString() => OpCode.ToNativeName();
 
     /// <summary>
-    /// Parses an instruction stream restricted to the opcodes available for an initializer expression.
+    ///     Parses an instruction stream restricted to the opcodes available for an initializer expression.
     /// </summary>
     /// <param name="reader">The source of binary data.</param>
     /// <returns>Parsed instructions.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="reader"/> cannot be null.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="reader" /> cannot be null.</exception>
     internal static IEnumerable<Instruction> ParseInitializerExpression(Reader reader)
     {
 #if NETSTANDARD
         if (reader == null)
             throw new ArgumentNullException(nameof(reader));
 #else
-        ArgumentNullException.ThrowIfNull(reader, nameof(reader));
+        ArgumentNullException.ThrowIfNull(reader);
 #endif
 
         //As of the initial version, the set of operations valid for initializer expressions is extremely limited.
@@ -90,24 +91,26 @@ public abstract class Instruction : IEquatable<Instruction>
                         case SimdOpCode.Vec128Const: yield return new Vec128Const(reader); break;
                     }
                     break;
-                case OpCode.End: yield return new End(); yield break;
+                case OpCode.End:
+                    yield return new End();
+                    yield break;
             }
         }
     }
 
     /// <summary>
-    /// Parses an instruction stream.
+    ///     Parses an instruction stream.
     /// </summary>
     /// <param name="reader">The source of binary data.</param>
     /// <returns>Parsed instructions.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="reader"/> cannot be null.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="reader" /> cannot be null.</exception>
     internal static IEnumerable<Instruction> Parse(Reader reader)
     {
 #if NETSTANDARD
         if (reader == null)
             throw new ArgumentNullException(nameof(reader));
 #else
-        ArgumentNullException.ThrowIfNull(reader, nameof(reader));
+        ArgumentNullException.ThrowIfNull(reader);
 #endif
 
         var depth = 1;
@@ -455,6 +458,8 @@ public abstract class Instruction : IEquatable<Instruction>
                         case SimdOpCode.Int32X4MaxSigned: yield return new Int32X4MaxSigned(); break;
                         case SimdOpCode.Int32X4MaxUnsigned: yield return new Int32X4MaxUnsigned(); break;
                         case SimdOpCode.Int32X4Abs: yield return new Int32X4Abs(); break;
+                        case SimdOpCode.Int32X4ExtAddPairwiseI16X8Signed: yield return new Int32X4ExtAddPairwiseI16X8Signed(); break;
+                        case SimdOpCode.Int32X4ExtAddPairwiseI16X8Unsigned: yield return new Int32X4ExtAddPairwiseI16X8Unsigned(); break;
                         case SimdOpCode.Int64X2ExtractLane: yield return new Int64X2ExtractLane(reader); break;
                         case SimdOpCode.Int64X2ReplaceLane: yield return new Int64X2ReplaceLane(reader); break;
                         case SimdOpCode.Int64X2Neg: yield return new Int64X2Neg(); break;
