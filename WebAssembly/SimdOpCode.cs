@@ -1310,6 +1310,22 @@ public enum SimdOpCode : byte
     [OpCodeCharacteristics("v128.any_true")]
     [SimdOpTraits(hasMethodInfo: false)]
     Vec128AnyTrue = 0x53,
+
+    /// <summary>
+    /// SIMD signed pairwise add of 16 8-bit ints producing 8 16-bit ints.
+    /// </summary>
+    [OpCodeCharacteristics("i16x8.extadd_pairwise_i8x16_s")]
+    [SimdInstructionGenerate<Vec128ExtAddPairwise>()]
+    [SimdOpTraits(hasMethodInfo: false)]
+    Int16X8ExtAddPairwiseI8X16Signed = 0x7c,
+
+    /// <summary>
+    /// SIMD unsigned pairwise add of 16 8-bit ints producing 8 16-bit ints.
+    /// </summary>
+    [OpCodeCharacteristics("i16x8.extadd_pairwise_i8x16_u")]
+    [SimdInstructionGenerate<Vec128ExtAddPairwise>()]
+    [SimdOpTraits(hasMethodInfo: false)]
+    Int16X8ExtAddPairwiseI8X16Unsigned = 0x7d,
 }
 
 internal sealed record OpCodeInfo(SimdOpCode OpCode, string NativeName, bool HasMethodInfo);
@@ -1357,7 +1373,7 @@ internal static class SimdOpCodeExtensions
                     pars[0].ParameterType == vectorType
                     && pars[1].ParameterType == typeof(int),
                 "GetElement" or "WithElement" => true,
-                "Ceiling" or "Floor" or "Truncate" or "Round" => pars[0].ParameterType == vectorType,
+                "Ceiling" or "Floor" or "Truncate" or "Round" or "WidenLower" => pars[0].ParameterType == vectorType,
                 _ => pars.Select(p => p.ParameterType).All(pt =>
                     isGeneric
                         ? pt.IsPointer || pt.IsByRef

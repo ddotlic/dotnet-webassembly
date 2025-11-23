@@ -427,6 +427,8 @@ public abstract class Instruction : IEquatable<Instruction>
                         case SimdOpCode.Int16X8AverageUnsigned: yield return new Int16X8AverageUnsigned(); break;
                         case SimdOpCode.Int16X8Abs: yield return new Int16X8Abs(); break;
                         case SimdOpCode.Int16X8Mul: yield return new Int16X8Mul(); break;
+                        case SimdOpCode.Int16X8ExtAddPairwiseI8X16Signed: yield return new Int16X8ExtAddPairwiseI8X16Signed(); break;
+                        case SimdOpCode.Int16X8ExtAddPairwiseI8X16Unsigned: yield return new Int16X8ExtAddPairwiseI8X16Unsigned(); break;
                         case SimdOpCode.Int32X4ExtractLane: yield return new Int32X4ExtractLane(reader); break;
                         case SimdOpCode.Int32X4ReplaceLane: yield return new Int32X4ReplaceLane(reader); break;
                         case SimdOpCode.Int32X4Neg: yield return new Int32X4Neg(); break;
