@@ -701,6 +701,34 @@ public enum SimdOpCode : byte
     Int16X8AverageUnsigned = 0x9b,
 
     /// <summary>
+    ///     Extend the lower half of i8x16 to i16x8 (signed).
+    /// </summary>
+    [OpCodeCharacteristics("i16x8.extend_low_i8x16_s")]
+    [SimdInstructionGenerate<SimdValueOneToOneCallInstruction>]
+    Int16X8ExtendLowI8X16Signed = 0x87,
+
+    /// <summary>
+    ///     Extend the upper half of i8x16 to i16x8 (signed).
+    /// </summary>
+    [OpCodeCharacteristics("i16x8.extend_high_i8x16_s")]
+    [SimdInstructionGenerate<SimdValueOneToOneCallInstruction>]
+    Int16X8ExtendHighI8X16Signed = 0x88,
+
+    /// <summary>
+    ///     Extend the lower half of i8x16 to i16x8 (unsigned).
+    /// </summary>
+    [OpCodeCharacteristics("i16x8.extend_low_i8x16_u")]
+    [SimdInstructionGenerate<SimdValueOneToOneCallInstruction>]
+    Int16X8ExtendLowI8X16Unsigned = 0x89,
+
+    /// <summary>
+    ///     Extend the upper half of i8x16 to i16x8 (unsigned).
+    /// </summary>
+    [OpCodeCharacteristics("i16x8.extend_high_i8x16_u")]
+    [SimdInstructionGenerate<SimdValueOneToOneCallInstruction>]
+    Int16X8ExtendHighI8X16Unsigned = 0x8a,
+
+    /// <summary>
     ///     SIMD absolute value 4 32-bit ints.
     /// </summary>
     [OpCodeCharacteristics("i32x4.abs")]
@@ -871,6 +899,34 @@ public enum SimdOpCode : byte
     Int32X4MaxUnsigned = 0xb9,
 
     /// <summary>
+    ///     Extend the lower half of i16x8 to i32x4 (signed).
+    /// </summary>
+    [OpCodeCharacteristics("i32x4.extend_low_i16x8_s")]
+    [SimdInstructionGenerate<SimdValueOneToOneCallInstruction>]
+    Int32X4ExtendLowI16X8Signed = 0xa7,
+
+    /// <summary>
+    ///     Extend the upper half of i16x8 to i32x4 (signed).
+    /// </summary>
+    [OpCodeCharacteristics("i32x4.extend_high_i16x8_s")]
+    [SimdInstructionGenerate<SimdValueOneToOneCallInstruction>]
+    Int32X4ExtendHighI16X8Signed = 0xa8,
+
+    /// <summary>
+    ///     Extend the lower half of i16x8 to i32x4 (unsigned).
+    /// </summary>
+    [OpCodeCharacteristics("i32x4.extend_low_i16x8_u")]
+    [SimdInstructionGenerate<SimdValueOneToOneCallInstruction>]
+    Int32X4ExtendLowI16X8Unsigned = 0xa9,
+
+    /// <summary>
+    ///     Extend the upper half of i16x8 to i32x4 (unsigned).
+    /// </summary>
+    [OpCodeCharacteristics("i32x4.extend_high_i16x8_u")]
+    [SimdInstructionGenerate<SimdValueOneToOneCallInstruction>]
+    Int32X4ExtendHighI16X8Unsigned = 0xaa,
+
+    /// <summary>
     ///     SIMD absolute value 2 64-bit ints.
     /// </summary>
     [OpCodeCharacteristics("i64x2.abs")]
@@ -941,6 +997,34 @@ public enum SimdOpCode : byte
     [SimdInstructionGenerate<Vec128BitMask>]
     [SimdOpTraits(hasMethodInfo: true)]
     Int64X2BitMask = 0xc4,
+
+    /// <summary>
+    ///     Extend the lower half of i32x4 to i64x2 (signed).
+    /// </summary>
+    [OpCodeCharacteristics("i64x2.extend_low_i32x4_s")]
+    [SimdInstructionGenerate<SimdValueOneToOneCallInstruction>]
+    Int64X2ExtendLowI32X4Signed = 0xc7,
+
+    /// <summary>
+    ///     Extend the upper half of i32x4 to i64x2 (signed).
+    /// </summary>
+    [OpCodeCharacteristics("i64x2.extend_high_i32x4_s")]
+    [SimdInstructionGenerate<SimdValueOneToOneCallInstruction>]
+    Int64X2ExtendHighI32X4Signed = 0xc8,
+
+    /// <summary>
+    ///     Extend the lower half of i32x4 to i64x2 (unsigned).
+    /// </summary>
+    [OpCodeCharacteristics("i64x2.extend_low_i32x4_u")]
+    [SimdInstructionGenerate<SimdValueOneToOneCallInstruction>]
+    Int64X2ExtendLowI32X4Unsigned = 0xc9,
+
+    /// <summary>
+    ///     Extend the upper half of i32x4 to i64x2 (unsigned).
+    /// </summary>
+    [OpCodeCharacteristics("i64x2.extend_high_i32x4_u")]
+    [SimdInstructionGenerate<SimdValueOneToOneCallInstruction>]
+    Int64X2ExtendHighI32X4Unsigned = 0xca,
 
     /// <summary>
     ///     Shift the bits in each of the 2 64-bit int lanes left by the same amout.
@@ -1436,6 +1520,18 @@ internal static class SimdOpCodeExtensions
         { "floor", ("Floor", 1, false) },
         { "trunc", ("Truncate", 1, false) },
         { "nearest", ("Round", 1, false) },
+        { "extend_low_i8x16_s", ("WidenLower", 1, true) },
+        { "extend_high_i8x16_s", ("WidenUpper", 1, true) },
+        { "extend_low_i8x16_u", ("WidenLower", 1, true) },
+        { "extend_high_i8x16_u", ("WidenUpper", 1, true) },
+        { "extend_low_i16x8_s", ("WidenLower", 1, true) },
+        { "extend_high_i16x8_s", ("WidenUpper", 1, true) },
+        { "extend_low_i16x8_u", ("WidenLower", 1, true) },
+        { "extend_high_i16x8_u", ("WidenUpper", 1, true) },
+        { "extend_low_i32x4_s", ("WidenLower", 1, true) },
+        { "extend_high_i32x4_s", ("WidenUpper", 1, true) },
+        { "extend_low_i32x4_u", ("WidenLower", 1, true) },
+        { "extend_high_i32x4_u", ("WidenUpper", 1, true) },
     };
 
     private static readonly Dictionary<string, Type> laneTypeToType = new()
@@ -1493,7 +1589,7 @@ internal static class SimdOpCodeExtensions
                     pars[0].ParameterType == vectorType
                     && pars[1].ParameterType == typeof(int),
                 "GetElement" or "WithElement" => true,
-                "Ceiling" or "Floor" or "Truncate" or "Round" or "WidenLower" => pars[0].ParameterType == vectorType,
+                "Ceiling" or "Floor" or "Truncate" or "Round" or "WidenLower" or "WidenUpper" => pars[0].ParameterType == vectorType,
                 _ => pars.Select(p => p.ParameterType).All(pt =>
                     isGeneric
                         ? pt.IsPointer || pt.IsByRef
@@ -1594,6 +1690,24 @@ internal static class SimdOpCodeExtensions
                     "f64x2" => typeof(double),
                     _ => null,
                 };
+            case "extend_low_i8x16_s":
+            case "extend_high_i8x16_s":
+                return typeof(sbyte);
+            case "extend_low_i8x16_u":
+            case "extend_high_i8x16_u":
+                return typeof(byte);
+            case "extend_low_i16x8_s":
+            case "extend_high_i16x8_s":
+                return typeof(short);
+            case "extend_low_i16x8_u":
+            case "extend_high_i16x8_u":
+                return typeof(ushort);
+            case "extend_low_i32x4_s":
+            case "extend_high_i32x4_s":
+                return typeof(int);
+            case "extend_low_i32x4_u":
+            case "extend_high_i32x4_u":
+                return typeof(uint);
         }
         return !opName.EndsWith("_s", StringComparison.InvariantCulture)
             ? null

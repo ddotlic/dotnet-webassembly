@@ -432,6 +432,10 @@ public abstract class Instruction : IEquatable<Instruction>
                         case SimdOpCode.Int16X8Mul: yield return new Int16X8Mul(); break;
                         case SimdOpCode.Int16X8ExtAddPairwiseI8X16Signed: yield return new Int16X8ExtAddPairwiseI8X16Signed(); break;
                         case SimdOpCode.Int16X8ExtAddPairwiseI8X16Unsigned: yield return new Int16X8ExtAddPairwiseI8X16Unsigned(); break;
+                        case SimdOpCode.Int16X8ExtendLowI8X16Signed: yield return new Int16X8ExtendLowI8X16Signed(); break;
+                        case SimdOpCode.Int16X8ExtendHighI8X16Signed: yield return new Int16X8ExtendHighI8X16Signed(); break;
+                        case SimdOpCode.Int16X8ExtendLowI8X16Unsigned: yield return new Int16X8ExtendLowI8X16Unsigned(); break;
+                        case SimdOpCode.Int16X8ExtendHighI8X16Unsigned: yield return new Int16X8ExtendHighI8X16Unsigned(); break;
                         case SimdOpCode.Int32X4ExtractLane: yield return new Int32X4ExtractLane(reader); break;
                         case SimdOpCode.Int32X4ReplaceLane: yield return new Int32X4ReplaceLane(reader); break;
                         case SimdOpCode.Int32X4Neg: yield return new Int32X4Neg(); break;
@@ -460,6 +464,10 @@ public abstract class Instruction : IEquatable<Instruction>
                         case SimdOpCode.Int32X4Abs: yield return new Int32X4Abs(); break;
                         case SimdOpCode.Int32X4ExtAddPairwiseI16X8Signed: yield return new Int32X4ExtAddPairwiseI16X8Signed(); break;
                         case SimdOpCode.Int32X4ExtAddPairwiseI16X8Unsigned: yield return new Int32X4ExtAddPairwiseI16X8Unsigned(); break;
+                        case SimdOpCode.Int32X4ExtendLowI16X8Signed: yield return new Int32X4ExtendLowI16X8Signed(); break;
+                        case SimdOpCode.Int32X4ExtendHighI16X8Signed: yield return new Int32X4ExtendHighI16X8Signed(); break;
+                        case SimdOpCode.Int32X4ExtendLowI16X8Unsigned: yield return new Int32X4ExtendLowI16X8Unsigned(); break;
+                        case SimdOpCode.Int32X4ExtendHighI16X8Unsigned: yield return new Int32X4ExtendHighI16X8Unsigned(); break;
                         case SimdOpCode.Int64X2ExtractLane: yield return new Int64X2ExtractLane(reader); break;
                         case SimdOpCode.Int64X2ReplaceLane: yield return new Int64X2ReplaceLane(reader); break;
                         case SimdOpCode.Int64X2Neg: yield return new Int64X2Neg(); break;
@@ -478,6 +486,10 @@ public abstract class Instruction : IEquatable<Instruction>
                         case SimdOpCode.Int64X2Sub: yield return new Int64X2Sub(); break;
                         case SimdOpCode.Int64X2Mul: yield return new Int64X2Mul(); break;
                         case SimdOpCode.Int64X2Abs: yield return new Int64X2Abs(); break;
+                        case SimdOpCode.Int64X2ExtendLowI32X4Signed: yield return new Int64X2ExtendLowI32X4Signed(); break;
+                        case SimdOpCode.Int64X2ExtendHighI32X4Signed: yield return new Int64X2ExtendHighI32X4Signed(); break;
+                        case SimdOpCode.Int64X2ExtendLowI32X4Unsigned: yield return new Int64X2ExtendLowI32X4Unsigned(); break;
+                        case SimdOpCode.Int64X2ExtendHighI32X4Unsigned: yield return new Int64X2ExtendHighI32X4Unsigned(); break;
                         case SimdOpCode.Float32X4ExtractLane: yield return new Float32X4ExtractLane(reader); break;
                         case SimdOpCode.Float32X4ReplaceLane: yield return new Float32X4ReplaceLane(reader); break;
                         case SimdOpCode.Float32X4Equal: yield return new Float32X4Equal(); break;
