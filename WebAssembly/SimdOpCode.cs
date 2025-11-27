@@ -512,6 +512,13 @@ public enum SimdOpCode : byte
     Int16X8Q15MulrSatSigned = 0x82,
 
     /// <summary>
+    ///     SIMD pairwise dot product of i16 lanes into i32: result[i] = a[2i]*b[2i] + a[2i+1]*b[2i+1].
+    /// </summary>
+    [OpCodeCharacteristics("i32x4.dot_i16x8_s")]
+    [SimdOpTraits(hasMethodInfo: false)]
+    Int32X4DotInt16X8Signed = 0xba,
+
+    /// <summary>
     ///     Lane-wise compare 8 16-bit int lanes, equality.
     /// </summary>
     [OpCodeCharacteristics("i16x8.eq")]
@@ -1725,7 +1732,7 @@ internal static class SimdOpCodeExtensions
                     && pars[1].ParameterType == typeof(int),
                 "GetElement" or "WithElement" => true,
                 "Ceiling" or "Floor" or "Truncate" or "Round" or "WidenLower" or "WidenUpper" => pars[0].ParameterType == vectorType,
-                "Narrow" => pars[0].ParameterType == vectorType && pars[1].ParameterType == vectorType,
+                "Narrow" or "Shuffle" => pars[0].ParameterType == vectorType && pars[1].ParameterType == vectorType,
                 _ => pars.Select(p => p.ParameterType).All(pt =>
                     isGeneric
                         ? pt.IsPointer || pt.IsByRef

@@ -526,6 +526,7 @@ public abstract class Instruction : IEquatable<Instruction>
                         case SimdOpCode.Int32X4ExtMulHighInt16X8Signed: yield return new Int32X4ExtMulHighInt16X8Signed(); break;
                         case SimdOpCode.Int32X4ExtMulLowInt16X8Unsigned: yield return new Int32X4ExtMulLowInt16X8Unsigned(); break;
                         case SimdOpCode.Int32X4ExtMulHighInt16X8Unsigned: yield return new Int32X4ExtMulHighInt16X8Unsigned(); break;
+                        case SimdOpCode.Int32X4DotInt16X8Signed: yield return new Int32X4DotInt16X8Signed(); break;
                         case SimdOpCode.Int64X2ExtMulLowInt32X4Signed: yield return new Int64X2ExtMulLowInt32X4Signed(); break;
                         case SimdOpCode.Int64X2ExtMulHighInt32X4Signed: yield return new Int64X2ExtMulHighInt32X4Signed(); break;
                         case SimdOpCode.Int64X2ExtMulLowInt32X4Unsigned: yield return new Int64X2ExtMulLowInt32X4Unsigned(); break;

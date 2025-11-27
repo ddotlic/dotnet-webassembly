@@ -33,7 +33,7 @@ public abstract class Vec128ExtAddPairwise : SimdInstruction
 
         // 1. Get MethodInfos for the required Vector128 operations.
         var createFromUlongs = FindVector128Method("Create", typeof(ulong), 1, false);
-        var shuffle = FindVector128Method("Shuffle", srcLaneType, 2, true);
+        var shuffle = FindVector128Method("Shuffle", srcLaneType, 2, false);
         var widenLower = FindVector128Method("WidenLower", srcLaneType, 1, true);
         var add = FindVector128Method("Add", dstLaneType, 2, true);
 
@@ -46,7 +46,7 @@ public abstract class Vec128ExtAddPairwise : SimdInstruction
         context.Emit(OpCodes.Ldloc, input.LocalIndex);
 
         // 2. Create and load the shuffle control vector for evens.
-        context.Emit(OpCodes.Ldc_I8, from8Bits ? 0x0E_0C_0A_08_06_04_02_00 : 0x0D0C_0908_0504_0100);
+        context.Emit(OpCodes.Ldc_I8, from8Bits ? 0x0E_0C_0A_08_06_04_02_00 : 0x0006_0004_0002_0000);
         context.Emit(OpCodes.Call, createFromUlongs);
 
         // 3. Shuffle and widen.
@@ -56,7 +56,7 @@ public abstract class Vec128ExtAddPairwise : SimdInstruction
         // 4. Repeat for "odds": Load input, create indices, shuffle, widen.
         context.Emit(OpCodes.Ldloc, input.LocalIndex);
 
-        context.Emit(OpCodes.Ldc_I8, from8Bits ? 0x0F_0D_0B_09_07_05_03_01 : 0x0F0E_0B0A_0706_0302);
+        context.Emit(OpCodes.Ldc_I8, from8Bits ? 0x0F_0D_0B_09_07_05_03_01 : 0x0007_0005_0003_0001);
         context.Emit(OpCodes.Call, createFromUlongs);
 
         context.Emit(OpCodes.Call, shuffle);
