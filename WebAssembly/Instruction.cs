@@ -513,6 +513,10 @@ public abstract class Instruction : IEquatable<Instruction>
                         case SimdOpCode.Float32X4Nearest: yield return new Float32X4Nearest(); break;
                         case SimdOpCode.Float32X4ConvertI32X4Signed: yield return new Float32X4ConvertI32X4Signed(); break;
                         case SimdOpCode.Float32X4ConvertI32X4Unsigned: yield return new Float32X4ConvertI32X4Unsigned(); break;
+                        case SimdOpCode.Int32X4TruncSatF32X4Signed: yield return new Int32X4TruncSatF32X4Signed(); break;
+                        case SimdOpCode.Int32X4TruncSatF32X4Unsigned: yield return new Int32X4TruncSatF32X4Unsigned(); break;
+                        case SimdOpCode.Int32X4TruncSatF64X2SignedZero: yield return new Int32X4TruncSatF64X2SignedZero(); break;
+                        case SimdOpCode.Int32X4TruncSatF64X2UnsignedZero: yield return new Int32X4TruncSatF64X2UnsignedZero(); break;
                         case SimdOpCode.Float64X2ExtractLane: yield return new Float64X2ExtractLane(reader); break;
                         case SimdOpCode.Float64X2ReplaceLane: yield return new Float64X2ReplaceLane(reader); break;
                         case SimdOpCode.Float64X2Equal: yield return new Float64X2Equal(); break;

@@ -1293,6 +1293,36 @@ public enum SimdOpCode : byte
     Float32X4ConvertI32X4Unsigned = 0xfb,
 
     /// <summary>
+    ///     Saturating truncate f32x4 to signed i32x4.
+    /// </summary>
+    [OpCodeCharacteristics("i32x4.trunc_sat_f32x4_s")]
+    [SimdInstructionGenerate<SimdValueOneToOneCallInstruction>]
+    Int32X4TruncSatF32X4Signed = 0xf8,
+
+    /// <summary>
+    ///     Saturating truncate f32x4 to unsigned i32x4.
+    /// </summary>
+    [OpCodeCharacteristics("i32x4.trunc_sat_f32x4_u")]
+    [SimdInstructionGenerate<SimdValueOneToOneCallInstruction>]
+    Int32X4TruncSatF32X4Unsigned = 0xf9,
+
+    /// <summary>
+    ///     Saturating truncate f64x2 to signed i32x4 with zero extension.
+    /// </summary>
+    [OpCodeCharacteristics("i32x4.trunc_sat_f64x2_s_zero")]
+    [SimdInstructionGenerate<Vec128TruncSatF64X2Zero>]
+    [SimdOpTraits(hasMethodInfo: false)]
+    Int32X4TruncSatF64X2SignedZero = 0xfc,
+
+    /// <summary>
+    ///     Saturating truncate f64x2 to unsigned i32x4 with zero extension.
+    /// </summary>
+    [OpCodeCharacteristics("i32x4.trunc_sat_f64x2_u_zero")]
+    [SimdInstructionGenerate<Vec128TruncSatF64X2Zero>]
+    [SimdOpTraits(hasMethodInfo: false)]
+    Int32X4TruncSatF64X2UnsignedZero = 0xfd,
+
+    /// <summary>
     ///     SIMD ceiling of 4 32-bit floats.
     /// </summary>
     [OpCodeCharacteristics("f32x4.ceil")]
@@ -1532,6 +1562,8 @@ internal static class SimdOpCodeExtensions
         { "extend_high_i32x4_s", ("WidenUpper", 1, true) },
         { "extend_low_i32x4_u", ("WidenLower", 1, true) },
         { "extend_high_i32x4_u", ("WidenUpper", 1, true) },
+        { "trunc_sat_f32x4_s", ("ConvertToInt32", 1, true) },
+        { "trunc_sat_f32x4_u", ("ConvertToUInt32", 1, true) },
     };
 
     private static readonly Dictionary<string, Type> laneTypeToType = new()
@@ -1590,6 +1622,7 @@ internal static class SimdOpCodeExtensions
                     && pars[1].ParameterType == typeof(int),
                 "GetElement" or "WithElement" => true,
                 "Ceiling" or "Floor" or "Truncate" or "Round" or "WidenLower" or "WidenUpper" => pars[0].ParameterType == vectorType,
+                "Narrow" => pars[0].ParameterType == vectorType && pars[1].ParameterType == vectorType,
                 _ => pars.Select(p => p.ParameterType).All(pt =>
                     isGeneric
                         ? pt.IsPointer || pt.IsByRef
@@ -1708,6 +1741,9 @@ internal static class SimdOpCodeExtensions
             case "extend_low_i32x4_u":
             case "extend_high_i32x4_u":
                 return typeof(uint);
+            case "trunc_sat_f32x4_s":
+            case "trunc_sat_f32x4_u":
+                return typeof(float);
         }
         return !opName.EndsWith("_s", StringComparison.InvariantCulture)
             ? null
