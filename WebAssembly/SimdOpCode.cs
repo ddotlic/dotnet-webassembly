@@ -505,6 +505,13 @@ public enum SimdOpCode : byte
     Int16X8Neg = 0x81,
 
     /// <summary>
+    ///     SIMD Q15 saturating rounding multiply: saturate((a * b + 16384) >> 15).
+    /// </summary>
+    [OpCodeCharacteristics("i16x8.q15mulr_sat_s")]
+    [SimdOpTraits(hasMethodInfo: false)]
+    Int16X8Q15MulrSatSigned = 0x82,
+
+    /// <summary>
     ///     Lane-wise compare 8 16-bit int lanes, equality.
     /// </summary>
     [OpCodeCharacteristics("i16x8.eq")]
