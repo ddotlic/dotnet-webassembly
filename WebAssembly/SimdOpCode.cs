@@ -1323,6 +1323,102 @@ public enum SimdOpCode : byte
     Int32X4TruncSatF64X2UnsignedZero = 0xfd,
 
     /// <summary>
+    ///     Extended multiply: widen lower i8x16 lanes (signed) then multiply to i16x8.
+    /// </summary>
+    [OpCodeCharacteristics("i16x8.extmul_low_i8x16_s")]
+    [SimdInstructionGenerate<Vec128ExtMul>]
+    [SimdOpTraits(hasMethodInfo: false)]
+    Int16X8ExtMulLowInt8X16Signed = 0x9c,
+
+    /// <summary>
+    ///     Extended multiply: widen upper i8x16 lanes (signed) then multiply to i16x8.
+    /// </summary>
+    [OpCodeCharacteristics("i16x8.extmul_high_i8x16_s")]
+    [SimdInstructionGenerate<Vec128ExtMul>]
+    [SimdOpTraits(hasMethodInfo: false)]
+    Int16X8ExtMulHighInt8X16Signed = 0x9d,
+
+    /// <summary>
+    ///     Extended multiply: widen lower i8x16 lanes (unsigned) then multiply to i16x8.
+    /// </summary>
+    [OpCodeCharacteristics("i16x8.extmul_low_i8x16_u")]
+    [SimdInstructionGenerate<Vec128ExtMul>]
+    [SimdOpTraits(hasMethodInfo: false)]
+    Int16X8ExtMulLowInt8X16Unsigned = 0x9e,
+
+    /// <summary>
+    ///     Extended multiply: widen upper i8x16 lanes (unsigned) then multiply to i16x8.
+    /// </summary>
+    [OpCodeCharacteristics("i16x8.extmul_high_i8x16_u")]
+    [SimdInstructionGenerate<Vec128ExtMul>]
+    [SimdOpTraits(hasMethodInfo: false)]
+    Int16X8ExtMulHighInt8X16Unsigned = 0x9f,
+
+    /// <summary>
+    ///     Extended multiply: widen lower i16x8 lanes (signed) then multiply to i32x4.
+    /// </summary>
+    [OpCodeCharacteristics("i32x4.extmul_low_i16x8_s")]
+    [SimdInstructionGenerate<Vec128ExtMul>]
+    [SimdOpTraits(hasMethodInfo: false)]
+    Int32X4ExtMulLowInt16X8Signed = 0xbc,
+
+    /// <summary>
+    ///     Extended multiply: widen upper i16x8 lanes (signed) then multiply to i32x4.
+    /// </summary>
+    [OpCodeCharacteristics("i32x4.extmul_high_i16x8_s")]
+    [SimdInstructionGenerate<Vec128ExtMul>]
+    [SimdOpTraits(hasMethodInfo: false)]
+    Int32X4ExtMulHighInt16X8Signed = 0xbd,
+
+    /// <summary>
+    ///     Extended multiply: widen lower i16x8 lanes (unsigned) then multiply to i32x4.
+    /// </summary>
+    [OpCodeCharacteristics("i32x4.extmul_low_i16x8_u")]
+    [SimdInstructionGenerate<Vec128ExtMul>]
+    [SimdOpTraits(hasMethodInfo: false)]
+    Int32X4ExtMulLowInt16X8Unsigned = 0xbe,
+
+    /// <summary>
+    ///     Extended multiply: widen upper i16x8 lanes (unsigned) then multiply to i32x4.
+    /// </summary>
+    [OpCodeCharacteristics("i32x4.extmul_high_i16x8_u")]
+    [SimdInstructionGenerate<Vec128ExtMul>]
+    [SimdOpTraits(hasMethodInfo: false)]
+    Int32X4ExtMulHighInt16X8Unsigned = 0xbf,
+
+    /// <summary>
+    ///     Extended multiply: widen lower i32x4 lanes (signed) then multiply to i64x2.
+    /// </summary>
+    [OpCodeCharacteristics("i64x2.extmul_low_i32x4_s")]
+    [SimdInstructionGenerate<Vec128ExtMul>]
+    [SimdOpTraits(hasMethodInfo: false)]
+    Int64X2ExtMulLowInt32X4Signed = 0xdc,
+
+    /// <summary>
+    ///     Extended multiply: widen upper i32x4 lanes (signed) then multiply to i64x2.
+    /// </summary>
+    [OpCodeCharacteristics("i64x2.extmul_high_i32x4_s")]
+    [SimdInstructionGenerate<Vec128ExtMul>]
+    [SimdOpTraits(hasMethodInfo: false)]
+    Int64X2ExtMulHighInt32X4Signed = 0xdd,
+
+    /// <summary>
+    ///     Extended multiply: widen lower i32x4 lanes (unsigned) then multiply to i64x2.
+    /// </summary>
+    [OpCodeCharacteristics("i64x2.extmul_low_i32x4_u")]
+    [SimdInstructionGenerate<Vec128ExtMul>]
+    [SimdOpTraits(hasMethodInfo: false)]
+    Int64X2ExtMulLowInt32X4Unsigned = 0xde,
+
+    /// <summary>
+    ///     Extended multiply: widen upper i32x4 lanes (unsigned) then multiply to i64x2.
+    /// </summary>
+    [OpCodeCharacteristics("i64x2.extmul_high_i32x4_u")]
+    [SimdInstructionGenerate<Vec128ExtMul>]
+    [SimdOpTraits(hasMethodInfo: false)]
+    Int64X2ExtMulHighInt32X4Unsigned = 0xdf,
+
+    /// <summary>
     ///     SIMD ceiling of 4 32-bit floats.
     /// </summary>
     [OpCodeCharacteristics("f32x4.ceil")]
