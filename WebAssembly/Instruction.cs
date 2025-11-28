@@ -501,6 +501,8 @@ public abstract class Instruction : IEquatable<Instruction>
                         case SimdOpCode.Float32X4Neg: yield return new Float32X4Neg(); break;
                         case SimdOpCode.Float32X4Min: yield return new Float32X4Min(); break;
                         case SimdOpCode.Float32X4Max: yield return new Float32X4Max(); break;
+                        case SimdOpCode.Float32X4PMin: yield return new Float32X4PMin(); break;
+                        case SimdOpCode.Float32X4PMax: yield return new Float32X4PMax(); break;
                         case SimdOpCode.Float32X4Abs: yield return new Float32X4Abs(); break;
                         case SimdOpCode.Float32X4Sqrt: yield return new Float32X4Sqrt(); break;
                         case SimdOpCode.Float32X4Add: yield return new Float32X4Add(); break;
@@ -542,6 +544,8 @@ public abstract class Instruction : IEquatable<Instruction>
                         case SimdOpCode.Float64X2Neg: yield return new Float64X2Neg(); break;
                         case SimdOpCode.Float64X2Min: yield return new Float64X2Min(); break;
                         case SimdOpCode.Float64X2Max: yield return new Float64X2Max(); break;
+                        case SimdOpCode.Float64X2PMin: yield return new Float64X2PMin(); break;
+                        case SimdOpCode.Float64X2PMax: yield return new Float64X2PMax(); break;
                         case SimdOpCode.Float64X2Abs: yield return new Float64X2Abs(); break;
                         case SimdOpCode.Float64X2Sqrt: yield return new Float64X2Sqrt(); break;
                         case SimdOpCode.Float64X2Add: yield return new Float64X2Add(); break;

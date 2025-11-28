@@ -1146,6 +1146,22 @@ public enum SimdOpCode : byte
     Float32X4Max = 0xe9,
 
     /// <summary>
+    ///     SIMD pseudo-minimum 4 32-bit floats: pmin(a, b) = b &lt; a ? b : a.
+    /// </summary>
+    [OpCodeCharacteristics("f32x4.pmin")]
+    [SimdInstructionGenerate<Vec128PseudoMinMax>]
+    [SimdOpTraits(hasMethodInfo: false)]
+    Float32X4PMin = 0xea,
+
+    /// <summary>
+    ///     SIMD pseudo-maximum 4 32-bit floats: pmax(a, b) = a &lt; b ? b : a.
+    /// </summary>
+    [OpCodeCharacteristics("f32x4.pmax")]
+    [SimdInstructionGenerate<Vec128PseudoMinMax>]
+    [SimdOpTraits(hasMethodInfo: false)]
+    Float32X4PMax = 0xeb,
+
+    /// <summary>
     ///     SIMD negate 4 32-bit floats.
     /// </summary>
     [OpCodeCharacteristics("f32x4.neg")]
@@ -1263,6 +1279,22 @@ public enum SimdOpCode : byte
     [OpCodeCharacteristics("f64x2.max")]
     [SimdInstructionGenerate<SimdValueTwoToOneCallInstruction>]
     Float64X2Max = 0xf5,
+
+    /// <summary>
+    ///     SIMD pseudo-minimum 2 64-bit floats: pmin(a, b) = b &lt; a ? b : a.
+    /// </summary>
+    [OpCodeCharacteristics("f64x2.pmin")]
+    [SimdInstructionGenerate<Vec128PseudoMinMax>]
+    [SimdOpTraits(hasMethodInfo: false)]
+    Float64X2PMin = 0xf6,
+
+    /// <summary>
+    ///     SIMD pseudo-maximum 2 64-bit floats: pmax(a, b) = a &lt; b ? b : a.
+    /// </summary>
+    [OpCodeCharacteristics("f64x2.pmax")]
+    [SimdInstructionGenerate<Vec128PseudoMinMax>]
+    [SimdOpTraits(hasMethodInfo: false)]
+    Float64X2PMax = 0xf7,
 
     /// <summary>
     ///     SIMD add 2 64-bit floats.
