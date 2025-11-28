@@ -295,6 +295,7 @@ static class SpecTestRunner
                             case "unknown memory":
                             case "unknown function":
                             case "unknown table 0":
+                            case "unknown local 2":
                                 try
                                 {
                                     trapExpected();
