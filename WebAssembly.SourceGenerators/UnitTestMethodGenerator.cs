@@ -29,7 +29,7 @@ public class UnitTestMethodGenerator : IIncrementalGenerator
                                      /// Runs the {{fileName}} tests.
                                      /// </summary>
                                      [TestMethod]
-                                     public void SpecTest_{{fileName}}()
+                                     public void SpecTest_{{fileName.Replace('-','_')}}()
                                      {
                                          SpecTestRunner.Run(Path.Combine("Runtime", "SpecTestData", "{{fileName}}"), "{{fileName}}.json");
                                      }
